@@ -1,0 +1,166 @@
+{
+ "title": "Framique \u2014 Page Builder Runtime",
+ "uid": "framique-builder",
+ "schemaVersion": 39,
+ "version": 1,
+ "editable": true,
+ "refresh": "1m",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "tags": [
+  "framique",
+  "builder",
+  "storefront"
+ ],
+ "templating": {
+  "list": [
+   {
+    "name": "datasource",
+    "type": "datasource",
+    "query": "prometheus",
+    "current": {}
+   }
+  ]
+ },
+ "panels": [
+  {
+   "type": "timeseries",
+   "title": "Template render time p95 (per template)",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 0
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "histogram_quantile(0.95, sum by (le, template) (rate(framique_template_render_ms_bucket[5m])))"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ms"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Widget data-resolver p95 (per source)",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 0
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "histogram_quantile(0.95, sum by (le, source) (rate(framique_widget_resolver_ms_bucket[5m])))"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ms"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Widget error rate",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "sum(rate(framique_widget_errors_total[5m]))"
+    },
+    {
+     "expr": "sum(rate(framique_widget_resolver_total{outcome=\"error\"}[5m])) / clamp_min(sum(rate(framique_widget_resolver_total[5m])), 0.001)"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "Plugin hook timeout rate",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 8
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "sum(rate(framique_plugin_hook_total{status=\"timeout\"}[5m])) / clamp_min(sum(rate(framique_plugin_hook_total[5m])), 0.001)"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Theme cache purges (publish / rollback)",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 16
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "sum by (reason, scope) (rate(framique_theme_purge_total[15m]))"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "Storefront cache hit ratio",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 16
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "${datasource}"
+   },
+   "targets": [
+    {
+     "expr": "sum(rate(framique_cache_total{result=\"hit\"}[5m])) / clamp_min(sum(rate(framique_cache_total[5m])), 0.001)"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit"
+    }
+   }
+  }
+ ]
+}

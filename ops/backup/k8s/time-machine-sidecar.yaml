@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: framique-db-primary
+  namespace: framique-prod
+  labels:
+    app.kubernetes.io/name: framique-db
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: framique-db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: framique-db
+    spec:
+      containers:
+        - name: postgres
+          image: supabase/postgres:15.6.1.139
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: framique-db-secret
+                  key: password
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+            - name: wal-archive
+              mountPath: /var/backups/framique/wal
+
+        # Phase 11.4 — Time-Machine Continuous Archiving Sidecar
+        - name: time-machine-archiver
+          image: alpine:3.19
+          command: ["/bin/bash", "/scripts/time-machine-daemon.sh", "run-daemon"]
+          env:
+            - name: BACKUP_DIR
+              value: /var/backups/framique
+            - name: WAL_LOCAL_DIR
+              value: /var/backups/framique/wal
+            - name: WAL_REMOTE_TARGET
+              value: s3://framique-backups/wal
+            - name: STORAGE_TYPE
+              value: s3
+            - name: WAL_SYNC_INTERVAL_SEC
+              value: "60"
+            - name: BASEBACKUP_INTERVAL_SEC
+              value: "3600"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: wal-archive
+              mountPath: /var/backups/framique/wal
+            - name: backup-storage
+              mountPath: /var/backups/framique
+            - name: daemon-script
+              mountPath: /scripts
+
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: pgdata-pvc
+        - name: wal-archive
+          persistentVolumeClaim:
+            claimName: wal-archive-pvc
+        - name: backup-storage
+          persistentVolumeClaim:
+            claimName: backup-storage-pvc
+        - name: daemon-script
+          configMap:
+            name: time-machine-daemon-script
+            defaultMode: 0755

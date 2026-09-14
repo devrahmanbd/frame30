@@ -1,0 +1,169 @@
+# Infrastructure alerts for the self-hosted stack.
+#
+# Rule of engagement: `severity=page` means a human is woken, so it is reserved
+# for user-visible loss or imminent data risk. Capacity and hygiene are
+# `severity=ticket`. Every rule carries a runbook annotation — an alert without
+# a runbook is a notification, not an alert.
+groups:
+  - name: framique-observability-plumbing
+    rules:
+      - alert: MetricsEndpointDown
+        expr: up{job="framique-app"} == 0
+        for: 5m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "App metrics endpoint unreachable ({{ $labels.instance }})"
+          runbook: "docs/14-operations/runbooks.md#metrics-endpoint-down"
+
+      - alert: ExporterDown
+        expr: up{job=~"node|redis|postgres|containers|blackbox-http"} == 0
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Exporter {{ $labels.job }} down — dashboards are lying"
+          runbook: "docs/14-operations/runbooks.md#exporter-down"
+
+      - alert: LokiIngestionStalled
+        expr: sum(rate(loki_distributor_lines_received_total[10m])) == 0
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "No log lines reaching Loki for 15m — Promtail or Loki is broken"
+          runbook: "docs/14-operations/runbooks.md#loki-stalled"
+
+      - alert: PromtailDroppingLines
+        expr: sum(rate(promtail_dropped_entries_total[10m])) > 0
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Promtail is dropping log entries"
+          runbook: "docs/14-operations/runbooks.md#promtail-drops"
+
+      - alert: AlertmanagerNotificationFailures
+        expr: sum(rate(alertmanager_notifications_failed_total[10m])) > 0
+        for: 10m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Alertmanager cannot deliver notifications — alerting is blind"
+          runbook: "docs/14-operations/runbooks.md#alertmanager-delivery"
+
+  - name: framique-host-and-containers
+    rules:
+      - alert: HostDiskFillingUp
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+            / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) < 0.15
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Less than 15% disk free on {{ $labels.instance }} {{ $labels.mountpoint }}"
+          runbook: "docs/14-operations/runbooks.md#disk-pressure"
+
+      - alert: HostDiskCritical
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
+            / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) < 0.05
+        for: 5m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Under 5% disk free on {{ $labels.instance }} — Postgres will stop writing"
+          runbook: "docs/14-operations/runbooks.md#disk-pressure"
+
+      - alert: HostMemoryPressure
+        expr: |
+          (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.92
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Memory above 92% on {{ $labels.instance }}"
+          runbook: "docs/14-operations/runbooks.md#memory-pressure"
+
+      - alert: ContainerRestartLoop
+        expr: |
+          increase(container_start_time_seconds{name!=""}[15m]) > 3
+        for: 5m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Container {{ $labels.name }} restarted repeatedly"
+          runbook: "docs/14-operations/runbooks.md#restart-loop"
+
+  - name: framique-datastores
+    rules:
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 2m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Self-hosted Supabase Postgres is unreachable"
+          runbook: "docs/14-operations/runbooks.md#postgres-down"
+
+      - alert: PostgresConnectionSaturation
+        expr: |
+          sum(pg_stat_activity_count) by (instance)
+            / max(pg_settings_max_connections) by (instance) > 0.85
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Postgres connection pool above 85% — pooler sizing or a leak"
+          runbook: "docs/14-operations/runbooks.md#pg-connections"
+
+      - alert: PostgresReplicationLag
+        expr: pg_replication_lag_seconds > 60
+        for: 10m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Replica lag over 60s — failover would lose data"
+          runbook: "docs/14-operations/runbooks.md#replication-lag"
+
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 2m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Redis unreachable — idempotency, rate limits and queues are degraded"
+          runbook: "docs/14-operations/runbooks.md#redis-down"
+
+      - alert: RedisMemoryNearLimit
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes > 0.85
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Redis above 85% of maxmemory — eviction will drop idempotency keys"
+          runbook: "docs/14-operations/runbooks.md#redis-memory"
+
+      - alert: RedisRejectedConnections
+        expr: increase(redis_rejected_connections_total[10m]) > 0
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Redis rejected connections — maxclients reached"
+          runbook: "docs/14-operations/runbooks.md#redis-connections"
+
+  - name: framique-synthetics-and-logs
+    rules:
+      - alert: SyntheticProbeFailing
+        expr: probe_success == 0
+        for: 5m
+        labels: { severity: page, team: platform }
+        annotations:
+          summary: "Synthetic probe failing for {{ $labels.instance }}"
+          runbook: "docs/14-operations/runbooks.md#synthetic-probe"
+
+      - alert: TlsCertificateExpiringSoon
+        expr: (probe_ssl_earliest_cert_expiry - time()) / 86400 < 14
+        for: 1h
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "TLS certificate for {{ $labels.instance }} expires in under 14 days"
+          runbook: "docs/14-operations/runbooks.md#tls-renewal"
+
+      - alert: ErrorLogBurst
+        # Emitted by the Promtail metrics stage, so it fires even if the app's
+        # own error counter path is the thing that broke.
+        expr: sum(rate(framique_log_lines_total{level="error"}[5m])) > 5
+        for: 10m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          summary: "Sustained error-log burst (>5/s) across the fleet"
+          runbook: "docs/14-operations/runbooks.md#error-burst"

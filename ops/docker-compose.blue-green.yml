@@ -1,0 +1,128 @@
+# ==============================================================================
+# Framique — Active / Standby Blue/Green Production Environment Topology
+#
+# Ports:
+#  - 80 / 443 : High-Performance OpenResty Edge Router (with lua-resty-acme TLS)
+#  - 3001     : BLUE Cluster (Active / Warm Standby)
+#  - 3002     : GREEN Cluster (Active / Warm Standby)
+# ==============================================================================
+
+name: framique-topology
+
+networks:
+  framique-mesh:
+    driver: bridge
+
+volumes:
+  router-cache:
+  openresty-acme:
+
+services:
+  # ----------------------------------------------------------------------------
+  # BLUE Production Pod Cluster (Port 3001)
+  # ----------------------------------------------------------------------------
+  framique-blue:
+    image: ${BLUE_IMAGE:-framique:blue}
+    container_name: framique-blue
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - CLUSTER_SLOT=blue
+      - GIT_SHA=${BLUE_SHA:-unknown}
+      - REDIS_URL=${REDIS_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - METRICS_TOKEN=${METRICS_TOKEN}
+    ports:
+      - "127.0.0.1:3001:3000"
+    networks:
+      - framique-mesh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://127.0.0.1:3000/api/healthz?type=liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+  # ----------------------------------------------------------------------------
+  # GREEN Production Pod Cluster (Port 3002)
+  # ----------------------------------------------------------------------------
+  framique-green:
+    image: ${GREEN_IMAGE:-framique:green}
+    container_name: framique-green
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - CLUSTER_SLOT=green
+      - GIT_SHA=${GREEN_SHA:-unknown}
+      - REDIS_URL=${REDIS_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - METRICS_TOKEN=${METRICS_TOKEN}
+    ports:
+      - "127.0.0.1:3002:3000"
+    networks:
+      - framique-mesh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://127.0.0.1:3000/api/healthz?type=liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+  # ----------------------------------------------------------------------------
+  # High-Availability Edge Router: OpenResty + lua-resty-acme Custom Domain TLS
+  # ----------------------------------------------------------------------------
+  edge-router:
+    build:
+      context: ..
+      dockerfile: ops/docker/Dockerfile.openresty
+    image: ${EDGE_ROUTER_IMAGE:-openresty/openresty:1.25.3.1-alpine}
+    container_name: framique-edge-router
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - ACME_ACCOUNT_EMAIL=${ACME_ACCOUNT_EMAIL:-ops@framique.com}
+      - ACME_STAGING=${ACME_STAGING:-false}
+      - DOMAIN_EDGE_TOKEN=${DOMAIN_EDGE_TOKEN}
+    volumes:
+      - ./routing/nginx-blue-green.conf:/etc/nginx/nginx.conf:ro
+      - ./routing/nginx-blue-green.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./routing/upstream.conf:/etc/nginx/conf.d/upstream.conf:ro
+      - ./routing/canary-weights.conf:/etc/nginx/conf.d/canary-weights.conf:ro
+      - openresty-acme:/var/lib/openresty/acme
+      - router-cache:/var/cache/nginx
+    networks:
+      - framique-mesh
+    depends_on:
+      - framique-blue
+      - framique-green
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3

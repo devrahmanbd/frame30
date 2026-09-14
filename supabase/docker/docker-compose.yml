@@ -1,0 +1,271 @@
+# Framique — pinned self-hosted Supabase distribution.
+#
+# This is the upstream `supabase/docker` stack, pinned to explicit image digests
+# by tag and trimmed to the services this platform actually uses. It is vendored
+# rather than curled at deploy time for one reason: an unpinned `latest` on
+# GoTrue or PostgREST can change an auth or RLS behaviour between two deploys of
+# *our* code, and then the isolation gate is testing a different database than
+# the one production runs.
+#
+# What is deliberately NOT here:
+#   - `supavisor` / pooler: the app uses the Data API, not raw Postgres.
+#   - `vector` / `analytics` (Logflare): logs go to Loki via promtail; see
+#     ops/docker-compose.observability.yml. Two log pipelines is one too many.
+#   - `functions` (Deno edge runtime): all server logic is TanStack server
+#     functions inside the app worker, by architectural decision.
+#
+# Bring-up order (ops/README.md §2 is the long form):
+#
+#   docker network create framique
+#   docker compose --env-file supabase/docker/.env -f supabase/docker/docker-compose.yml up -d
+#   docker compose --env-file ops/.env -f ops/docker-compose.platform.yml up -d
+#   docker compose --env-file ops/.env -f ops/docker-compose.observability.yml up -d
+#   docker compose --env-file ops/.env -f ops/docker-compose.cron.yml up -d
+#
+# Migrations are applied by CI (`supabase db push`) against `POSTGRES_HOST`, and
+# `bun run schema:check` must be green afterwards or the deploy is rolled back.
+
+name: framique-supabase
+
+networks:
+  framique:
+    external: true
+
+volumes:
+  db-data:
+  storage-data:
+
+services:
+  db:
+    # Supabase's Postgres build: pgsodium, pg_graphql, pgjwt, pg_cron, pgaudit.
+    # pg_cron matters here — it is what fires the platform's scheduled jobs when
+    # no external scheduler is reachable (see ops/docker-compose.cron.yml).
+    image: supabase/postgres:15.8.1.060
+    restart: unless-stopped
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - shared_preload_libraries=pg_stat_statements,pg_cron,pgaudit
+      - -c
+      - cron.database_name=postgres
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-200}
+      - -c
+      - log_min_duration_statement=${POSTGRES_LOG_MIN_DURATION_MS:-500}
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      JWT_EXP: ${JWT_EXPIRY:-3600}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # Applied once on an empty volume, in filename order. Roles and extensions
+      # only — application schema is owned by supabase/ migrations, never here.
+      - ./init:/docker-entrypoint-initdb.d:ro
+    networks: [framique]
+    # Never published to the host in production: Kong is the only front door.
+    expose: ["5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h 127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    stop_grace_period: 60s
+
+  auth:
+    image: supabase/gotrue:v2.170.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${SUPABASE_PUBLIC_URL:?set SUPABASE_PUBLIC_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      GOTRUE_SITE_URL: ${SITE_URL:?set SITE_URL}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:-}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      # Product decisions, not defaults: no anonymous sign-ups, no auto-confirm.
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: "false"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_SMS_AUTOCONFIRM: "false"
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/confirm
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/recover
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/email-change
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/invite
+      GOTRUE_SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT:-587}
+      GOTRUE_SMTP_USER: ${SMTP_USER}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
+      GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-Framique}
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_ENABLED:-false}
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_SECRET:-}
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${SUPABASE_PUBLIC_URL}/auth/v1/callback
+      GOTRUE_LOG_LEVEL: ${GOTRUE_LOG_LEVEL:-info}
+      GOTRUE_METRICS_ENABLED: "true"
+      GOTRUE_METRICS_EXPORTER: prometheus
+    networks: [framique]
+    expose: ["9999"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9999/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,storage,graphql_public}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
+      # The tenancy contract lives in RLS; PostgREST must never see a superuser.
+      PGRST_DB_MAX_ROWS: ${PGRST_DB_MAX_ROWS:-1000}
+      PGRST_DB_POOL: ${PGRST_DB_POOL:-20}
+      PGRST_ADMIN_SERVER_PORT: 3001
+    networks: [framique]
+    expose: ["3000", "3001"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+  realtime:
+    image: supabase/realtime:v2.34.31
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB:-postgres}
+      DB_AFTER_CONNECT_QUERY: SET search_path TO _realtime
+      DB_ENC_KEY: ${REALTIME_ENC_KEY:?set REALTIME_ENC_KEY}
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE:?set REALTIME_SECRET_KEY_BASE}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+    networks: [framique]
+    expose: ["4000"]
+
+  storage:
+    image: supabase/storage-api:v1.19.3
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    environment:
+      ANON_KEY: ${ANON_KEY:?set ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY:?set SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      FILE_SIZE_LIMIT: ${STORAGE_FILE_SIZE_LIMIT:-52428800}
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: local
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+    volumes:
+      - storage-data:/var/lib/storage
+    networks: [framique]
+    expose: ["5000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5000/status"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+  imgproxy:
+    image: darthsim/imgproxy:v3.28.0
+    restart: unless-stopped
+    environment:
+      IMGPROXY_BIND: ":5001"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+      IMGPROXY_ENABLE_AVIF_DETECTION: "true"
+      # SSRF guard: imgproxy only ever reads the mounted storage volume.
+      IMGPROXY_ALLOW_ORIGIN: ""
+    volumes:
+      - storage-data:/var/lib/storage:ro
+    networks: [framique]
+    expose: ["5001"]
+
+  meta:
+    image: supabase/postgres-meta:v0.86.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: ${POSTGRES_DB:-postgres}
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+    networks: [framique]
+    expose: ["8080"]
+
+  kong:
+    image: kong:2.8.1
+    restart: unless-stopped
+    depends_on:
+      auth:
+        condition: service_started
+      rest:
+        condition: service_started
+      storage:
+        condition: service_started
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    volumes:
+      - ./kong.yml:/home/kong/kong.yml:ro
+    networks: [framique]
+    # TLS is terminated by the edge reverse proxy; Kong stays on loopback.
+    ports: ["127.0.0.1:8000:8000"]
+    healthcheck:
+      test: ["CMD-SHELL", "kong health"]
+      interval: 15s
+      timeout: 5s
+      retries: 6

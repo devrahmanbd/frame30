@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1.4
+# ==============================================================================
+# Framique Cloud Commerce CMS — High-Performance Edge Router (OpenResty + ACME)
+#
+# Features:
+#  - OpenResty Alpine base with LuaJIT and OpenSSL 1.1.1/3.x
+#  - lua-resty-acme (https://github.com/fffonion/lua-resty-acme) for automated
+#    zero-touch Let's Encrypt TLS certificate lifecycle & dynamic SNI termination
+#  - lua-resty-http for high-concurrency non-blocking HTTP-01 and API verification
+#  - Dynamic Blue/Green canary weighting and connection draining
+#  - Self-signed fallback SSL certificates for bootstrap safety
+#  - Non-blocking healthcheck at /healthz
+# ==============================================================================
+
+FROM openresty/openresty:1.25.3.1-alpine
+
+# Install build dependencies, OpenSSL, curl, and luarocks/opm packages
+RUN apk update && \
+    apk add --no-cache \
+        openssl \
+        curl \
+        ca-certificates \
+        bash && \
+    # Install lua-resty-acme and lua-resty-http via opm
+    opm get fffonion/lua-resty-acme pintsized/lua-resty-http && \
+    # Create required runtime directories
+    mkdir -p /var/lib/openresty/acme \
+             /etc/openresty/ssl \
+             /etc/openresty/conf.d \
+             /etc/nginx/conf.d \
+             /var/cache/nginx \
+             /var/log/nginx && \
+    # Generate self-signed fallback certificate for default SNI fallback
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+        -keyout /etc/openresty/ssl/default.key \
+        -out /etc/openresty/ssl/default.pem \
+        -subj "/CN=edge.framique.internal/O=Framique/C=BD" && \
+    chmod 600 /etc/openresty/ssl/default.key && \
+    chmod 644 /etc/openresty/ssl/default.pem && \
+    # Clean up apk cache
+    rm -rf /var/cache/apk/* /tmp/*
+
+# Forward request logs to Docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
+EXPOSE 80 443
+
+# Healthcheck probe verifying router status
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f -s http://127.0.0.1/healthz || exit 1
+
+CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]

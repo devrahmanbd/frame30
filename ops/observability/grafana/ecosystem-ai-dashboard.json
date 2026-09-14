@@ -1,0 +1,185 @@
+{
+  "title": "Framique — Ecosystem & AI (Phase 3)",
+  "uid": "framique-ecosystem-ai",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["framique", "marketplace", "ai", "phase-3"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "Marketplace", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "timeseries",
+      "title": "Version publishes (created vs content-hash replay)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_market_publish_total[1h]))", "legendFormat": "{{outcome}}" },
+        { "expr": "sum by (status) (rate(framique_market_version_review_total[1h]))", "legendFormat": "review {{status}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Creator payouts",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (action) (rate(framique_market_payout_total[6h]))", "legendFormat": "{{action}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Listing reviews by rating",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (rating) (rate(framique_market_review_total[6h]))", "legendFormat": "{{rating}}★" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Experiments: assignment and conversion",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_experiment_assign_total[15m]))", "legendFormat": "assign {{outcome}}" },
+        { "expr": "sum by (experiment) (rate(framique_experiment_conversion_total[1h]))", "legendFormat": "convert {{experiment}}" }
+      ]
+    },
+    { "type": "row", "title": "AI guardrails & assistant", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 15 } },
+    {
+      "type": "stat",
+      "title": "Guardrail blocks (24h)",
+      "gridPos": { "h": 5, "w": 5, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(increase(framique_ai_guardrail_total[24h]))", "legendFormat": "blocks" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Guardrail blocks by kind and rule",
+      "gridPos": { "h": 8, "w": 19, "x": 5, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (kind, rule) (rate(framique_ai_guardrail_total[15m]))", "legendFormat": "{{kind}} / {{rule}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Assistant answers by outcome",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_ai_ask_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Tool calls and p95 latency",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (tool, outcome) (rate(framique_ai_tool_call_total[15m]))", "legendFormat": "{{tool}} {{outcome}}" },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_ai_tool_latency_ms_bucket[15m])))",
+          "legendFormat": "p95 ms"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Trajectory capture (consent gate)",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 32 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_ai_trajectory_total[1h]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Channels and knowledge base",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 32 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (channel, outcome) (rate(framique_ai_channel_total[1h]))", "legendFormat": "{{channel}} {{outcome}}" },
+        { "expr": "sum by (outcome) (rate(framique_ai_kb_search_total[1h]))", "legendFormat": "kb {{outcome}}" }
+      ]
+    },
+    { "type": "row", "title": "Support & analytics ETL", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 } },
+    {
+      "type": "timeseries",
+      "title": "Tickets by action and priority",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 39 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (action, priority) (rate(framique_support_ticket_total[1h]))", "legendFormat": "{{action}} / {{priority}}" },
+        { "expr": "sum by (outcome) (rate(framique_support_sweep_total[1h]))", "legendFormat": "sla sweep {{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Analytics pipeline",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 39 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_analytics_events_total[15m]))", "legendFormat": "events {{outcome}}" },
+        { "expr": "sum by (outcome) (rate(framique_analytics_etl_total[15m]))", "legendFormat": "etl {{outcome}}" },
+        { "expr": "sum by (provider, outcome) (rate(framique_analytics_conversion_total[1h]))", "legendFormat": "conv {{provider}} {{outcome}}" },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_analytics_etl_ms_bucket[30m])))",
+          "legendFormat": "etl p95 ms"
+        }
+      ]
+    },
+    { "type": "row", "title": "Custom domains / ACME", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 } },
+    {
+      "type": "timeseries",
+      "title": "Certificate issuance",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 47 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_domain_cert_total[1h]))", "legendFormat": "cert {{outcome}}" },
+        { "expr": "sum by (outcome) (rate(framique_domain_cert_request_total[1h]))", "legendFormat": "request {{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Verification, DNS and sweep",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 47 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_domain_verify_total[1h]))", "legendFormat": "verify {{outcome}}" },
+        { "expr": "sum by (type, outcome) (rate(framique_domain_dns_total[1h]))", "legendFormat": "dns {{type}} {{outcome}}" },
+        { "expr": "sum by (bucket) (rate(framique_domain_sweep_total[6h]))", "legendFormat": "sweep {{bucket}}" },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_domain_dns_ms_bucket[1h])))",
+          "legendFormat": "dns p95 ms"
+        }
+      ]
+    }
+  ]
+}

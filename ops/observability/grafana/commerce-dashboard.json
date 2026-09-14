@@ -1,0 +1,184 @@
+{
+  "title": "Framique — Commerce (Phase 2)",
+  "uid": "framique-commerce",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["framique", "commerce", "phase-2"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "Orders", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "stat",
+      "title": "Orders / min",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_orders_total{outcome=\"created\"}[5m])) * 60", "legendFormat": "created" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 } }
+    },
+    {
+      "type": "gauge",
+      "title": "Order failure share",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_orders_total{outcome=~\"failed|fraud_blocked\"}[15m])) / clamp_min(sum(rate(framique_orders_total[15m])), 0.001)",
+          "legendFormat": "failed"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.05 },
+              { "color": "red", "value": 0.15 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Orders by outcome",
+      "gridPos": { "h": 9, "w": 16, "x": 8, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_orders_total[5m]))", "legendFormat": "{{outcome}}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Order amendments",
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_order_amend_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    { "type": "row", "title": "Refunds & disputes", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 11 } },
+    {
+      "type": "timeseries",
+      "title": "Refund rate vs orders",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_refund_total{outcome=~\"requested|succeeded\"}[30m])) / clamp_min(sum(rate(framique_orders_total{outcome=\"created\"}[30m])), 0.001)",
+          "legendFormat": "refunds / order"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percentunit" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Refunds by outcome",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_refund_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Returns and disputes opened",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_return_total[30m]))", "legendFormat": "return {{outcome}}" },
+        { "expr": "sum by (outcome) (rate(framique_dispute_total[30m]))", "legendFormat": "dispute {{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Return / dispute state machine",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (status) (rate(framique_return_state_total[30m]))", "legendFormat": "return {{status}}" },
+        { "expr": "sum by (status) (rate(framique_dispute_state_total[30m]))", "legendFormat": "dispute {{status}}" }
+      ]
+    },
+    { "type": "row", "title": "Gift cards", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 } },
+    {
+      "type": "timeseries",
+      "title": "Gift-card balance delta (issued − redeemed)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 29 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_gift_card_issued_total[1h])) - sum(rate(framique_gift_card_redeem_total{outcome=\"redeemed\"}[1h]))",
+          "legendFormat": "net liability change"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Gift-card redemption outcomes",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 29 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_gift_card_redeem_total[15m]))", "legendFormat": "{{outcome}}" },
+        { "expr": "sum(rate(framique_gift_card_void_total[15m]))", "legendFormat": "voided" }
+      ]
+    },
+    { "type": "row", "title": "Fulfilment & inventory", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 } },
+    {
+      "type": "timeseries",
+      "title": "Fulfilment lag (created → delivered states)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_fulfilment_total[1h])) - sum(rate(framique_fulfilment_state_total{status=\"delivered\"}[1h]))", "legendFormat": "open fulfilments / h" },
+        { "expr": "sum by (status) (rate(framique_fulfilment_state_total[1h]))", "legendFormat": "{{status}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Inventory movements",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_inventory_transfer_total[1h]))", "legendFormat": "transfer {{outcome}}" },
+        { "expr": "sum(rate(framique_inventory_level_set_total[1h]))", "legendFormat": "level set" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Invoices issued",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 46 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_order_invoice_total[1h]))", "legendFormat": "order invoices" },
+        { "expr": "sum(rate(framique_invoice_document_total[1h]))", "legendFormat": "documents" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Coupon validation",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 46 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_coupon_validate_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    }
+  ]
+}

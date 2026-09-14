@@ -1,0 +1,54 @@
+# Framique — scheduled job executor.
+#
+# The platform has sixteen scheduled jobs (src/lib/cron-registry.ts), each with a
+# leased, ledgered, alerting HTTP endpoint under /api/public/cron/<key>. Until
+# this file existed, nothing in-repo actually *called* them: the GDPR tenant
+# purge window could elapse and no executor would fire it. That gap is the whole
+# reason this compose file exists.
+#
+# supercronic rather than a distro cron: it runs as PID 1 in a container, logs to
+# stdout in a parseable form (so Promtail ships it to Loki like everything else),
+# and never forks a mail spool. The crontab is generated from the registry by
+# `bun run cron:generate`, and `bun run cron:check` fails CI on drift.
+#
+# Concurrency: the endpoints take a database lease (`ops_cron_claim`), so running
+# a second scheduler in another region is safe — the loser answers 409 and is
+# ledgered as a skip. That is the intended HA posture; do not "fix" the 409s.
+
+name: framique-cron
+
+networks:
+  framique:
+    external: true
+
+services:
+  scheduler:
+    image: quay.io/gogatekeeper/supercronic:v0.2.33
+    restart: unless-stopped
+    command: ["-passthrough-logs", "-split-logs=false", "/etc/crontab"]
+    environment:
+      # Internal hostname of the app worker on the framique network. Cron never
+      # goes out through the public edge: no TLS handshake, no WAF, no CDN cache.
+      APP_INTERNAL_URL: ${APP_INTERNAL_URL:?set APP_INTERNAL_URL}
+      # Same secret the endpoints compare in constant time (cron-auth.server.ts).
+      BILLING_CRON_SECRET: ${BILLING_CRON_SECRET:?set BILLING_CRON_SECRET}
+    volumes:
+      - ../ops/cron/crontab:/etc/crontab:ro
+    networks: [framique]
+    healthcheck:
+      # supercronic has no HTTP surface; liveness is "the process is still there".
+      test: ["CMD-SHELL", "pgrep supercronic >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+# Watchdog note (deliberately not a container):
+# a dead scheduler cannot alert about itself, so overdue detection lives in the
+# ledger instead. `ops_cron_overdue` is exported through /api/public/metrics as
+# framique_cron_overdue_seconds and alerted on in ops/observability/slo.rules.yml,
+# which is scraped by Prometheus independently of this compose project.

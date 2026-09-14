@@ -1,0 +1,151 @@
+{
+  "title": "Framique — Marketing & growth (Phase 2)",
+  "uid": "framique-marketing",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["framique", "marketing", "phase-2"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "Abandoned cart recovery", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "stat",
+      "title": "Recovery rate",
+      "gridPos": { "h": 5, "w": 5, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_abandoned_cart_total{outcome=\"recovered\"}[6h])) / clamp_min(sum(rate(framique_abandoned_cart_total{outcome=\"captured\"}[6h])), 0.001)",
+          "legendFormat": "recovered"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percentunit" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Carts captured vs recovered",
+      "gridPos": { "h": 8, "w": 19, "x": 5, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_abandoned_cart_total[30m]))", "legendFormat": "{{outcome}}" },
+        { "expr": "sum by (outcome) (rate(framique_cart_recovery_total[30m]))", "legendFormat": "sweep {{outcome}}" }
+      ]
+    },
+    { "type": "row", "title": "Campaigns", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 } },
+    {
+      "type": "timeseries",
+      "title": "Campaign recipients (allowed vs suppressed)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_campaign_recipients_total[1h]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "Suppression share",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_campaign_recipients_total{outcome=\"suppressed\"}[6h])) / clamp_min(sum(rate(framique_campaign_recipients_total[6h])), 0.001)",
+          "legendFormat": "suppressed"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.3 },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Discount codes generated",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_discount_codes_generated_total[1h]))", "legendFormat": "codes" }
+      ]
+    },
+    { "type": "row", "title": "Storefront conversion", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 } },
+    {
+      "type": "timeseries",
+      "title": "Product views vs orders",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_storefront_view_total[15m]))", "legendFormat": "view {{outcome}}" },
+        { "expr": "sum(rate(framique_orders_total{outcome=\"created\"}[15m]))", "legendFormat": "orders" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Storefront search",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_storefront_search_total[15m]))", "legendFormat": "{{outcome}}" },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_storefront_search_ms_bucket[15m])))",
+          "legendFormat": "p95 ms"
+        }
+      ]
+    },
+    { "type": "row", "title": "Outbound webhooks (merchant integrations)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 } },
+    {
+      "type": "timeseries",
+      "title": "Delivery outcomes",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_webhook_delivery_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "Dead-letter share",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_webhook_delivery_total{outcome=\"dead\"}[30m])) / clamp_min(sum(rate(framique_webhook_delivery_total[30m])), 0.001)",
+          "legendFormat": "dead-lettered"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.02 },
+              { "color": "red", "value": 0.05 }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

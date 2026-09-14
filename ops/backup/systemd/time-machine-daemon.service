@@ -1,0 +1,27 @@
+[Unit]
+Description=Framique Time-Machine Continuous WAL Archiving & Basebackup Daemon
+Documentation=https://github.com/devrahmanbd/frame28/blob/main/SYSTEM.md
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+WorkingDirectory=/var/backups/framique
+Environment=BACKUP_DIR=/var/backups/framique
+Environment=WAL_LOCAL_DIR=/var/backups/framique/wal
+Environment=WAL_REMOTE_TARGET=s3://framique-backups/wal
+Environment=STORAGE_TYPE=s3
+Environment=WAL_SYNC_INTERVAL_SEC=60
+Environment=BASEBACKUP_INTERVAL_SEC=3600
+ExecStart=/opt/framique/ops/backup/time-machine-daemon.sh run-daemon
+Restart=always
+RestartSec=10
+KillMode=process
+StandardOutput=journal
+StandardError=journal
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

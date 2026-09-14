@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: framique-green
+  namespace: production
+  labels:
+    app.kubernetes.io/name: framique
+    app.kubernetes.io/component: core
+    topology.framique.io/slot: green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: framique
+      topology.framique.io/slot: green
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: framique
+        topology.framique.io/slot: green
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: framique
+          image: registry.framique.internal/framique:green
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: CLUSTER_SLOT
+              value: "green"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: framique-production-secrets
+                  key: REDIS_URL
+            - name: SUPABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: framique-config
+                  key: SUPABASE_URL
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2048Mi"
+          livenessProbe:
+            httpGet:
+              path: /api/healthz?type=liveness
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/healthz?type=readiness
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2

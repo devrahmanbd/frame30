@@ -1,0 +1,180 @@
+# Framique — self-hosted error tracking (Phase 12).
+#
+# Two backends, one protocol. Both speak the Sentry envelope API, so the app
+# ships the same event to whichever is configured:
+#
+#   GlitchTip (profile: glitchtip) — the default. Postgres + Redis + web +
+#     worker + migrate. Fits comfortably on the single BD node.
+#   Sentry    (profile: sentry)    — the heavy option, for a host that wants
+#     full tracing/replay. Its own Postgres, Redis and Kafka-less "simple"
+#     topology; run it only on a node with headroom.
+#
+# A host runs one, both, or neither:
+#   docker compose --env-file ops/.env -f ops/docker-compose.errors.yml \
+#     --profile glitchtip up -d
+#   ... --profile sentry up -d
+#
+# Everything binds to loopback; expose through the same reverse proxy that
+# fronts Grafana. Issue alerts are POSTed back to the app's
+# /api/public/error-alert bridge, which forwards them into Alertmanager so
+# errors and metrics share one on-call path.
+
+name: framique-errors
+
+networks:
+  framique:
+    external: true
+
+volumes:
+  glitchtip-pg:
+  glitchtip-redis:
+  glitchtip-uploads:
+  sentry-pg:
+  sentry-redis:
+  sentry-data:
+
+x-glitchtip-env: &glitchtip-env
+  DATABASE_URL: postgres://glitchtip:${GLITCHTIP_DB_PASSWORD:-change-me}@glitchtip-pg:5432/glitchtip
+  SECRET_KEY: ${GLITCHTIP_SECRET_KEY:-change-me}
+  PORT: "8000"
+  EMAIL_URL: ${GLITCHTIP_EMAIL_URL:-consolemail://}
+  GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN:-http://localhost:8000}
+  DEFAULT_FROM_EMAIL: ${GLITCHTIP_FROM_EMAIL:-errors@framique.local}
+  CELERY_WORKER_AUTOSCALE: "1,3"
+  ENABLE_OPEN_USER_REGISTRATION: "false"
+  # Quotas — a bad deploy must not fill the disk.
+  GLITCHTIP_MAX_EVENT_LIFE_DAYS: ${ERROR_RETENTION_DAYS:-30}
+  EVENT_STORE_DEBOUNCE_SECONDS: "3"
+  REDIS_URL: redis://glitchtip-redis:6379/0
+
+services:
+  # ---------------------------------------------------------------- GlitchTip
+  glitchtip-pg:
+    image: postgres:16.4-alpine
+    profiles: [glitchtip]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: glitchtip
+      POSTGRES_PASSWORD: ${GLITCHTIP_DB_PASSWORD:-change-me}
+      POSTGRES_DB: glitchtip
+    volumes: [glitchtip-pg:/var/lib/postgresql/data]
+    networks: [framique]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glitchtip"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  glitchtip-redis:
+    image: redis:7.4-alpine
+    profiles: [glitchtip]
+    restart: unless-stopped
+    volumes: [glitchtip-redis:/data]
+    networks: [framique]
+
+  glitchtip-migrate:
+    image: glitchtip/glitchtip:v4.1.4
+    profiles: [glitchtip]
+    command: ./manage.py migrate
+    environment: *glitchtip-env
+    depends_on:
+      glitchtip-pg:
+        condition: service_healthy
+    networks: [framique]
+    restart: on-failure
+
+  glitchtip-web:
+    image: glitchtip/glitchtip:v4.1.4
+    profiles: [glitchtip]
+    restart: unless-stopped
+    environment: *glitchtip-env
+    volumes: [glitchtip-uploads:/code/uploads]
+    depends_on:
+      glitchtip-pg:
+        condition: service_healthy
+    networks: [framique]
+    ports: ["127.0.0.1:8000:8000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/_health/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip:v4.1.4
+    profiles: [glitchtip]
+    restart: unless-stopped
+    command: ./bin/run-celery-with-beat.sh
+    environment: *glitchtip-env
+    volumes: [glitchtip-uploads:/code/uploads]
+    depends_on:
+      glitchtip-pg:
+        condition: service_healthy
+    networks: [framique]
+
+  # ------------------------------------------------------------------ Sentry
+  sentry-pg:
+    image: postgres:16.4-alpine
+    profiles: [sentry]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentry
+      POSTGRES_PASSWORD: ${SENTRY_DB_PASSWORD:-change-me}
+      POSTGRES_DB: sentry
+    volumes: [sentry-pg:/var/lib/postgresql/data]
+    networks: [framique]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentry"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  sentry-redis:
+    image: redis:7.4-alpine
+    profiles: [sentry]
+    restart: unless-stopped
+    volumes: [sentry-redis:/data]
+    networks: [framique]
+
+  sentry-web:
+    image: sentry:9.1.2
+    profiles: [sentry]
+    restart: unless-stopped
+    environment: &sentry-env
+      SENTRY_SECRET_KEY: ${SENTRY_SECRET_KEY:-change-me}
+      SENTRY_POSTGRES_HOST: sentry-pg
+      SENTRY_DB_USER: sentry
+      SENTRY_DB_PASSWORD: ${SENTRY_DB_PASSWORD:-change-me}
+      SENTRY_REDIS_HOST: sentry-redis
+      SENTRY_EVENT_RETENTION_DAYS: ${ERROR_RETENTION_DAYS:-30}
+    volumes: [sentry-data:/var/lib/sentry/files]
+    depends_on:
+      sentry-pg:
+        condition: service_healthy
+    networks: [framique]
+    ports: ["127.0.0.1:9000:9000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9000/_health/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  sentry-worker:
+    image: sentry:9.1.2
+    profiles: [sentry]
+    restart: unless-stopped
+    command: run worker
+    environment: *sentry-env
+    volumes: [sentry-data:/var/lib/sentry/files]
+    depends_on: [sentry-pg, sentry-redis]
+    networks: [framique]
+
+  sentry-cron:
+    image: sentry:9.1.2
+    profiles: [sentry]
+    restart: unless-stopped
+    command: run cron
+    environment: *sentry-env
+    volumes: [sentry-data:/var/lib/sentry/files]
+    depends_on: [sentry-pg, sentry-redis]
+    networks: [framique]

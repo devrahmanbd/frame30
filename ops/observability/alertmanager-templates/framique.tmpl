@@ -1,0 +1,12 @@
+{{/* Shared Alertmanager templates. Keep messages short: the summary must be
+     readable on a phone lock screen at 3am, the runbook link carries depth. */}}
+
+{{ define "framique.title" }}[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}{{ end }}
+
+{{ define "framique.text" }}
+{{ .CommonAnnotations.summary }}
+{{ if .CommonLabels.slo }}SLO: {{ .CommonLabels.slo }}{{ end }}
+{{ if .CommonAnnotations.runbook }}Runbook: {{ .CommonAnnotations.runbook }}{{ end }}
+{{ range .Alerts }}{{ if .Labels.instance }}• {{ .Labels.instance }}{{ end }}
+{{ end }}
+{{ end }}

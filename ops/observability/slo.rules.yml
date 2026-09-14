@@ -1,0 +1,113 @@
+# Service level objectives and their burn-rate alerts.
+#
+# Two windows per objective (fast + slow) so a short severe burn pages and a
+# long shallow burn only tickets. Error-budget maths follows the multi-window
+# multi-burn-rate method: an alert fires when the budget consumption rate would
+# exhaust the 30-day budget far ahead of schedule.
+#
+# | Objective            | Target  | Budget (30d)      |
+# |----------------------|---------|-------------------|
+# | Storefront requests  | 99.5%   | 3h 39m unavailable|
+# | Checkout success     | 99.0%   | 7h 18m            |
+# | Webhook processing   | 99.5%   | 3h 39m            |
+# | Cron freshness       | 99.0%   | (staleness based) |
+groups:
+  - name: framique-slo-availability
+    interval: 30s
+    rules:
+      - record: framique:request_error_ratio:rate5m
+        expr: |
+          sum(rate(framique_span_total{outcome="error"}[5m]))
+            / clamp_min(sum(rate(framique_span_total[5m])), 0.001)
+      - record: framique:request_error_ratio:rate1h
+        expr: |
+          sum(rate(framique_span_total{outcome="error"}[1h]))
+            / clamp_min(sum(rate(framique_span_total[1h])), 0.001)
+      - record: framique:request_error_ratio:rate6h
+        expr: |
+          sum(rate(framique_span_total{outcome="error"}[6h]))
+            / clamp_min(sum(rate(framique_span_total[6h])), 0.001)
+
+      - alert: SLOAvailabilityFastBurn
+        # 14.4x burn on a 99.5% objective — the 30d budget is gone in ~2 days.
+        expr: |
+          framique:request_error_ratio:rate5m > (14.4 * 0.005)
+            and framique:request_error_ratio:rate1h > (14.4 * 0.005)
+        for: 2m
+        labels: { severity: page, team: platform, slo: availability }
+        annotations:
+          summary: "Availability SLO burning 14x — budget gone in ~2 days"
+          runbook: "docs/14-operations/observability.md#availability"
+
+      - alert: SLOAvailabilitySlowBurn
+        expr: |
+          framique:request_error_ratio:rate1h > (6 * 0.005)
+            and framique:request_error_ratio:rate6h > (6 * 0.005)
+        for: 30m
+        labels: { severity: ticket, team: platform, slo: availability }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#slo-availability-slow-burn"
+          summary: "Availability SLO burning 6x over 6 hours"
+
+  - name: framique-slo-checkout
+    interval: 30s
+    rules:
+      - record: framique:checkout_failure_ratio:rate30m
+        expr: |
+          sum(rate(framique_span_total{span=~"checkout.*",outcome="error"}[30m]))
+            / clamp_min(sum(rate(framique_span_total{span=~"checkout.*"}[30m])), 0.001)
+
+      - alert: SLOCheckoutFastBurn
+        expr: framique:checkout_failure_ratio:rate30m > (14.4 * 0.01)
+        for: 5m
+        labels: { severity: page, team: commerce, slo: checkout }
+        annotations:
+          summary: "Checkout failing well beyond its 99% objective"
+          runbook: "docs/07-commerce/checkout-runtime.md"
+
+      - alert: SLOPaymentWebhookBacklog
+        expr: |
+          sum(rate(framique_span_total{span=~"webhook.*",outcome="error"}[15m]))
+            / clamp_min(sum(rate(framique_span_total{span=~"webhook.*"}[15m])), 0.001) > (14.4 * 0.005)
+        for: 10m
+        labels: { severity: page, team: payments, slo: webhooks }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#slo-payment-webhook-backlog"
+          summary: "Payment webhook processing beyond its error budget"
+
+  - name: framique-freshness
+    interval: 60s
+    rules:
+      # A cron that stops firing is invisible in error ratios — assert freshness.
+      - alert: BackupDrillStale
+        expr: time() - max(framique_backup_drill_timestamp) > 129600
+        for: 30m
+        labels: { severity: page, team: platform, slo: data_safety }
+        annotations:
+          summary: "No verified backup drill in 36 hours"
+          runbook: "docs/14-operations/backup-restore.md"
+
+      - alert: BillingSweepStale
+        expr: time() - max(framique_billing_sweep_timestamp) > 7200
+        for: 30m
+        labels: { severity: ticket, team: billing }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#billing-sweep-stale"
+          summary: "Billing sweep has not completed in 2 hours"
+
+      - alert: MetricsEndpointDown
+        expr: up{job="framique-app"} == 0
+        for: 10m
+        labels: { severity: page, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#metrics-endpoint-down"
+          summary: "Prometheus cannot scrape the app — telemetry is dark"
+
+      - alert: RateLimiterUnavailable
+        # The limiter fails open; a silent limiter is itself a security event.
+        expr: sum(rate(framique_rate_limit_total{outcome="unavailable"}[10m])) > 0
+        for: 10m
+        labels: { severity: page, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#rate-limiter-unavailable"
+          summary: "Rate limiter failing open"

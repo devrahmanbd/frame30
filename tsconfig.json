@@ -1,0 +1,30 @@
+{
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "vite/client"],
+
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "paths": {
+      "@/integrations/supabase/types": ["./src/integrations/supabase/types.loose.ts"],
+      "@/integrations/supabase/client": ["./src/integrations/supabase/client.loose.ts"],
+      "@/integrations/supabase/client.server": ["./src/integrations/supabase/client.server.loose.ts"],
+      "@/*": ["./src/*"]
+    }
+  }
+}

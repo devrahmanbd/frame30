@@ -1,0 +1,214 @@
+{
+  "title": "Framique — Treasury & provider rails (Phase 4)",
+  "uid": "framique-treasury",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["framique", "treasury", "payouts", "phase-4"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "Payouts — money leaving the platform", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "stat",
+      "title": "Payout requests / hr",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_payout_request_total{outcome=\"ok\"}[1h])) * 3600", "legendFormat": "accepted" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 } }
+    },
+    {
+      "type": "gauge",
+      "title": "Rejected request share",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_payout_request_total{outcome!=\"ok\"}[30m])) / clamp_min(sum(rate(framique_payout_request_total[30m])), 0.001)",
+          "legendFormat": "rejected"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.2 },
+              { "color": "red", "value": 0.5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Payout state transitions",
+      "gridPos": { "h": 9, "w": 16, "x": 8, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum by (to, outcome) (rate(framique_payout_transition_total[5m]))",
+          "legendFormat": "{{to}} / {{outcome}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "stat",
+      "title": "Illegal transitions (FSM deny)",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 6 },
+      "description": "A non-zero rate means something tried to move a payout out of a terminal state — double-settle pressure.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(increase(framique_payout_transition_total{outcome=\"rejected\"}[1h]))", "legendFormat": "rejected/hr" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Amount disbursed (minor units, p50 / p95)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by (le, method) (rate(framique_payout_amount_minor_bucket[1h])))",
+          "legendFormat": "p50 {{method}}"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, method) (rate(framique_payout_amount_minor_bucket[1h])))",
+          "legendFormat": "p95 {{method}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Four-eyes decisions",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "description": "approve_partial means one signature is banked and the instruction is still waiting for the second.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum by (decision) (rate(framique_payout_decision_total[15m]))",
+          "legendFormat": "{{decision}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    { "type": "row", "title": "Disbursement worker", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 } },
+    {
+      "type": "timeseries",
+      "title": "Worker outcomes",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum by (outcome) (rate(framique_payout_worker_total[10m]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "stat",
+      "title": "Minutes since last successful disbursement",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "time() - max(framique_payout_worker_last_success_timestamp_seconds)", "legendFormat": "age" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "type": "stat",
+      "title": "Deferred — no live rail",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 19 },
+      "description": "Instructions parked because the merchant has no approved provider credential (§4.1 gate).",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(increase(framique_payout_worker_total{outcome=\"deferred\"}[6h]))", "legendFormat": "deferred/6h" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    { "type": "row", "title": "Provider sign-off gate (§4.1)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 } },
+    {
+      "type": "timeseries",
+      "title": "Credential submissions and decisions",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_provider_submit_total[30m]))", "legendFormat": "submit {{outcome}}" },
+        {
+          "expr": "sum by (to) (rate(framique_provider_transition_total[30m]))",
+          "legendFormat": "state {{to}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Gateway secret writes (A5)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+      "description": "Every write to a live MFS credential. A burst here is either a rotation or an intrusion — it should always be explainable.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum by (provider) (increase(framique_provider_secret_writes_total[1h]))",
+          "legendFormat": "{{provider}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    { "type": "row", "title": "Currency gate and FX (§4.1)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 } },
+    {
+      "type": "timeseries",
+      "title": "USD pilot gate decisions",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 37 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum by (outcome) (rate(framique_currency_gate_total[30m]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "FX rate refresh",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 37 },
+      "description": "A stale FX table silently misprices every USD order.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_fx_total[1h]))", "legendFormat": "{{outcome}}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    }
+  ]
+}

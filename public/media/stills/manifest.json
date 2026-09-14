@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-08-16T14:54:26.859Z",
+  "base": "http://localhost:8080",
+  "dpr": 2,
+  "stills": [
+    {
+      "id": "storefront-mobile",
+      "files": [
+        {
+          "format": "avif",
+          "bytes": 29806
+        },
+        {
+          "format": "webp",
+          "bytes": 56852
+        },
+        {
+          "format": "png",
+          "bytes": 199357
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "id": "admin-orders",
+      "reason": "no session available for an admin capture"
+    },
+    {
+      "id": "admin-builder",
+      "reason": "no session available for an admin capture"
+    },
+    {
+      "id": "admin-payments",
+      "reason": "no session available for an admin capture"
+    },
+    {
+      "id": "admin-fulfilment",
+      "reason": "no session available for an admin capture"
+    },
+    {
+      "id": "admin-customers",
+      "reason": "no session available for an admin capture"
+    },
+    {
+      "id": "admin-security",
+      "reason": "no session available for an admin capture"
+    }
+  ]
+}

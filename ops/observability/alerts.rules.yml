@@ -1,0 +1,676 @@
+# Alert rules for the ad-fraud pipeline and the wider request surface.
+#
+# Every rule is written against the aggregated fleet (sum by ... rate) because
+# individual isolates are ephemeral. Thresholds are deliberately conservative:
+# an alert that fires every night is an alert nobody reads.
+groups:
+  - name: framique-ad-fraud
+    interval: 30s
+    rules:
+      - alert: AdClickIngestErrors
+        expr: |
+          sum(rate(framique_ad_click_rejected_total{reason="ingest_failed"}[5m]))
+            / clamp_min(sum(rate(framique_ad_clicks_total[5m])), 0.001) > 0.02
+        for: 10m
+        labels: { severity: critical, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-click-ingest-errors"
+          summary: "Ad click ingest failing (>2% of beacons)"
+          description: "Server-side failures in /api/public/ads/click. Check Sentry scope=ads.click."
+
+      - alert: AdClickBeaconAbuseSpike
+        expr: |
+          sum(rate(framique_ad_click_rejected_total{reason=~"invalid_signature|origin_not_allowed|stale_timestamp|invalid_nonce"}[5m])) > 20
+        for: 10m
+        labels: { severity: warning, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-click-beacon-abuse-spike"
+          summary: "Sustained rejected ad beacons"
+          description: "Someone is replaying or forging click beacons. Inspect the ad defense desk."
+
+      - alert: AdClickIngestSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(framique_ad_ingest_ms_bucket[10m]))) > 1500
+        for: 15m
+        labels: { severity: warning, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-click-ingest-slow"
+          summary: "p95 ad ingest latency above 1.5s"
+
+      - alert: AdInvalidClickShareHigh
+        expr: |
+          sum(rate(framique_ad_clicks_total{verdict="invalid"}[30m]))
+            / clamp_min(sum(rate(framique_ad_clicks_total[30m])), 0.001) > 0.35
+        for: 30m
+        labels: { severity: warning, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-invalid-click-share-high"
+          summary: "Over a third of ad clicks scored invalid"
+          description: "Either a live click-fraud attack or a scoring regression. Compare true vs reported CPC."
+
+      - alert: AdFraudSweepStalled
+        expr: time() - max(framique_ad_last_sweep_timestamp) > 7200
+        for: 15m
+        labels: { severity: critical, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-fraud-sweep-stalled"
+          summary: "Ad-fraud sweep has not completed in 2 hours"
+          description: "Integrity rollups are going stale; blocklist entries are not expiring."
+
+      - alert: AdFraudCronFailing
+        expr: sum(rate(framique_ad_cron_runs_total{outcome="error"}[15m])) > 0
+        for: 15m
+        labels: { severity: critical, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-fraud-cron-failing"
+          summary: "Ad-fraud cron erroring"
+
+      - alert: BeaconReplayConflicts
+        expr: sum(rate(framique_idempotency_total{route="ads.click",outcome="conflict"}[10m])) > 1
+        for: 10m
+        labels: { severity: warning, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#beacon-replay-conflicts"
+          summary: "Idempotency-key conflicts on the click beacon"
+          description: "Same key, different body — a buggy SDK or a tampered replay."
+
+  - name: framique-platform
+    interval: 30s
+    rules:
+      - alert: HttpServerErrors
+        expr: |
+          sum by (route) (rate(framique_http_requests_total{status="5xx"}[5m]))
+            / clamp_min(sum by (route) (rate(framique_http_requests_total[5m])), 0.001) > 0.05
+        for: 10m
+        labels: { severity: critical }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#http-server-errors"
+          summary: "{{ $labels.route }} returning >5% 5xx"
+
+      - alert: SpanErrorRate
+        expr: |
+          sum by (span) (rate(framique_span_total{outcome="error"}[10m]))
+            / clamp_min(sum by (span) (rate(framique_span_total[10m])), 0.001) > 0.1
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#span-error-rate"
+          summary: "{{ $labels.span }} failing more than 10% of the time"
+
+      - alert: SentryTransportFailing
+        expr: sum(rate(framique_sentry_events_total{outcome!~"sent|budgeted"}[15m])) > 0.2
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#sentry-transport-failing"
+          summary: "Errors are not reaching Sentry"
+          description: "Observability blind spot: the DSN, quota or egress path is broken."
+
+      - alert: MetricCardinalityDropping
+        expr: max(framique_metrics_dropped_series) > 0
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#metric-cardinality-dropping"
+          summary: "Metric series cap reached; some series are being dropped"
+
+  # ------------------------------------------------------------------ §4.4
+  # Queue latency, dead letters and search failover. These page on *impact*
+  # (work not draining, shoppers on degraded search), never on raw depth —
+  # a deep queue that is draining fast is healthy and must not wake anyone.
+  - name: framique-infrastructure
+    rules:
+      - alert: QueueHeadStalled
+        expr: max by (queue) (framique_queue_oldest_age_seconds) > 900
+        for: 10m
+        labels: { severity: critical }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#queue-head-stalled"
+          summary: "{{ $labels.queue }} head-of-line wait over 15 minutes"
+          description: "Oldest queued job is not being claimed. Check worker leases and the /api/public/cron/jobs drain."
+
+      - alert: QueueHeadSlow
+        expr: max by (queue) (framique_queue_oldest_age_seconds) > 300
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#queue-head-slow"
+          summary: "{{ $labels.queue }} is falling behind (>5m head wait)"
+
+      - alert: QueueUnhealthy
+        expr: max by (queue) (framique_queue_health) >= 2
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#queue-unhealthy"
+          summary: "{{ $labels.queue }} reported stalled/failing by the queue judge"
+
+      - alert: QueueBacklogGrowing
+        expr: |
+          sum by (queue) (framique_queue_depth{state="queued"}) > 1000
+            and deriv(sum by (queue) (framique_queue_depth{state="queued"})[15m:1m]) > 0
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#queue-backlog-growing"
+          summary: "{{ $labels.queue }} backlog above 1k and still growing"
+          description: "Depth alone is not an alert; this fires only because the trend is upward, i.e. arrival rate beats drain rate."
+
+      - alert: DeadLetterRateHigh
+        expr: |
+          sum by (queue) (rate(framique_jobs_completed_total{outcome="dead"}[15m]))
+            / clamp_min(sum by (queue) (rate(framique_jobs_completed_total[15m])), 0.001) > 0.02
+        for: 15m
+        labels: { severity: critical }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#dead-letter-rate-high"
+          summary: "{{ $labels.queue }} dead-lettering >2% of jobs"
+          description: "Retries are exhausting. Inspect the DLQ at /admin/settings/infrastructure and replay after fixing the handler."
+
+      - alert: DeadLetterAppeared
+        expr: increase(framique_jobs_completed_total{outcome="dead"}[1h]) > 0
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#dead-letter-appeared"
+          summary: "New dead-letter jobs on {{ $labels.queue }}"
+
+      - alert: JobDurationP95High
+        expr: |
+          histogram_quantile(0.95, sum by (le, queue) (rate(framique_job_duration_ms_bucket[10m]))) > 30000
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#job-duration-p95-high"
+          summary: "{{ $labels.queue }} p95 job duration above 30s"
+          description: "Long handlers risk exceeding the visibility timeout and being redelivered, causing duplicate work."
+
+      - alert: SearchBreakerOpen
+        expr: sum(framique_search_breaker_open) > 0
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#search-breaker-open"
+          summary: "Search circuit breaker open for {{ $value }} merchant(s)"
+          description: "Shoppers are on the Postgres fallback. Check the external engine host, key and quota."
+
+      - alert: SearchBreakerFlapping
+        expr: sum by (engine) (increase(framique_search_breaker_trips_total[1h])) > 3
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#search-breaker-flapping"
+          summary: "{{ $labels.engine }} breaker tripped more than 3 times in an hour"
+          description: "Half-open probes keep failing; the engine is unstable rather than simply down."
+
+      - alert: SearchFallbackShareHigh
+        expr: |
+          sum(rate(framique_search_total{outcome="breaker_open"}[15m]))
+            / clamp_min(sum(rate(framique_search_total[15m])), 0.001) > 0.25
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#search-fallback-share-high"
+          summary: "Over 25% of searches served by the degraded fallback"
+
+      - alert: StorefrontSearchErrors
+        expr: |
+          sum(rate(framique_storefront_search_total{outcome="error"}[10m]))
+            / clamp_min(sum(rate(framique_storefront_search_total[10m])), 0.001) > 0.02
+        for: 10m
+        labels: { severity: critical }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#storefront-search-errors"
+          summary: "Storefront search failing for shoppers"
+
+      - alert: ImageTransformSignatureAbuse
+        expr: sum(rate(framique_image_transform_total{outcome="bad_signature"}[10m])) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#image-transform-signature-abuse"
+          summary: "Sustained forged image transform URLs"
+          description: "Someone is probing the resizer. Signing is holding, but confirm the ladder and host allowlist."
+
+  # ---------------------------------------------------------------------------
+  # Phase 2 — commerce. Money-shaped alerts: a burn rate here is revenue leaving.
+  # ---------------------------------------------------------------------------
+  - name: framique-commerce
+    interval: 30s
+    rules:
+      - alert: RefundBurnRateFast
+        expr: |
+          sum(rate(framique_refund_total{outcome=~"requested|succeeded"}[1h]))
+            / clamp_min(sum(rate(framique_orders_total{outcome="created"}[1h])), 0.001) > 0.15
+        for: 30m
+        labels: { severity: page, team: commerce, slo: refund-rate }
+        annotations:
+          summary: "Refunds above 15% of orders (1h burn)"
+          description: "Either a fulfilment failure, a pricing bug or refund abuse. Check the commerce desk before it compounds."
+          runbook: "docs/14-operations/backup-restore.md"
+
+      - alert: RefundBurnRateSlow
+        expr: |
+          sum(rate(framique_refund_total{outcome=~"requested|succeeded"}[6h]))
+            / clamp_min(sum(rate(framique_orders_total{outcome="created"}[6h])), 0.001) > 0.08
+        for: 2h
+        labels: { severity: ticket, team: commerce, slo: refund-rate }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#refund-burn-rate-slow"
+          summary: "Refunds above 8% of orders sustained over 6h"
+
+      - alert: RefundRejectionSpike
+        expr: sum(rate(framique_refund_total{outcome=~"rejected|advance_rejected"}[15m])) > 0.05
+        for: 15m
+        labels: { severity: ticket, team: commerce }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#refund-rejection-spike"
+          summary: "Refund attempts being rejected"
+          description: "Step-up, ledger guard or gateway is refusing refunds. Merchants cannot make customers whole."
+
+      - alert: OrderCreationFailing
+        expr: |
+          sum(rate(framique_orders_total{outcome="failed"}[10m]))
+            / clamp_min(sum(rate(framique_orders_total[10m])), 0.001) > 0.05
+        for: 10m
+        labels: { severity: page, team: commerce, slo: checkout }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#order-creation-failing"
+          summary: "Over 5% of checkout attempts failing"
+
+      - alert: GiftCardRedemptionErrors
+        expr: sum(rate(framique_gift_card_redeem_total{outcome="error"}[15m])) > 0.02
+        for: 15m
+        labels: { severity: ticket, team: commerce }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#gift-card-redemption-errors"
+          summary: "Gift-card redemptions erroring"
+          description: "Customers hold balance they cannot spend. Check the gift-card ledger and entry uniqueness."
+
+      - alert: GiftCardLiabilityDrainSpike
+        expr: |
+          sum(rate(framique_gift_card_redeem_total{outcome="redeemed"}[1h]))
+            > 5 * clamp_min(sum(rate(framique_gift_card_issued_total[24h])), 0.001)
+        for: 1h
+        labels: { severity: ticket, team: finance }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#gift-card-liability-drain-spike"
+          summary: "Gift-card redemption far outpacing issuance"
+          description: "Possible code enumeration or a duplicated redemption path. Reconcile gift_card_entries against the ledger."
+
+      - alert: FulfilmentBacklogGrowing
+        expr: |
+          sum(rate(framique_fulfilment_total[6h]))
+            - sum(rate(framique_fulfilment_state_total{status="delivered"}[6h])) > 0.02
+        for: 2h
+        labels: { severity: ticket, team: ops }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#fulfilment-backlog-growing"
+          summary: "Fulfilments being created faster than they are delivered"
+          description: "Fulfilment lag is widening; check courier adapters and the courier DLQ."
+
+      - alert: ReturnsDisputesSurge
+        expr: sum(rate(framique_dispute_total{outcome="opened"}[6h])) > 0.01
+        for: 1h
+        labels: { severity: ticket, team: commerce }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#returns-disputes-surge"
+          summary: "Dispute volume elevated"
+
+  # ---------------------------------------------------------------------------
+  # Phase 2 — outbound webhooks / dead letters.
+  # ---------------------------------------------------------------------------
+  - name: framique-webhooks
+    interval: 30s
+    rules:
+      - alert: WebhookDeadLetterBurnRateFast
+        expr: |
+          sum(rate(framique_webhook_delivery_total{outcome="dead"}[1h]))
+            / clamp_min(sum(rate(framique_webhook_delivery_total[1h])), 0.001) > 0.05
+        for: 15m
+        labels: { severity: page, team: platform, slo: webhook-delivery }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#webhook-dead-letter-burn-rate-fast"
+          summary: "Over 5% of webhook deliveries dead-lettering (1h)"
+          description: "Merchant integrations are losing events. Inspect the DLQ console and replay after the cause is fixed."
+
+      - alert: WebhookDeadLetterBurnRateSlow
+        expr: |
+          sum(rate(framique_webhook_delivery_total{outcome="dead"}[6h]))
+            / clamp_min(sum(rate(framique_webhook_delivery_total[6h])), 0.001) > 0.02
+        for: 2h
+        labels: { severity: ticket, team: platform, slo: webhook-delivery }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#webhook-dead-letter-burn-rate-slow"
+          summary: "Webhook dead-letter rate above 2% sustained over 6h"
+
+      - alert: WebhookDeliveryFailing
+        expr: |
+          sum(rate(framique_webhook_delivery_total{outcome="failed"}[15m]))
+            / clamp_min(sum(rate(framique_webhook_delivery_total[15m])), 0.001) > 0.2
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#webhook-delivery-failing"
+          summary: "One in five webhook deliveries failing"
+
+  # ---------------------------------------------------------------------------
+  # Phase 3 — developer platform. This is the surface external developers hit.
+  # ---------------------------------------------------------------------------
+  - name: framique-developer-platform
+    interval: 30s
+    rules:
+      - alert: ApiErrorBudgetBurnFast
+        expr: |
+          sum(rate(framique_api_request_total{status=~"5.."}[1h]))
+            / clamp_min(sum(rate(framique_api_request_total[1h])), 0.001) > 0.02
+        for: 10m
+        labels: { severity: page, team: platform, slo: rest-api-availability }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#api-error-budget-burn-fast"
+          summary: "REST API 5xx above 2% (1h burn)"
+
+      - alert: ApiErrorBudgetBurnSlow
+        expr: |
+          sum(rate(framique_api_request_total{status=~"5.."}[6h]))
+            / clamp_min(sum(rate(framique_api_request_total[6h])), 0.001) > 0.005
+        for: 2h
+        labels: { severity: ticket, team: platform, slo: rest-api-availability }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#api-error-budget-burn-slow"
+          summary: "REST API 5xx above 0.5% sustained over 6h"
+
+      - alert: ApiLatencyP95High
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(framique_api_request_ms_bucket[15m]))) > 1200
+        for: 15m
+        labels: { severity: ticket, team: platform, slo: rest-api-latency }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#api-latency-p95-high"
+          summary: "REST API p95 above 1.2s"
+
+      - alert: ApiRouteErrorConcentration
+        expr: |
+          sum by (route) (rate(framique_api_request_total{status=~"5.."}[15m])) > 0.05
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#api-route-error-concentration"
+          summary: "Route {{ $labels.route }} is erroring for API clients"
+
+      - alert: ApiThrottlingHigh
+        expr: |
+          sum(rate(framique_api_request_total{status="429"}[15m]))
+            / clamp_min(sum(rate(framique_api_request_total[15m])), 0.001) > 0.1
+        for: 20m
+        labels: { severity: info, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#api-throttling-high"
+          summary: "More than 10% of API calls throttled"
+          description: "Either an abusive client or limits set too tight for a legitimate integration."
+
+      - alert: OAuthRefreshTokenReuseDetected
+        expr: sum(increase(framique_oauth_token_total{action="reuse_detected"}[5m])) > 0
+        for: 0m
+        labels: { severity: page, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#o-auth-refresh-token-reuse-detected"
+          summary: "OAuth refresh-token reuse detected — a token family was revoked"
+          description: "A rotated or revoked refresh token was presented. Treat as a leaked credential: check the client, the audit trail and recent token issuance."
+
+      - alert: OAuthAuthorizationCodeReplay
+        expr: sum(rate(framique_oauth_code_total{outcome="replay"}[15m])) > 0
+        for: 10m
+        labels: { severity: ticket, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#o-auth-authorization-code-replay"
+          summary: "Authorization codes being replayed"
+
+  # ---------------------------------------------------------------------------
+  # Phase 3 — ecosystem, AI containment and custom domains.
+  # ---------------------------------------------------------------------------
+  - name: framique-ecosystem-ai
+    interval: 30s
+    rules:
+      - alert: AiGuardrailBlockFired
+        expr: sum(increase(framique_ai_guardrail_total[5m])) > 0
+        for: 0m
+        labels: { severity: page, team: security }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ai-guardrail-block-fired"
+          summary: "AI guardrail blocked an output ({{ $labels.kind }} / {{ $labels.rule }})"
+          description: "The assistant attempted a cross-tenant read or claimed price/refund authority. Containment held — inspect ai_guardrail_events for the prompt."
+
+      - alert: AiAskErrorRateHigh
+        expr: |
+          sum(rate(framique_ai_ask_total{outcome=~"error|rate_limited"}[15m]))
+            / clamp_min(sum(rate(framique_ai_ask_total[15m])), 0.001) > 0.1
+        for: 15m
+        labels: { severity: ticket, team: support }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ai-ask-error-rate-high"
+          summary: "Over 10% of assistant answers failing or throttled"
+
+      - alert: AiToolLatencyP95High
+        expr: histogram_quantile(0.95, sum by (le) (rate(framique_ai_tool_latency_ms_bucket[15m]))) > 8000
+        for: 15m
+        labels: { severity: info, team: support }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ai-tool-latency-p95-high"
+          summary: "AI tool-call p95 above 8s"
+
+      - alert: MarketplacePayoutSettleErrors
+        expr: sum(rate(framique_market_payout_total{action="error"}[1h])) > 0
+        for: 30m
+        labels: { severity: ticket, team: finance }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#marketplace-payout-settle-errors"
+          summary: "Creator payout settlement erroring"
+
+      - alert: AnalyticsEtlStalled
+        expr: sum(rate(framique_analytics_etl_total{outcome="committed"}[1h])) == 0
+        for: 2h
+        labels: { severity: ticket, team: data }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#analytics-etl-stalled"
+          summary: "Analytics ETL has committed no batches in 2 hours"
+          description: "Merchant analytics, cohorts and scheduled reports are going stale."
+
+      - alert: AnalyticsEtlGapDetected
+        expr: sum(increase(framique_analytics_etl_total{outcome="gap"}[1h])) > 0
+        for: 15m
+        labels: { severity: ticket, team: data }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#analytics-etl-gap-detected"
+          summary: "Analytics ETL detected an event gap"
+
+      - alert: AnalyticsConversionDeliveryFailing
+        expr: |
+          sum(rate(framique_analytics_conversion_total{outcome="failed"}[1h]))
+            / clamp_min(sum(rate(framique_analytics_conversion_total[1h])), 0.001) > 0.1
+        for: 30m
+        labels: { severity: ticket, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#analytics-conversion-delivery-failing"
+          summary: "Server-side conversion events failing to reach {{ $labels.provider }}"
+          description: "Attribution integrity is degrading; ad spend will be optimised against a partial signal."
+
+      - alert: SupportSlaSweepStalled
+        expr: sum(rate(framique_support_sweep_total[2h])) == 0
+        for: 3h
+        labels: { severity: info, team: support }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#support-sla-sweep-stalled"
+          summary: "Support SLA sweep has not run in 3 hours"
+
+  - name: framique-domains
+    interval: 30s
+    rules:
+      - alert: DomainCertIssuanceFailing
+        expr: |
+          sum(rate(framique_domain_cert_total{outcome="error"}[1h]))
+            / clamp_min(sum(rate(framique_domain_cert_total[1h])), 0.001) > 0.2
+        for: 30m
+        labels: { severity: page, team: platform, slo: custom-domains }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#domain-cert-issuance-failing"
+          summary: "Custom-domain certificate issuance failing"
+          description: "Merchant storefronts will serve TLS errors as certificates expire. Check the ACME http-01 responder and the edge callback HMAC."
+
+      - alert: DomainCertRequestErrors
+        expr: sum(rate(framique_domain_cert_request_total{outcome="error"}[30m])) > 0
+        for: 30m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#domain-cert-request-errors"
+          summary: "ACME certificate requests erroring"
+
+      - alert: DomainRenewSweepStalled
+        expr: sum(rate(framique_domain_sweep_total[6h])) == 0
+        for: 12h
+        labels: { severity: page, team: platform, slo: custom-domains }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#domain-renew-sweep-stalled"
+          summary: "Domain renew sweep has not run in 12 hours"
+          description: "Auto-renew is dead. Certificates will silently expire — this is a whole-storefront outage per merchant."
+
+      - alert: DomainVerificationStalled
+        expr: sum(rate(framique_domain_verify_total{outcome="failed"}[6h])) > 0
+        for: 1h
+        labels: { severity: ticket, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#domain-verification-stalled"
+          summary: "Custom-domain verification stalling for merchants"
+          description: "Onboarding is blocked at DNS verification. Confirm the expected records and the resolver path."
+
+      - alert: DomainDnsLookupErrors
+        expr: |
+          sum(rate(framique_domain_dns_total{outcome="error"}[15m]))
+            / clamp_min(sum(rate(framique_domain_dns_total[15m])), 0.001) > 0.25
+        for: 15m
+        labels: { severity: ticket, team: platform }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#domain-dns-lookup-errors"
+          summary: "DNS-over-HTTPS resolution failing for domain checks"
+
+  # ---------------------------------------------------------------------------
+  # Phase 4 — treasury. Money leaving the platform, the provider sign-off gate
+  # and the FX table that prices USD orders. Every rule here maps to a §4.1
+  # `[A]` line; before these existed the whole surface was emitting into a void.
+  # ---------------------------------------------------------------------------
+  - name: framique-treasury
+    interval: 30s
+    rules:
+      - alert: PayoutIllegalTransition
+        expr: sum(increase(framique_payout_transition_total{outcome="rejected"}[15m])) > 0
+        for: 0m
+        labels: { severity: page, team: security, slo: payout-integrity }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#payout-illegal-transition"
+          summary: "A payout state machine transition was refused"
+          description: "Something attempted to move a payout out of a state it cannot leave — the double-settle guard fired. Treat as an integrity incident: read payout_events for the instruction before clearing."
+
+      - alert: PayoutWorkerStalled
+        expr: sum(rate(framique_payout_worker_total[30m])) == 0
+        for: 2h
+        labels: { severity: page, team: payments, slo: payout-delivery }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#payout-worker-stalled"
+          summary: "Payout disbursement worker has not run in 2 hours"
+          description: "Approved instructions are sitting unpaid. Check the payouts cron route and its shared-secret auth."
+
+      - alert: PayoutFailureRateHigh
+        expr: |
+          sum(rate(framique_payout_worker_total{outcome="failed"}[1h]))
+            / clamp_min(sum(rate(framique_payout_worker_total[1h])), 0.001) > 0.1
+        for: 30m
+        labels: { severity: page, team: payments, slo: payout-delivery }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#payout-failure-rate-high"
+          summary: "More than 10% of payout attempts are exhausting their retries"
+          description: "Merchants are not being paid. Inspect failure_code on recent payouts and the rail credentials."
+
+      - alert: PayoutBacklogDeferred
+        expr: sum(increase(framique_payout_worker_total{outcome="deferred"}[6h])) > 20
+        for: 1h
+        labels: { severity: ticket, team: payments }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#payout-backlog-deferred"
+          summary: "Payouts repeatedly deferred for want of a live rail"
+          description: "Instructions are parked because no provider credential is approved for those merchants (§4.1 gate). Either finish sign-off or tell the merchants."
+
+      - alert: PayoutRequestRejectionSpike
+        expr: |
+          sum(rate(framique_payout_request_total{outcome!="ok"}[30m]))
+            / clamp_min(sum(rate(framique_payout_request_total[30m])), 0.001) > 0.5
+        for: 30m
+        labels: { severity: ticket, team: payments }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#payout-request-rejection-spike"
+          summary: "Most payout requests are being rejected"
+          description: "Usually a balance-derivation or account-verification regression rather than merchant behaviour."
+
+      - alert: ProviderSecretWriteBurst
+        expr: sum(increase(framique_provider_secret_writes_total[15m])) > 5
+        for: 0m
+        labels: { severity: page, team: security, slo: secret-custody }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#provider-secret-write-burst"
+          summary: "Unusual number of live MFS credential writes"
+          description: "A5 exposure: gateway secrets are being rewritten faster than a planned rotation would. Confirm the actor in provider_credential_events before dismissing."
+
+      - alert: ProviderSubmissionErrors
+        expr: |
+          sum(rate(framique_provider_submit_total{outcome="error"}[30m]))
+            / clamp_min(sum(rate(framique_provider_submit_total[30m])), 0.001) > 0.25
+        for: 30m
+        labels: { severity: ticket, team: payments }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#provider-submission-errors"
+          summary: "Provider credential submissions are erroring"
+
+      - alert: CurrencyGateDenySpike
+        expr: |
+          sum(rate(framique_currency_gate_total{outcome=~"denied|blocked"}[30m]))
+            / clamp_min(sum(rate(framique_currency_gate_total[30m])), 0.001) > 0.3
+        for: 30m
+        labels: { severity: ticket, team: payments }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#currency-gate-deny-spike"
+          summary: "USD pilot gate is denying most requests"
+          description: "Either a pilot flag was revoked or the gate is misreading store currency settings — USD stores will be quoting in the wrong currency."
+
+      - alert: FxRefreshStalled
+        expr: sum(rate(framique_fx_total{outcome="ok"}[6h])) == 0
+        for: 12h
+        labels: { severity: page, team: payments, slo: fx-freshness }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#fx-refresh-stalled"
+          summary: "FX rates have not refreshed in 12 hours"
+          description: "A1 exposure: every USD order is being priced from a stale table. Check the FX refresh job and its upstream feed."
+
+      - alert: FxRefreshErrors
+        expr: sum(rate(framique_fx_total{outcome="error"}[1h])) > 0
+        for: 1h
+        labels: { severity: ticket, team: payments }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#fx-refresh-errors"
+          summary: "FX rate refresh erroring"
+
+      - alert: AdSpendAutoblockSpike
+        expr: sum(increase(framique_ad_autoblocks_total[1h])) > 25
+        for: 0m
+        labels: { severity: ticket, team: growth, slo: ad-integrity }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-spend-autoblock-spike"
+          summary: "Ad-fraud engine is auto-blocking at an unusual rate"
+          description: "Each autoblock cuts a source off a merchant's paid traffic. A spike is either a real click-fraud wave or a scoring regression — confirm against ad_integrity_days before letting it run."
+
+      - alert: AdSpendAutoblockDead
+        expr: sum(rate(framique_ad_clicks_total[6h])) > 0 and sum(rate(framique_ad_autoblocks_total[24h])) == 0
+        for: 24h
+        labels: { severity: ticket, team: growth }
+        annotations:
+          runbook: "docs/14-operations/runbooks.md#ad-spend-autoblock-dead"
+          summary: "Ad-fraud engine has blocked nothing in 24 hours while clicks flow"
+          description: "The moat is probably disabled. Verify blocklist writes and the ad-fraud sweep."

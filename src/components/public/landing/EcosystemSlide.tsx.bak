@@ -1,0 +1,393 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  Smartphone,
+  CreditCard,
+  Banknote,
+  Truck,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLang } from "@/lib/i18n";
+import { useMotionIntent } from "@/lib/motion-runtime";
+
+export type PartnerCard = {
+  id: string;
+  name: string;
+  nameBn: string;
+  category: "mfs" | "card" | "cod" | "courier";
+  categoryLabel: string;
+  categoryLabelBn: string;
+  tagline: string;
+  taglineBn: string;
+  feature: string;
+  featureBn: string;
+  type: "payment" | "courier";
+};
+
+const PARTNERS: readonly PartnerCard[] = [
+  {
+    id: "bkash",
+    name: "bKash Direct",
+    nameBn: "বিকাশ ডিরেক্ট",
+    category: "mfs",
+    categoryLabel: "Mobile Banking",
+    categoryLabelBn: "মোবাইল ব্যাংকিং",
+    tagline: "Instant merchant settlement with tokenized 1-tap checkout.",
+    taglineBn: "স্টোরফ্রন্টেই ওয়ান-ট্যাপ বিকাশ পেমেন্ট ও সরাসরি সেটেলমেন্ট।",
+    feature: "0.3s Direct settlement",
+    featureBn: "০.৩ সেকেন্ডে সরাসরি সেটেলমেন্ট",
+    type: "payment",
+  },
+  {
+    id: "nagad",
+    name: "Nagad Commerce",
+    nameBn: "নগদ কমার্স",
+    category: "mfs",
+    categoryLabel: "Mobile Banking",
+    categoryLabelBn: "মোবাইল ব্যাংকিং",
+    tagline: "Nationwide mobile money gateway with automatic reconciliation.",
+    taglineBn: "ডাক বিভাগের ডিজিটাল লেনদেন ও স্বয়ংক্রিয় রিকনসিলিয়েশন।",
+    feature: "Auto-reconciled ledger",
+    featureBn: "স্বয়ংক্রিয় হিসাব সমন্বয়",
+    type: "payment",
+  },
+  {
+    id: "steadfast",
+    name: "SteadFast Courier",
+    nameBn: "স্টেডফাস্ট কুরিয়ার",
+    category: "courier",
+    categoryLabel: "Express Logistics",
+    categoryLabelBn: "এক্সপ্রেস কুরিয়ার",
+    tagline: "1-click consignment booking, pickup, and bulk label printing.",
+    taglineBn: "এক ক্লিকে বুকিং, পার্সেল পিকআপ এবং বাল্ক লেবেল প্রিন্টিং।",
+    feature: "1-Click API dispatch",
+    featureBn: "১-ক্লিকে অটোমেটেড বুকিং",
+    type: "courier",
+  },
+  {
+    id: "pathao",
+    name: "Pathao Courier",
+    nameBn: "পাঠাও কুরিয়ার",
+    category: "courier",
+    categoryLabel: "Metro & Express",
+    categoryLabelBn: "মেট্রো ও এক্সপ্রেস",
+    tagline: "On-demand city express and nationwide parcel delivery with live GPS.",
+    taglineBn: "দ্রুততম সিটি এক্সপ্রেস এবং লাইভ ট্র্যাকিংসহ পার্সেল ডেলিভারি।",
+    feature: "Same-day metro dispatch",
+    featureBn: "সেম-ডে মেট্রো ডেলিভারি",
+    type: "courier",
+  },
+  {
+    id: "visa",
+    name: "Visa Cards",
+    nameBn: "ভিসা কার্ড",
+    category: "card",
+    categoryLabel: "Cards & Banking",
+    categoryLabelBn: "কার্ড পেমেন্ট",
+    tagline: "Accept all local and global Visa debit and credit cards securely.",
+    taglineBn: "সকল দেশি ও আন্তর্জাতিক ভিসা ডেবিট-ক্রেডিট কার্ড গ্রহণ করুন।",
+    feature: "3D Secure 2.0 verified",
+    featureBn: "৩ডি সিকিউর ২.০ ভেরিফাইড",
+    type: "payment",
+  },
+  {
+    id: "mastercard",
+    name: "Mastercard",
+    nameBn: "মাস্টারকার্ড",
+    category: "card",
+    categoryLabel: "Cards & Banking",
+    categoryLabelBn: "কার্ড পেমেন্ট",
+    tagline: "Full local and international credit and debit card processing.",
+    taglineBn: "স্থানীয় ও আন্তর্জাতিক মাস্টারকার্ডে নিরাপদ পেমেন্ট সুবিধা।",
+    feature: "Global card checkout",
+    featureBn: "গ্লোবাল কার্ড প্রসেসিং",
+    type: "payment",
+  },
+  {
+    id: "cod",
+    name: "Cash on Delivery",
+    nameBn: "ক্যাশ অন ডেলিভারি (COD)",
+    category: "cod",
+    categoryLabel: "Doorstep Cash",
+    categoryLabelBn: "ডোরস্টেপ ক্যাশ",
+    tagline: "Integrated doorstep collection backed by Framique Fraud Shield.",
+    taglineBn: "অন্তর্নির্মিত ক্যাশ অন ডেলিভারি এবং রিয়েল-টাইম ফ্রড শিল্ড।",
+    feature: "COD Fraud Shield verified",
+    featureBn: "সিওডি ফ্রড শিল্ড সুরক্ষিত",
+    type: "payment",
+  },
+  {
+    id: "rocket",
+    name: "DBBL Rocket",
+    nameBn: "রকেট (DBBL)",
+    category: "mfs",
+    categoryLabel: "Mobile Banking",
+    categoryLabelBn: "মোবাইল ব্যাংকিং",
+    tagline: "Dutch-Bangla Bank mobile wallet with direct merchant transfers.",
+    taglineBn: "ডাচ-বাংলা ব্যাংকের নিরাপদ মোবাইল ওয়ালেট ও ডিরেক্ট ডিপোজিট।",
+    feature: "Direct bank deposit",
+    featureBn: "সরাসরি ব্যাংক ডিপোজিট",
+    type: "payment",
+  },
+  {
+    id: "redx",
+    name: "RedX Logistics",
+    nameBn: "রেডএক্স লজিস্টিকস",
+    category: "courier",
+    categoryLabel: "Nationwide Hubs",
+    categoryLabelBn: "দেশব্যাপী হাব",
+    tagline: "Extensive district network with automated return and exchange handling.",
+    taglineBn: "৬৪ জেলায় বিস্তৃত নেটওয়ার্ক ও স্বয়ংক্রিয় রিটার্ন সুবিধা।",
+    feature: "Automated reverse pickup",
+    featureBn: "অটোমেটেড রিটার্ন পিকআপ",
+    type: "courier",
+  },
+  {
+    id: "upay",
+    name: "Upay FinTech",
+    nameBn: "উপায় (UCB)",
+    category: "mfs",
+    categoryLabel: "Mobile Banking",
+    categoryLabelBn: "মোবাইল ব্যাংকিং",
+    tagline: "UCB digital wallet for smooth QR code and app checkout.",
+    taglineBn: "ইউসিবি ব্যাংকের ডিজিটাল ওয়ালেট ও কিউআর পেমেন্ট সুবিধা।",
+    feature: "Low settlement friction",
+    featureBn: "সহজ ও দ্রুত সেটেলমেন্ট",
+    type: "payment",
+  },
+  {
+    id: "paperfly",
+    name: "Paperfly Delivery",
+    nameBn: "পেপারফ্লাই ডেলিভারি",
+    category: "courier",
+    categoryLabel: "Union Reach",
+    categoryLabelBn: "ইউনিয়ন নেটওয়ার্ক",
+    tagline: "Deepest doorstep coverage reaching upazilas and remote unions.",
+    taglineBn: "উপজেলা ও প্রত্যন্ত ইউনিয়ন পর্যন্ত ডোরস্টেপ ক্যাশ কালেকশন।",
+    feature: "64 Districts & Union reach",
+    featureBn: "৬৪ জেলা ও ইউনিয়ন কভারেজ",
+    type: "courier",
+  },
+];
+
+type CategoryFilter = "all" | "payment" | "courier";
+
+export function EcosystemSlide({ className }: { className?: string }) {
+  const { t } = useLang();
+  const intent = useMotionIntent();
+  const animated = intent === "full";
+  const [filter, setFilter] = useState<CategoryFilter>("all");
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+
+  const displayedPartners =
+    filter === "all"
+      ? PARTNERS
+      : PARTNERS.filter((p) => p.type === filter);
+
+  // Duplicate for seamless infinite slide loop
+  const slideItems = [...displayedPartners, ...displayedPartners];
+
+  const scrollBy = (offset: number) => {
+    if (!scrollerRef.current) return;
+    scrollerRef.current.scrollBy({ left: offset, behavior: "smooth" });
+  };
+
+  function getCategoryIcon(category: PartnerCard["category"]) {
+    switch (category) {
+      case "mfs":
+        return <Smartphone className="size-4" aria-hidden="true" />;
+      case "card":
+        return <CreditCard className="size-4" aria-hidden="true" />;
+      case "cod":
+        return <Banknote className="size-4" aria-hidden="true" />;
+      case "courier":
+        return <Truck className="size-4" aria-hidden="true" />;
+    }
+  }
+
+  return (
+    <div
+      className={cn(
+        "relative rounded-fq-lg border border-border/80 bg-card/60 p-5 sm:p-7 backdrop-blur-sm shadow-sm overflow-hidden",
+        className,
+      )}
+    >
+      {/* 1. Header & Controls */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex size-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+              {t("Commerce Ecosystem", "বাণিজ্য নেটওয়ার্ক")}
+            </span>
+          </div>
+          <h2 className="fq-display text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            {t(
+              "Payment methods and couriers your customers already trust",
+              "আপনার গ্রাহকদের পরিচিত পেমেন্ট মাধ্যম ও বিশ্বস্ত কুরিয়ার",
+            )}
+          </h2>
+          <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            {t(
+              "Direct merchant accounts. Your funds settle directly into your bank or MFS account with zero platform escrow delay, while couriers book in one click.",
+              "সরাসরি মার্চেন্ট অ্যাকাউন্ট। কোনো এসক্রো ঝামেলা ছাড়াই পেমেন্ট ঢুকবে আপনার ব্যাংক বা এমএফএসে, সাথে ওয়ান-ক্লিক কুরিয়ার বুকিং।",
+            )}
+          </p>
+        </div>
+
+        {/* Filter Pills & Manual Step Buttons */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="flex items-center rounded-fq-md border border-border bg-muted/40 p-0.5 text-xs font-medium">
+            <button
+              type="button"
+              onClick={() => setFilter("all")}
+              className={cn(
+                "rounded-fq-sm px-2.5 py-1 transition-all",
+                filter === "all"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t("All (11)", "সকল (১১)")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilter("payment")}
+              className={cn(
+                "rounded-fq-sm px-2.5 py-1 transition-all",
+                filter === "payment"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t("Payments (7)", "পেমেন্ট (৭)")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilter("courier")}
+              className={cn(
+                "rounded-fq-sm px-2.5 py-1 transition-all",
+                filter === "courier"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t("Couriers (4)", "কুরিয়ার (৪)")}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => scrollBy(-300)}
+              aria-label={t("Scroll slide left", "বাম দিকে স্লাইড করুন")}
+              className="inline-flex size-8 items-center justify-center rounded-fq-md border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+            >
+              <ChevronLeft className="size-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(300)}
+              aria-label={t("Scroll slide right", "ডান দিকে স্লাইড করুন")}
+              className="inline-flex size-8 items-center justify-center rounded-fq-md border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+            >
+              <ChevronRight className="size-4" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Slide Viewport with Left and Right Fade Masks */}
+      <div
+        className="relative overflow-hidden group"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={() => setIsPaused(false)}
+      >
+        {/* Left fade gradient */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-card/90 via-card/50 to-transparent z-10" />
+        {/* Right fade gradient */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-card/90 via-card/50 to-transparent z-10" />
+
+        {/* Sliding Track */}
+        <div
+          ref={scrollerRef}
+          tabIndex={0}
+          role="region"
+          aria-label={t("Payment methods and couriers slide", "পেমেন্ট ও কুরিয়ার স্লাইড")}
+          className="flex overflow-x-auto py-2 gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <div
+            className={cn(
+              "flex items-center gap-4 shrink-0",
+              animated && !isPaused && "animate-[fq-marquee_32s_linear_infinite]",
+            )}
+            style={{
+              animationPlayState: isPaused ? "paused" : "running",
+              willChange: "transform",
+            }}
+          >
+            {slideItems.map((partner, index) => (
+              <div
+                key={`${partner.id}-${index}`}
+                className="w-64 sm:w-72 shrink-0 rounded-fq-md border border-border/70 bg-background/80 p-4 transition-all duration-200 hover:border-primary/60 hover:bg-background hover:shadow-md hover:-translate-y-0.5 group/card"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <span className="grid size-8 place-items-center rounded-fq-sm bg-primary/10 text-primary group-hover/card:bg-primary group-hover/card:text-primary-foreground transition-colors">
+                      {getCategoryIcon(partner.category)}
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground leading-tight">
+                        {t(partner.name, partner.nameBn)}
+                      </h3>
+                      <p className="text-[11px] font-medium text-muted-foreground">
+                        {t(partner.categoryLabel, partner.categoryLabelBn)}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="size-2 rounded-full bg-primary/40 group-hover/card:bg-primary group-hover/card:scale-125 transition-all shrink-0" />
+                </div>
+
+                <p className="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  {t(partner.tagline, partner.taglineBn)}
+                </p>
+
+                <div className="mt-3 pt-2.5 border-t border-border/40 flex items-center justify-between text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                    <Zap className="size-3 text-primary shrink-0" />
+                    <span>{t(partner.feature, partner.featureBn)}</span>
+                  </span>
+                  <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">
+                    {partner.type === "payment" ? t("Payment", "পেমেন্ট") : t("Courier", "কুরিয়ার")}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Bottom Proof Banner */}
+      <div className="mt-5 pt-4 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="size-4 text-primary shrink-0" />
+          <span>
+            {t(
+              "Zero platform escrow delay · Direct merchant payouts · No per-order transaction tax",
+              "কোনো এসক্রো বিলম্ব নেই · সরাসরি মার্চেন্ট পেআউট · কোনো লুকানো ট্রানজ্যাকশন ফি নেই",
+            )}
+          </span>
+        </div>
+        <span className="hidden sm:inline text-foreground font-medium">
+          {t("11 Active Integrations", "১১টি সক্রিয় সংযোগ")}
+        </span>
+      </div>
+    </div>
+  );
+}

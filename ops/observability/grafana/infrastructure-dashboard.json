@@ -1,0 +1,252 @@
+{
+  "title": "Framique — Infrastructure (queues, search, images)",
+  "uid": "framique-infra",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-6h", "to": "now" },
+  "tags": ["framique", "infrastructure", "queue", "search"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      },
+      {
+        "name": "queue",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "query": "label_values(framique_queue_depth, queue)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Job queue",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Oldest queued job (worst queue)",
+      "description": "Head-of-line latency. Depth can look fine while the head of the queue is 20 minutes old — this is the number that says workers are actually behind.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 300 },
+              { "color": "red", "value": 900 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "expr": "max(framique_queue_oldest_age_seconds{queue=~\"$queue\"})",
+          "legendFormat": "oldest"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Dead-letter jobs",
+      "description": "Jobs that exhausted retries. Non-zero means real work was dropped and needs replay from the infrastructure desk.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        }
+      },
+      "targets": [{ "expr": "sum(framique_queue_depth{state=\"dead\",queue=~\"$queue\"})", "legendFormat": "dead" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Queue depth by state",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "stacking": { "mode": "normal" } } } },
+      "targets": [
+        {
+          "expr": "sum by (state) (framique_queue_depth{queue=~\"$queue\"})",
+          "legendFormat": "{{state}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Job duration percentiles",
+      "description": "p50/p95/p99 of handler execution. A rising p99 with a flat p50 is a poison-pill payload, not a capacity problem.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by (le, queue) (rate(framique_job_duration_ms_bucket{queue=~\"$queue\"}[5m])))",
+          "legendFormat": "p50 {{queue}}"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, queue) (rate(framique_job_duration_ms_bucket{queue=~\"$queue\"}[5m])))",
+          "legendFormat": "p95 {{queue}}"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le, queue) (rate(framique_job_duration_ms_bucket{queue=~\"$queue\"}[5m])))",
+          "legendFormat": "p99 {{queue}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Job outcomes per second",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+      "targets": [
+        {
+          "expr": "sum by (outcome) (rate(framique_jobs_completed_total{queue=~\"$queue\"}[5m]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Dead-letter rate (share of completions)",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 14 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1 } },
+      "targets": [
+        {
+          "expr": "sum by (queue) (rate(framique_jobs_completed_total{outcome=\"dead\",queue=~\"$queue\"}[15m])) / clamp_min(sum by (queue) (rate(framique_jobs_completed_total{queue=~\"$queue\"}[15m])), 0.001)",
+          "legendFormat": "{{queue}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Search backend",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 21 }
+    },
+    {
+      "type": "stat",
+      "title": "Merchants on fallback (breaker open)",
+      "description": "Each open breaker is a merchant whose shoppers are being served by Postgres FTS instead of the configured engine.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 22 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      },
+      "targets": [{ "expr": "sum(framique_search_breaker_open)", "legendFormat": "open" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Circuit-breaker trips",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 9, "x": 6, "y": 22 },
+      "targets": [
+        {
+          "expr": "sum by (engine, code) (increase(framique_search_breaker_trips_total[15m]))",
+          "legendFormat": "{{engine}} {{code}}"
+        },
+        {
+          "expr": "sum by (engine) (increase(framique_search_breaker_recoveries_total[15m]))",
+          "legendFormat": "recovered {{engine}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Search traffic by engine and outcome",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 9, "x": 15, "y": 22 },
+      "targets": [
+        {
+          "expr": "sum by (engine, outcome) (rate(framique_search_total[5m]))",
+          "legendFormat": "{{engine}} {{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Storefront search latency (p95)",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 29 },
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_storefront_search_ms_bucket[5m])))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(framique_storefront_search_ms_bucket[5m])))",
+          "legendFormat": "p99"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Storefront search outcomes",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 29 },
+      "targets": [
+        {
+          "expr": "sum by (outcome) (rate(framique_storefront_search_total[5m]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Edge images",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Image transform outcomes",
+      "description": "`bad_signature` above background means someone is forging transform URLs; `upstream_error` means the origin image host is failing.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 37 },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_image_transform_total[5m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Image transform latency (p95)",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 37 },
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_image_transform_ms_bucket[5m])))",
+          "legendFormat": "p95"
+        }
+      ]
+    }
+  ]
+}

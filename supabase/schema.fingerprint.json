@@ -1,0 +1,1245 @@
+{
+  "enums": {
+    "kyc_state": [
+      "pending",
+      "submitted",
+      "verified",
+      "rejected"
+    ],
+    "ai_channel": [
+      "widget",
+      "admin"
+    ],
+    "kyc_status": [
+      "pending",
+      "verified",
+      "rejected"
+    ],
+    "pos_origin": [
+      "offline",
+      "online"
+    ],
+    "api_key_env": [
+      "test",
+      "live"
+    ],
+    "coupon_type": [
+      "fixed",
+      "percent",
+      "bogo",
+      "free_shipping"
+    ],
+    "market_kind": [
+      "theme",
+      "widget"
+    ],
+    "sync_status": [
+      "pending",
+      "synced",
+      "failed"
+    ],
+    "address_type": [
+      "shipping",
+      "billing"
+    ],
+    "billing_plan": [
+      "launch",
+      "growth",
+      "business",
+      "enterprise"
+    ],
+    "order_status": [
+      "pending",
+      "payment_pending",
+      "confirmed",
+      "paid",
+      "fulfilled",
+      "cancelled",
+      "refunded",
+      "packed",
+      "shipped",
+      "delivered",
+      "refund_requested"
+    ],
+    "payout_state": [
+      "draft",
+      "requested",
+      "approved",
+      "processing",
+      "paid",
+      "failed",
+      "cancelled",
+      "reversed"
+    ],
+    "product_kind": [
+      "physical",
+      "digital",
+      "service",
+      "subscription"
+    ],
+    "staff_status": [
+      "invited",
+      "active",
+      "suspended",
+      "removed"
+    ],
+    "coupon_status": [
+      "draft",
+      "active",
+      "paused",
+      "expired"
+    ],
+    "merchant_role": [
+      "owner",
+      "admin",
+      "staff",
+      "viewer"
+    ],
+    "payout_method": [
+      "mfs",
+      "bank"
+    ],
+    "return_status": [
+      "requested",
+      "approved",
+      "rejected",
+      "received",
+      "refunded",
+      "cancelled"
+    ],
+    "review_status": [
+      "pending",
+      "published",
+      "rejected"
+    ],
+    "catalog_status": [
+      "draft",
+      "active",
+      "archived"
+    ],
+    "dispute_status": [
+      "open",
+      "evidence_submitted",
+      "won",
+      "lost",
+      "withdrawn"
+    ],
+    "invoice_status": [
+      "open",
+      "paid",
+      "past_due",
+      "void"
+    ],
+    "payment_method": [
+      "cod",
+      "bkash",
+      "nagad",
+      "rocket",
+      "upay",
+      "tap",
+      "mcash",
+      "surecash",
+      "cellfin",
+      "bank_transfer",
+      "card",
+      "sslcommerz",
+      "aamarpay",
+      "shurjopay",
+      "portwallet",
+      "piprapay"
+    ],
+    "product_status": [
+      "draft",
+      "active",
+      "archived"
+    ],
+    "ai_message_role": [
+      "customer",
+      "bot",
+      "agent"
+    ],
+    "approval_status": [
+      "pending",
+      "approved",
+      "rejected",
+      "expired",
+      "cancelled"
+    ],
+    "consent_channel": [
+      "email",
+      "sms",
+      "push"
+    ],
+    "consent_purpose": [
+      "marketing",
+      "cart_recovery",
+      "stock_alerts"
+    ],
+    "merchant_status": [
+      "active",
+      "suspended",
+      "pending"
+    ],
+    "seo_entity_type": [
+      "store",
+      "product",
+      "collection",
+      "page",
+      "article"
+    ],
+    "shipment_status": [
+      "created",
+      "pickup_scheduled",
+      "picked_up",
+      "in_transit",
+      "out_for_delivery",
+      "delivered",
+      "failed_attempt",
+      "returned"
+    ],
+    "transfer_status": [
+      "draft",
+      "in_transit",
+      "received",
+      "cancelled"
+    ],
+    "cod_recon_status": [
+      "pending",
+      "matched",
+      "variance",
+      "cleared"
+    ],
+    "gift_card_status": [
+      "active",
+      "redeemed",
+      "expired",
+      "void"
+    ],
+    "pos_order_status": [
+      "local_pending",
+      "synced",
+      "paid",
+      "delivered",
+      "voided"
+    ],
+    "staff_mfa_status": [
+      "none",
+      "enrolled",
+      "enforced"
+    ],
+    "export_job_status": [
+      "queued",
+      "generating",
+      "signing",
+      "ready_for_download",
+      "downloaded",
+      "expired",
+      "fail_retry"
+    ],
+    "fraud_case_status": [
+      "open",
+      "evidence_requested",
+      "approved",
+      "rejected"
+    ],
+    "fulfilment_status": [
+      "pending",
+      "packed",
+      "shipped",
+      "delivered",
+      "cancelled"
+    ],
+    "export_object_type": [
+      "orders",
+      "products",
+      "customers",
+      "product_events",
+      "analytics_raw"
+    ],
+    "pos_payment_method": [
+      "cash",
+      "card",
+      "cod"
+    ],
+    "pos_session_status": [
+      "open",
+      "closed"
+    ],
+    "subscription_status": [
+      "trial",
+      "active",
+      "past_due",
+      "paused",
+      "cancelled"
+    ],
+    "charge_intent_status": [
+      "initiated",
+      "pending",
+      "paid",
+      "failed",
+      "expired",
+      "cancelled"
+    ],
+    "cod_settlement_state": [
+      "pending",
+      "matched",
+      "mismatch",
+      "settled",
+      "written_off"
+    ],
+    "courier_event_status": [
+      "processed",
+      "duplicate",
+      "rejected",
+      "dead_letter",
+      "replayed"
+    ],
+    "fraud_blacklist_kind": [
+      "phone",
+      "email"
+    ],
+    "payout_account_state": [
+      "pending",
+      "verified",
+      "rejected",
+      "disabled"
+    ],
+    "abandoned_cart_status": [
+      "active",
+      "recovered",
+      "lost"
+    ],
+    "market_install_status": [
+      "installed",
+      "trial",
+      "paused",
+      "rolled_back"
+    ],
+    "market_listing_status": [
+      "draft",
+      "review",
+      "active",
+      "paused",
+      "archived"
+    ],
+    "notification_severity": [
+      "info",
+      "warning",
+      "critical"
+    ],
+    "ai_conversation_status": [
+      "open",
+      "needs_agent",
+      "resolved",
+      "closed"
+    ],
+    "settlement_file_status": [
+      "received",
+      "parsed",
+      "matched",
+      "posted",
+      "rejected",
+      "variance_hold"
+    ]
+  },
+  "tables": {
+    "brands": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "orders": {
+      "rls": true,
+      "columns": 25,
+      "policies": 2
+    },
+    "coupons": {
+      "rls": true,
+      "columns": 24,
+      "policies": 2
+    },
+    "payouts": {
+      "rls": true,
+      "columns": 24,
+      "policies": 1
+    },
+    "refunds": {
+      "rls": true,
+      "columns": 17,
+      "policies": 2
+    },
+    "api_keys": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "articles": {
+      "rls": true,
+      "columns": 34,
+      "policies": 3
+    },
+    "carriers": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "disputes": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "fx_rates": {
+      "rls": true,
+      "columns": 7,
+      "policies": 1
+    },
+    "invoices": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "payments": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "products": {
+      "rls": true,
+      "columns": 17,
+      "policies": 3
+    },
+    "profiles": {
+      "rls": true,
+      "columns": 6,
+      "policies": 1
+    },
+    "segments": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "seo_meta": {
+      "rls": true,
+      "columns": 17,
+      "policies": 2
+    },
+    "campaigns": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "customers": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "merchants": {
+      "rls": true,
+      "columns": 9,
+      "policies": 3
+    },
+    "nav_menus": {
+      "rls": true,
+      "columns": 7,
+      "policies": 1
+    },
+    "vat_rates": {
+      "rls": true,
+      "columns": 6,
+      "policies": 1
+    },
+    "blog_terms": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "categories": {
+      "rls": true,
+      "columns": 9,
+      "policies": 3
+    },
+    "gift_cards": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "metafields": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "pos_orders": {
+      "rls": true,
+      "columns": 21,
+      "policies": 2
+    },
+    "ai_messages": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "auth_events": {
+      "rls": true,
+      "columns": 9,
+      "policies": 1
+    },
+    "collections": {
+      "rls": true,
+      "columns": 13,
+      "policies": 3
+    },
+    "export_jobs": {
+      "rls": true,
+      "columns": 23,
+      "policies": 2
+    },
+    "fraud_audit": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "fraud_cases": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "fraud_rules": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "fulfilments": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "order_items": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "pos_refunds": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "staff_audit": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "staff_roles": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "stock_holds": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "subscribers": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "theme_audit": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "activity_log": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "bundle_items": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "media_assets": {
+      "rls": true,
+      "columns": 17,
+      "policies": 2
+    },
+    "merchant_kyc": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "order_events": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "payout_holds": {
+      "rls": true,
+      "columns": 8,
+      "policies": 1
+    },
+    "pos_payments": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "pos_sessions": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "return_items": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "store_themes": {
+      "rls": true,
+      "columns": 18,
+      "policies": 3
+    },
+    "theme_assets": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "theme_drafts": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "article_terms": {
+      "rls": true,
+      "columns": 5,
+      "policies": 2
+    },
+    "auth_sessions": {
+      "rls": true,
+      "columns": 9,
+      "policies": 1
+    },
+    "notifications": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "ops_incidents": {
+      "rls": true,
+      "columns": 11,
+      "policies": 1
+    },
+    "payout_events": {
+      "rls": true,
+      "columns": 9,
+      "policies": 1
+    },
+    "return_events": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "subscriptions": {
+      "rls": true,
+      "columns": 19,
+      "policies": 2
+    },
+    "tenant_limits": {
+      "rls": true,
+      "columns": 5,
+      "policies": 2
+    },
+    "url_redirects": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "api_key_events": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "billing_events": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "campaign_sends": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "charge_intents": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "consent_events": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "courier_labels": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "digital_assets": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "digital_grants": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "dispute_events": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "nav_menu_items": {
+      "rls": true,
+      "columns": 13,
+      "policies": 1
+    },
+    "order_invoices": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "page_revisions": {
+      "rls": true,
+      "columns": 13,
+      "policies": 1
+    },
+    "platform_flags": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "review_replies": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "seo_meta_audit": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "shipping_zones": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "step_up_grants": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "theme_registry": {
+      "rls": true,
+      "columns": 20,
+      "policies": 1
+    },
+    "theme_versions": {
+      "rls": true,
+      "columns": 17,
+      "policies": 3
+    },
+    "webhook_events": {
+      "rls": true,
+      "columns": 18,
+      "policies": 2
+    },
+    "abandoned_carts": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "analytics_daily": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "cod_settlements": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "delivery_events": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "fraud_blacklist": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "ops_backup_runs": {
+      "rls": true,
+      "columns": 12,
+      "policies": 1
+    },
+    "payout_accounts": {
+      "rls": true,
+      "columns": 19,
+      "policies": 1
+    },
+    "platform_admins": {
+      "rls": true,
+      "columns": 2,
+      "policies": 1
+    },
+    "product_bundles": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "product_reviews": {
+      "rls": true,
+      "columns": 14,
+      "policies": 3
+    },
+    "return_requests": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "shipment_quotes": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "theme_schedules": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "ai_conversations": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "analytics_events": {
+      "rls": true,
+      "columns": 22,
+      "policies": 1
+    },
+    "form_submissions": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "fulfilment_items": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "gateway_accounts": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "inventory_levels": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "merchant_members": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "order_amendments": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "payout_approvals": {
+      "rls": true,
+      "columns": 7,
+      "policies": 1
+    },
+    "plan_definitions": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "product_variants": {
+      "rls": true,
+      "columns": 14,
+      "policies": 3
+    },
+    "settlement_files": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "settlement_items": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "storefront_forms": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "storefront_pages": {
+      "rls": true,
+      "columns": 32,
+      "policies": 3
+    },
+    "analytics_batches": {
+      "rls": true,
+      "columns": 8,
+      "policies": 1
+    },
+    "analytics_cohorts": {
+      "rls": true,
+      "columns": 8,
+      "policies": 1
+    },
+    "analytics_reports": {
+      "rls": true,
+      "columns": 14,
+      "policies": 1
+    },
+    "approval_requests": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "article_revisions": {
+      "rls": true,
+      "columns": 14,
+      "policies": 1
+    },
+    "carrier_shipments": {
+      "rls": true,
+      "columns": 30,
+      "policies": 2
+    },
+    "customer_consents": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "fraud_assessments": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "gift_card_entries": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "merchant_settings": {
+      "rls": true,
+      "columns": 21,
+      "policies": 3
+    },
+    "seo_not_found_log": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "service_offerings": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "web_vitals_sample": {
+      "rls": true,
+      "columns": 15,
+      "policies": 1
+    },
+    "coupon_redemptions": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "customer_addresses": {
+      "rls": true,
+      "columns": 16,
+      "policies": 2
+    },
+    "integration_probes": {
+      "rls": true,
+      "columns": 6,
+      "policies": 1
+    },
+    "local_transactions": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "marketplace_themes": {
+      "rls": true,
+      "columns": 21,
+      "policies": 1
+    },
+    "mfa_recovery_codes": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "ops_retention_runs": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "platform_audit_log": {
+      "rls": true,
+      "columns": 9,
+      "policies": 1
+    },
+    "platform_snapshots": {
+      "rls": true,
+      "columns": 20,
+      "policies": 1
+    },
+    "subscription_terms": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "trial_fingerprints": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "analytics_geo_daily": {
+      "rls": true,
+      "columns": 11,
+      "policies": 1
+    },
+    "catalog_import_jobs": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "cod_reconciliations": {
+      "rls": true,
+      "columns": 14,
+      "policies": 2
+    },
+    "collection_products": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "inventory_locations": {
+      "rls": true,
+      "columns": 10,
+      "policies": 2
+    },
+    "inventory_transfers": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "marketplace_reviews": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "marketplace_widgets": {
+      "rls": true,
+      "columns": 22,
+      "policies": 1
+    },
+    "rate_limit_counters": {
+      "rls": true,
+      "columns": 4,
+      "policies": 1
+    },
+    "shipping_rate_rules": {
+      "rls": true,
+      "columns": 15,
+      "policies": 2
+    },
+    "builder_template_seo": {
+      "rls": true,
+      "columns": 18,
+      "policies": 1
+    },
+    "charge_intent_events": {
+      "rls": true,
+      "columns": 7,
+      "policies": 2
+    },
+    "impersonation_grants": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "marketplace_installs": {
+      "rls": true,
+      "columns": 18,
+      "policies": 2
+    },
+    "merchant_suspensions": {
+      "rls": true,
+      "columns": 9,
+      "policies": 2
+    },
+    "ops_incident_updates": {
+      "rls": true,
+      "columns": 6,
+      "policies": 1
+    },
+    "analytics_report_runs": {
+      "rls": true,
+      "columns": 8,
+      "policies": 1
+    },
+    "metafield_definitions": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "ops_status_components": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "tenant_purge_requests": {
+      "rls": true,
+      "columns": 11,
+      "policies": 2
+    },
+    "wallet_ledger_entries": {
+      "rls": true,
+      "columns": 13,
+      "policies": 2
+    },
+    "courier_webhook_events": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "customer_wishlist_items": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "integration_connections": {
+      "rls": true,
+      "columns": 13,
+      "policies": 1
+    },
+    "billing_dunning_attempts": {
+      "rls": true,
+      "columns": 8,
+      "policies": 2
+    },
+    "inventory_transfer_items": {
+      "rls": true,
+      "columns": 6,
+      "policies": 2
+    },
+    "order_status_transitions": {
+      "rls": true,
+      "columns": 2,
+      "policies": 1
+    },
+    "theme_catalog_favourites": {
+      "rls": true,
+      "columns": 5,
+      "policies": 1
+    },
+    "refund_status_transitions": {
+      "rls": true,
+      "columns": 2,
+      "policies": 1
+    },
+    "platform_snapshot_restores": {
+      "rls": true,
+      "columns": 11,
+      "policies": 1
+    },
+    "settlement_variance_alerts": {
+      "rls": true,
+      "columns": 12,
+      "policies": 2
+    },
+    "analytics_conversion_events": {
+      "rls": true,
+      "columns": 16,
+      "policies": 1
+    }
+  },
+  "functions": [
+    "analytics_claim_conversions",
+    "analytics_claim_reports",
+    "analytics_flush",
+    "analytics_ingest",
+    "analytics_queue_conversion",
+    "analytics_rebuild_cohorts",
+    "analytics_settle_conversion",
+    "assert_rate",
+    "charge_intent_advance",
+    "charge_intent_open",
+    "cms_entitlements",
+    "cod_clear_variance",
+    "cod_reconcile",
+    "customer_order_detail",
+    "customer_overview",
+    "customer_require_self",
+    "dispute_advance",
+    "fulfilment_create",
+    "gateway_apply_webhook",
+    "is_merchant_admin",
+    "is_merchant_member",
+    "is_platform_admin",
+    "is_public_merchant",
+    "mfa_recovery_consume",
+    "mfa_recovery_replace",
+    "money_actor_ok",
+    "notify_staff",
+    "order_amend",
+    "order_edge_allowed",
+    "order_invoice_issue",
+    "order_public_view",
+    "order_try_advance",
+    "payout_events_append_only",
+    "platform_audit_event",
+    "platform_clear_tenant_limits",
+    "platform_merchant_reinstate",
+    "platform_merchant_suspend",
+    "platform_save_plan",
+    "platform_set_flag",
+    "platform_set_tenant_limits",
+    "pos_default_location",
+    "pos_move_stock",
+    "pos_note_sync",
+    "pos_refund",
+    "pos_sale_capture",
+    "pos_shift_report",
+    "product_recommendations",
+    "refund_advance",
+    "refund_capture_state",
+    "refund_request",
+    "return_advance",
+    "return_open",
+    "review_agg",
+    "review_list_published",
+    "rpc_contract_check",
+    "schema_fingerprint",
+    "set_updated_at",
+    "settlement_ingest",
+    "settlement_resolve_alert",
+    "stock_hold_acquire",
+    "stock_hold_consume",
+    "stock_hold_release",
+    "stock_hold_sweep",
+    "storefront_payment_methods",
+    "storefront_search",
+    "vat_resolve"
+  ]
+}

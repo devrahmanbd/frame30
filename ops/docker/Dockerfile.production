@@ -1,0 +1,112 @@
+# syntax=docker/dockerfile:1.4
+# ==============================================================================
+# Framique Cloud Commerce CMS — Multi-Stage Immutable Production Dockerfile
+#
+# Standards:
+#  - Minimal attack surface: oven/bun:1.2-alpine base
+#  - Deterministic builds: frozen lockfile via bun.lock
+#  - Non-root execution: runs as 'framique' (UID 10001, GID 10001)
+#  - Read-only rootfs compatible: writes isolated to /tmp
+#  - Zero secrets in image layers: all credentials injected at runtime
+#  - Immutable commit SHA tagging (framique:sha-${GIT_SHA})
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Stage 1: Base Runtime
+# ------------------------------------------------------------------------------
+FROM oven/bun:1.2-alpine AS base
+WORKDIR /app
+
+# Install security updates and dumb-init for proper PID 1 signal forwarding
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache dumb-init curl ca-certificates && \
+    rm -rf /var/cache/apk/*
+
+# ------------------------------------------------------------------------------
+# Stage 2: Dependencies Cache
+# ------------------------------------------------------------------------------
+FROM base AS deps
+WORKDIR /app
+
+# Copy dependency manifests first for maximum layer cache reuse
+COPY package.json bun.lock bunfig.toml ./
+
+# Install exact dependencies with frozen lockfile (including devDeps for build)
+RUN bun install --frozen-lockfile --verbose
+
+# ------------------------------------------------------------------------------
+# Stage 3: Build & Asset Optimization
+# ------------------------------------------------------------------------------
+FROM base AS builder
+WORKDIR /app
+
+# Build arguments for immutable provenance
+ARG GIT_SHA="unknown"
+ARG BUILD_DATE=""
+ARG VERSION="1.0.0"
+
+ENV NODE_ENV=production \
+    GIT_SHA=${GIT_SHA} \
+    BUILD_DATE=${BUILD_DATE} \
+    VERSION=${VERSION}
+
+# Copy installed node_modules from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Compile production bundle via Vite/Nitro
+RUN bun run build
+
+# Generate build provenance manifest
+RUN mkdir -p .output && \
+    echo "{\"version\":\"${VERSION}\",\"gitSha\":\"${GIT_SHA}\",\"buildDate\":\"${BUILD_DATE}\",\"builder\":\"docker-multistage\"}" > .output/build-manifest.json
+
+# ------------------------------------------------------------------------------
+# Stage 4: Production Runner (Hardened Minimal Runtime)
+# ------------------------------------------------------------------------------
+FROM base AS runner
+WORKDIR /app
+
+# Build-time labels (OCI image spec)
+ARG GIT_SHA="unknown"
+ARG BUILD_DATE=""
+ARG VERSION="1.0.0"
+
+LABEL org.opencontainers.image.title="Framique Cloud Commerce CMS" \
+      org.opencontainers.image.description="Multi-tenant cloud commerce CMS and headless platform" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${GIT_SHA}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.vendor="Framique" \
+      org.opencontainers.image.licenses="Proprietary"
+
+# Runtime Environment Variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOST=0.0.0.0 \
+    GIT_SHA=${GIT_SHA} \
+    VERSION=${VERSION}
+
+# Create dedicated non-root unprivileged service account
+RUN addgroup -g 10001 -S framique && \
+    adduser -u 10001 -S framique -G framique && \
+    mkdir -p /app/.output /app/.cache /tmp && \
+    chown -R framique:framique /app /tmp
+
+# Copy built server output and public static assets from builder stage
+COPY --from=builder --chown=framique:framique /app/.output /app/.output
+COPY --from=builder --chown=framique:framique /app/package.json /app/package.json
+
+# Drop root privileges permanently
+USER framique
+
+EXPOSE 3000
+
+# Automated container healthcheck hitting the fast-path readiness probe
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f -s http://127.0.0.1:3000/api/healthz?type=liveness || exit 1
+
+# Execute server with dumb-init for correct SIGTERM/SIGINT process lifecycle handling
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["bun", ".output/server/index.mjs"]

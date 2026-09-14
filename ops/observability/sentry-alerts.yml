@@ -1,0 +1,139 @@
+# Sentry alert rules — infrastructure (§4.4)
+#
+# Applied with `sentry-cli` or the Alerts API. Kept in git because an alert
+# that only exists in a web UI is an alert nobody can review in a pull request.
+#
+# Tagging contract (set by src/lib/observability.server.ts):
+#   scope        — logical subsystem, e.g. job.queue, search.backend, image.transform
+#   queue        — job queue name
+#   job_type     — handler name
+#   engine       — meilisearch | typesense | postgres
+#   merchant_id  — tenant, for grouping tenant-specific outages
+#
+# Fingerprinting note: queue handler failures are fingerprinted by
+# {{ scope }}/{{ job_type }} so one poisoned payload does not shard into
+# thousands of issues.
+
+project: framique
+environments: [production, preview]
+
+rules:
+  - name: Job handler dead-lettered
+    description: >
+      A job exhausted its retries. This is durable work that was dropped —
+      always actionable, even once.
+    conditions:
+      - id: FirstSeenEventCondition
+      - id: EventFrequencyCondition
+        interval: 1h
+        value: 1
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: job.queue.dead
+    action_interval: 30m
+    actions: [slack:#framique-oncall, email:oncall]
+
+  - name: Job failure spike in one queue
+    description: Handler failures clustering in a single queue — usually a bad deploy or a dependency outage.
+    conditions:
+      - id: EventFrequencyCondition
+        interval: 15m
+        value: 25
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: job.queue
+    action_interval: 1h
+    actions: [slack:#framique-oncall]
+
+  - name: Queue drain cron erroring
+    description: >
+      The drain endpoint itself is failing, which means nothing is being
+      claimed at all. Higher urgency than any individual handler failure.
+    conditions:
+      - id: EventFrequencyCondition
+        interval: 30m
+        value: 3
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: cron.jobs
+    action_interval: 30m
+    actions: [slack:#framique-oncall, pagerduty:framique-primary]
+
+  - name: Search circuit breaker opened
+    description: Shoppers moved to the degraded Postgres fallback for at least one merchant.
+    conditions:
+      - id: FirstSeenEventCondition
+      - id: EventFrequencyCondition
+        interval: 1h
+        value: 1
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: search.breaker
+    action_interval: 1h
+    actions: [slack:#framique-oncall]
+
+  - name: Storefront search unavailable
+    description: >
+      Both the engine and the fallback failed, so a shopper saw an error page.
+      Customer-visible, so it pages.
+    conditions:
+      - id: EventFrequencyCondition
+        interval: 10m
+        value: 5
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: storefront.search
+    action_interval: 30m
+    actions: [slack:#framique-oncall, pagerduty:framique-primary]
+
+  - name: Image transform upstream failures
+    description: The origin image host is refusing or timing out; product grids will look broken.
+    conditions:
+      - id: EventFrequencyCondition
+        interval: 15m
+        value: 20
+    filters:
+      - id: TaggedEventFilter
+        key: scope
+        match: eq
+        value: image.transform
+    action_interval: 2h
+    actions: [slack:#framique-platform]
+
+metric_alerts:
+  - name: Queue p95 job duration
+    dataset: generic_metrics
+    aggregate: p95(measurements.job.duration_ms)
+    time_window: 10m
+    threshold_type: above
+    triggers:
+      - label: warning
+        threshold: 15000
+        actions: [slack:#framique-platform]
+      - label: critical
+        threshold: 30000
+        actions: [slack:#framique-oncall]
+
+  - name: Storefront search apdex
+    dataset: transactions
+    aggregate: p95(transaction.duration)
+    query: 'transaction:"storefront.search"'
+    time_window: 10m
+    threshold_type: above
+    triggers:
+      - label: warning
+        threshold: 800
+        actions: [slack:#framique-platform]
+      - label: critical
+        threshold: 2000
+        actions: [slack:#framique-oncall]

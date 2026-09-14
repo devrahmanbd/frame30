@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: framique-active
+  namespace: production
+  labels:
+    app.kubernetes.io/name: framique
+    app.kubernetes.io/component: active-router
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  # Selector flips between 'blue' and 'green' during zero-downtime cutover
+  selector:
+    app.kubernetes.io/name: framique
+    topology.framique.io/slot: blue
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: framique-standby
+  namespace: production
+  labels:
+    app.kubernetes.io/name: framique
+    app.kubernetes.io/component: standby-router
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: framique
+    topology.framique.io/slot: green

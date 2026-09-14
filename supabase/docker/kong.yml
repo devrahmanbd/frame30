@@ -1,0 +1,126 @@
+_format_version: "2.1"
+_transform: true
+
+# Framique — Supabase gateway routing.
+#
+# Two consumers, two keys. `anon` is the publishable key the browser carries and
+# is only ever as powerful as RLS allows; `service_role` bypasses RLS and is
+# therefore restricted to the `admin` ACL group and never sent to a browser.
+#
+# Rule for adding a route: if it can mutate data or read across tenants, it must
+# be in the `admin` group. There is no third tier.
+
+consumers:
+  - username: anon
+    keyauth_credentials:
+      - key: ${SUPABASE_ANON_KEY}
+  - username: service_role
+    keyauth_credentials:
+      - key: ${SUPABASE_SERVICE_KEY}
+
+acls:
+  - consumer: anon
+    group: anon
+  - consumer: service_role
+    group: admin
+
+services:
+  # Auth: open by design (sign-in must work before a session exists), but the
+  # app's own limiter buckets (`auth.signin`, `auth.reset`) sit in front of it,
+  # and GoTrue keeps its own per-IP limits.
+  - name: auth-v1-open
+    url: http://auth:9999/
+    routes:
+      - name: auth-v1-open
+        strip_path: true
+        paths: [/auth/v1/]
+    plugins:
+      - name: cors
+      # Gateway floor under the app limiter: credential stuffing must die here,
+      # not in GoTrue's logs.
+      - name: rate-limiting
+        config:
+          minute: 60
+          hour: 600
+          policy: local
+          fault_tolerant: true
+          limit_by: ip
+
+
+
+
+  - name: rest-v1
+    url: http://rest:3000/
+    routes:
+      - name: rest-v1-all
+        strip_path: true
+        paths: [/rest/v1/]
+    plugins:
+      - name: cors
+      - name: rate-limiting
+        config:
+          minute: 600
+          hour: 20000
+          policy: local
+          fault_tolerant: true
+          limit_by: ip
+      - name: key-auth
+        config:
+          hide_credentials: true
+          key_names: [apikey]
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow: [admin, anon]
+
+
+  - name: realtime-v1
+    url: http://realtime:4000/socket/
+    routes:
+      - name: realtime-v1-ws
+        strip_path: true
+        paths: [/realtime/v1/]
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+          key_names: [apikey]
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow: [admin, anon]
+
+  - name: storage-v1
+    url: http://storage:5000/
+    routes:
+      - name: storage-v1-all
+        strip_path: true
+        paths: [/storage/v1/]
+    plugins:
+      - name: cors
+      - name: rate-limiting
+        config:
+          minute: 300
+          hour: 6000
+          policy: local
+          fault_tolerant: true
+          limit_by: ip
+
+
+  # Schema introspection is an operator tool: admin only, no anon group.
+  - name: meta
+    url: http://meta:8080/
+    routes:
+      - name: meta-all
+        strip_path: true
+        paths: [/pg/]
+    plugins:
+      - name: key-auth
+        config:
+          hide_credentials: false
+          key_names: [apikey]
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow: [admin]

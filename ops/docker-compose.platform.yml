@@ -1,0 +1,53 @@
+# Framique — self-hosted platform dependencies (Redis + the shared network).
+#
+# Supabase itself is vendored from the upstream self-hosted distribution
+# (`supabase/docker/docker-compose.yml`) and joined to the same `framique`
+# network; we do not fork it, we only pin it and add monitoring credentials.
+# See ops/README.md §2 for the exact bring-up order.
+#
+#   docker network create framique
+#   docker compose --env-file ops/.env -f ops/docker-compose.platform.yml up -d
+#
+# Everything here is replaceable in place: Redis can become a managed KeyDB or
+# a Valkey cluster, Postgres can move to a Patroni pair, without any contract
+# change in the application — the app only knows REDIS_URL and SUPABASE_URL.
+
+name: framique-platform
+
+networks:
+  framique:
+    external: true
+
+volumes:
+  redis-data:
+
+services:
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD}
+      # Idempotency keys, rate-limit counters and queue state must survive a
+      # restart: AOF everysec is the right trade for money-adjacent keys.
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-1gb}
+      # noeviction, deliberately: silently evicting an idempotency key turns a
+      # replayed charge into a second charge. We would rather fail loudly and
+      # let RedisMemoryNearLimit page us.
+      - --maxmemory-policy
+      - noeviction
+    volumes:
+      - redis-data:/data
+    networks: [framique]
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5

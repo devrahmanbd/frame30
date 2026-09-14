@@ -1,0 +1,11 @@
+alter table public.merchant_settings add constraint merchant_settings_pkey primary key (merchant_id);
+alter table public.tenant_limits add constraint tenant_limits_pkey primary key (merchant_id);
+alter table public.plan_definitions add constraint plan_definitions_pkey primary key (plan);
+alter table public.platform_flags add constraint platform_flags_pkey primary key (key);
+alter table public.rate_limit_counters add constraint rate_limit_counters_pkey primary key (bucket, subject, window_start);
+alter table public.ops_status_components add constraint ops_status_components_pkey primary key (key);
+alter table public.order_status_transitions add constraint order_status_transitions_pkey primary key (from_status, to_status);
+alter table public.refund_status_transitions add constraint refund_status_transitions_pkey primary key (from_status, to_status);
+alter table public.theme_drafts add constraint theme_drafts_pkey primary key (merchant_id, theme_id);
+alter table public.theme_registry add constraint theme_registry_pkey primary key (key);
+alter table public.trial_fingerprints add constraint trial_fingerprints_pkey primary key (fingerprint);

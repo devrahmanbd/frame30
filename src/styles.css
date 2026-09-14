@@ -1,0 +1,2026 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primitives — brand palette */
+  --color-bd-teal-50: hsl(166 76% 96%);
+  --color-bd-teal-100: hsl(167 85% 89%);
+  --color-bd-teal-400: hsl(172 66% 50%);
+  --color-bd-teal-600: hsl(175 84% 32%);
+  --color-bd-teal-700: hsl(175 77% 26%);
+  --color-bd-teal-800: hsl(176 72% 22%);
+  --color-bd-teal-900: hsl(176 61% 19%);
+
+  --color-rickshaw-red-100: hsl(346 100% 95%);
+  --color-rickshaw-red-500: hsl(350 89% 60%);
+  --color-rickshaw-red-600: hsl(347 77% 50%);
+  --color-rickshaw-red-700: hsl(347 80% 36%);
+
+  --color-bondhu-amber-100: hsl(48 96% 89%);
+  --color-bondhu-amber-500: hsl(38 92% 50%);
+  --color-bondhu-amber-600: hsl(32 95% 44%);
+  --color-bondhu-amber-800: hsl(28 90% 29%);
+
+  --color-mint-100: hsl(152 76% 90%);
+  --color-mint-500: hsl(160 84% 39%);
+  --color-mint-600: hsl(161 94% 30%);
+  --color-mint-800: hsl(162 94% 20%);
+
+  /* Semantic */
+  --color-background: #ffffff;
+  --color-foreground: oklch(0.20 0.02 260); /* Deep Ink / Slate */
+  --color-card: #ffffff;
+  --color-card-foreground: oklch(0.20 0.02 260);
+  
+  /* primary is Facebook Blue tuned for WCAG AA (5.2:1) */
+  --color-primary: oklch(0.48 0.23 255); 
+  --color-primary-foreground: #ffffff;
+  
+  --color-muted: #f8fafc;
+  --color-muted-foreground: oklch(0.40 0.018 25); /* Tuned grey text for 5.5:1 contrast */
+  
+  --color-border: #e2e8f0;
+  
+  /* accent is Calm Pink (#FFF1F3) */
+  --color-accent: #FFF1F3;
+  --color-accent-foreground: #9F1239; /* Rose 800 */
+
+  /* Severity — the *-foreground tones are tuned against their soft
+     background, not against white, so status pills stay AA at 12px. */
+  --color-success: var(--color-mint-500);
+  --color-success-soft: var(--color-mint-100);
+  --color-success-foreground: var(--color-mint-800);
+  --color-warning: var(--color-bondhu-amber-500);
+  --color-warning-soft: var(--color-bondhu-amber-100);
+  /* Deep amber ink: 5.2:1 on the amber-500 warning fill, so small badge text stays legible. */
+  --color-warning-foreground: hsl(26 90% 20%);
+
+  --color-danger: var(--color-rickshaw-red-500);
+  --color-danger-soft: var(--color-rickshaw-red-100);
+  --color-danger-foreground: var(--color-rickshaw-red-700);
+  --color-info: oklch(0.48 0.23 255);
+  --color-info-soft: #EBF5FF;
+  --color-info-foreground: #003E9C;
+
+
+  --font-bangla: "Noto Sans Bengali", "Noto Sans Bengali Fallback", "SolaimanLipi", sans-serif;
+  --font-sans: "Inter", "Inter Fallback", "Noto Sans Bengali", "Noto Sans Bengali Fallback", system-ui, sans-serif;
+
+  --radius-fq-sm: 4px;
+  --radius-fq-md: 6px;
+  --radius-fq-lg: 8px;
+
+  --ease-fq-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Phase 7.3 — metric-matched fallbacks. Local faces are re-declared with the
+ * cap-height/width of the real webfont, so the pre-swap box is the same height
+ * as the swapped-in box and a locale switch costs zero layout shift.
+ */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Noto Sans Bengali Fallback";
+  src: local("Nirmala UI"), local("Kalpurush"), local("Arial");
+  size-adjust: 104%;
+  ascent-override: 105%;
+  descent-override: 32%;
+  line-gap-override: 0%;
+}
+
+/* Phase 3 — every family added to the catalogue ships a metric-matched
+   fallback, otherwise the vitals gate fails the theme. */
+@font-face {
+  font-family: "Hind Siliguri Fallback";
+  src: local("Nirmala UI"), local("Kalpurush"), local("Arial");
+  size-adjust: 102%;
+  ascent-override: 103%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Playfair Display Fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Liberation Serif");
+  size-adjust: 112%;
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+/*
+ * Phase 10.6 — the marketing surface needed the same treatment, and not having
+ * it was the single biggest source of layout shift on the public pages.
+ *
+ * Geist and Manrope load from a third-party stylesheet with `display: swap`,
+ * and until they arrive every band renders in `system-ui`. On a 320px viewport
+ * the re-wrap after the swap moved whole bands: the design gate measured CLS
+ * 0.05–0.22, worst in Bangla, where the fallback metrics differ most. These two
+ * faces re-declare a *local* font with Geist's and Manrope's cap height and
+ * advance width, so the pre-swap box is the same height as the swapped-in box
+ * and the swap costs no shift. Values are tuned against the gate's measured
+ * CLS, not guessed once — `bun run design:gate` is the check that keeps them
+ * honest.
+ */
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Helvetica Neue"), local("Arial"), local("Liberation Sans");
+  size-adjust: 101%;
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Manrope Fallback";
+  src: local("Helvetica Neue"), local("Arial"), local("Liberation Sans");
+  size-adjust: 104%;
+  ascent-override: 100%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+}
+
+
+html,
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Money and figures always align */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@utility money {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
+}
+
+@utility font-bangla-display {
+  font-family: var(--font-bangla);
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 200ms !important;
+    transition-property: opacity !important;
+  }
+}
+
+/* Allow-listed markdown output from tenant-authored store pages. */
+@utility fq-prose {
+  & h2 { @apply font-bangla-display text-lg font-semibold; }
+  & h3 { @apply font-bangla-display text-base font-semibold; }
+  & h4 { @apply text-sm font-semibold; }
+  & p { @apply text-muted-foreground; }
+  & ul { @apply list-disc space-y-1 pl-5 text-muted-foreground; }
+  & ol { @apply list-decimal space-y-1 pl-5 text-muted-foreground; }
+  & blockquote { @apply border-l-2 border-border pl-4 italic text-muted-foreground; }
+  & pre { @apply overflow-x-auto rounded-fq-md bg-muted p-3 font-mono text-xs; }
+  & figure { @apply my-4; }
+  & figcaption { @apply mt-1 text-xs text-muted-foreground; }
+  & img { @apply h-auto max-w-full rounded-fq-md; }
+  & hr { @apply my-6 border-border; }
+  & table { @apply w-full border-collapse text-sm; }
+  & th, & td { @apply border border-border px-2 py-1 text-left; }
+  & a { @apply text-primary underline; }
+  & strong { @apply font-semibold text-foreground; }
+  & u { @apply underline; }
+  & s { @apply line-through; }
+  & .has-text-align-center { text-align: center; }
+  & .has-text-align-right { text-align: right; }
+}
+
+/* Phase 17 — pages and posts rendered from a builder document. Widget styling
+   is inline; this only supplies the base type, links and button chrome. */
+@utility fq-builder-page {
+  & h1, & h2, & h3, & h4 { @apply font-bangla-display text-foreground; }
+  & p, & li, & blockquote { @apply text-muted-foreground; }
+  & ul { @apply list-disc space-y-1 pl-5; }
+  & a { @apply text-primary underline; }
+  & img { @apply h-auto max-w-full; }
+  & hr { @apply border-border; }
+  & .fq-btn {
+    @apply inline-flex min-h-11 items-center justify-center rounded-fq-md px-4 text-sm font-medium no-underline;
+  }
+  & .fq-btn-primary { @apply bg-primary text-primary-foreground; }
+  & .fq-btn-outline { @apply border border-border text-foreground; }
+  & .fq-btn-ghost { @apply text-primary; }
+}
+
+/* Theme-runtime marquee. Motion is opacity/transform only and collapses to a
+   static line under prefers-reduced-motion (see the reduce block above). */
+@keyframes fq-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Published theme tokens are injected as CSS variables on the storefront root
+   so merchant branding never leaks into admin chrome.
+
+   Theme independence: the widget layer only ever styles itself with the
+   semantic tokens (bg-primary, text-foreground, rounded-fq-md, …). Remapping
+   those tokens here — once — is what makes every Phase 1/2 widget adopt any
+   installed theme, including a custom one a merchant builds from scratch.
+   Each mapping falls back to the platform default, so a theme that defines
+   nothing still renders correctly. */
+@utility fq-theme-scope {
+  --color-background: var(--theme-surface, hsl(150 20% 99%));
+  --color-foreground: var(--theme-ink, hsl(160 25% 12%));
+  --color-card: var(--theme-surface, hsl(0 0% 100%));
+  --color-card-foreground: var(--theme-ink, hsl(160 25% 12%));
+  --color-primary: var(--theme-brand, var(--color-bd-teal-700));
+  --color-primary-foreground: var(--theme-brand-ink, hsl(150 40% 98%));
+  --color-accent: var(--theme-accent, var(--color-bd-teal-50));
+  --color-accent-foreground: var(--theme-accent-ink, var(--color-bd-teal-800));
+  --color-muted: var(--theme-muted, hsl(150 16% 95%));
+  --color-muted-foreground: var(--theme-muted-ink, hsl(160 10% 40%));
+  --color-border: var(--theme-border, hsl(150 14% 89%));
+  --radius-fq-sm: calc(var(--theme-radius, 8px) * 0.5);
+  --radius-fq-md: calc(var(--theme-radius, 8px) * 0.75);
+  --radius-fq-lg: var(--theme-radius, 8px);
+  --shadow-fq-sm: var(--theme-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.06));
+  --shadow-fq-md: var(--theme-shadow-md, 0 2px 8px rgb(0 0 0 / 0.08));
+  --shadow-fq-lg: var(--theme-shadow-lg, 0 8px 24px rgb(0 0 0 / 0.12));
+  --font-sans: var(--theme-font-body, "Inter", "Noto Sans Bengali", system-ui, sans-serif);
+
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Phase 3.1 — the designed dark set. Dark is authored, never auto-inverted, so
+   it only engages when the theme actually shipped `--theme-dark-*`. */
+.fq-theme-scope[data-theme="dark"] {
+  --color-background: var(--theme-dark-surface, var(--theme-surface, hsl(160 25% 8%)));
+  --color-foreground: var(--theme-dark-ink, var(--theme-ink, hsl(150 20% 96%)));
+  --color-card: var(--theme-dark-surface, var(--theme-surface, hsl(160 25% 10%)));
+  --color-card-foreground: var(--theme-dark-ink, var(--theme-ink, hsl(150 20% 96%)));
+  --color-primary: var(--theme-dark-brand, var(--theme-brand, var(--color-bd-teal-700)));
+  --color-primary-foreground: var(--theme-dark-brand-ink, var(--theme-brand-ink, hsl(160 25% 8%)));
+  --color-accent: var(--theme-dark-accent, var(--theme-accent, var(--color-bd-teal-800)));
+  --color-accent-foreground: var(--theme-dark-accent-ink, var(--theme-accent-ink, hsl(150 20% 96%)));
+  --color-muted: var(--theme-dark-muted, hsl(160 18% 16%));
+  --color-muted-foreground: var(--theme-dark-muted-ink, hsl(150 10% 72%));
+  --color-border: var(--theme-dark-border, hsl(160 14% 24%));
+}
+
+
+/* Display type follows the theme's display face wherever a widget marks a
+   heading, without any widget importing a theme module. */
+.fq-theme-scope :is(h1, h2, h3) {
+  font-family: var(--theme-font-display, var(--font-sans));
+}
+
+
+/* Phase 0.4 — universal `reveal` style prop. One implementation in the section
+   wrapper; widgets never hand-roll entrance animation. Motion is
+   opacity/transform only and is disabled under prefers-reduced-motion. */
+@utility fq-reveal {
+  animation-duration: var(--theme-motion-duration, 420ms);
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+@utility fq-reveal-fade {
+  animation-name: fq-reveal-fade;
+}
+@utility fq-reveal-rise {
+  animation-name: fq-reveal-rise;
+}
+@keyframes fq-reveal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fq-reveal-rise {
+  from { opacity: 0; transform: translateY(var(--theme-motion-rise, 12px)); }
+  to { opacity: 1; transform: none; }
+}
+/* Motion token `none` behaves exactly like the OS reduced-motion preference. */
+.fq-theme-scope[data-motion="none"] .fq-reveal {
+  animation: none !important;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fq-reveal { animation: none !important; }
+}
+
+/* Phase 1.4 — a reveal stays parked until the shared IntersectionObserver
+   reports the node on screen, so off-screen sections never animate. */
+@utility fq-reveal-pending {
+  opacity: 0;
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fq-reveal-pending { opacity: 1; animation-play-state: running; }
+}
+
+/* Elementor-parity entrance animations, chosen per widget in the Advanced
+   tab. Each is a single compositor-friendly transform, and all of them are
+   dropped for a visitor who asked for reduced motion. */
+@keyframes fq-anim-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fq-anim-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes fq-anim-slide-left { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@keyframes fq-anim-slide-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@keyframes fq-anim-zoom { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+
+.fq-anim { animation-duration: 420ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); animation-fill-mode: both; }
+.fq-anim-fade { animation-name: fq-anim-fade; }
+.fq-anim-rise { animation-name: fq-anim-rise; }
+.fq-anim-slide-left { animation-name: fq-anim-slide-left; }
+.fq-anim-slide-right { animation-name: fq-anim-slide-right; }
+.fq-anim-zoom { animation-name: fq-anim-zoom; }
+@media (prefers-reduced-motion: reduce) {
+  .fq-anim { animation: none !important; opacity: 1; transform: none; }
+}
+
+/* Phase 1.1 / 2 — বাংলা typography. Bengali matras sit above and below the
+   base line, so the script needs a taller line box and a font stack that
+   actually ships the conjuncts; latin-tuned tracking would clip them. Scoped
+   to `lang="bn"` so an English page is untouched. */
+:where([lang="bn"]) {
+  font-family: var(--font-bangla);
+  line-height: 1.75;
+  letter-spacing: 0;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:where([lang="bn"]) h1,
+:where([lang="bn"]) h2,
+:where([lang="bn"]) h3,
+:where([lang="bn"]) h4 {
+  /* Phase 2.1 — 1.7 line box so matras and conjuncts are never clipped, and
+     an explicit `overflow: visible` in case a heading box was clamped. */
+  line-height: 1.7;
+  overflow: visible;
+  /* Bengali runs visually smaller than latin at the same px size. */
+  font-size: calc(1em * var(--fq-bn-scale, 1.06));
+}
+
+/* Phase 2.2 — বাংলা has no letter case. `text-transform` on Bengali produces
+   nothing but broken tracking, so caps are locale-branched, never blanket.
+   Storefront copy uses `fq-caps`; raw `uppercase` is lint-blocked. */
+@utility fq-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+:where([lang="bn"]) .fq-caps,
+:where([lang="bn"]).fq-caps {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Phase 2.3 — length elasticity. বাংলা runs 15–30% longer than English, so
+   nothing inside a Bangla subtree may be a fixed-width box. */
+:where([lang="bn"]) :is(button, a[href], [role="button"], .fq-chip, [role="tab"]) {
+  width: auto;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* Phase 2.5 — numerals. `--fq-digits` is the theme token; money and spec
+   values keep tabular figures even on the Bangla stack. */
+:where([lang="bn"]) .money,
+:where([lang="bn"]) [data-numeric],
+:where([lang="bn"]) [class~="tabular-nums"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Mixed-script runs (SKUs, model numbers, units) inside Bangla copy. */
+[dir="ltr"][lang="en"] {
+  unicode-bidi: isolate;
+}
+
+
+
+/* ------------------------------------------------ Phase 6 — responsive layer */
+
+/* Every storefront node is a query container, so a rail dropped into a 4-column
+   slot behaves like a rail in a full-width slot — its own width decides, not
+   the viewport. Breakpoints stay platform-fixed (see src/lib/responsive.ts). */
+@utility fq-node {
+  min-width: 0;
+}
+
+/* Base nodes remain ordinary viewport-responsive blocks. Container-aware
+   widgets opt in only when the engine supports container queries. */
+@supports (container-type: inline-size) {
+  .fq-node {
+    container-type: inline-size;
+    container-name: fq-node;
+  }
+}
+
+.fq-subgrid { display: grid; grid-template-columns: 1fr; }
+@supports (grid-template-columns: subgrid) {
+  .fq-subgrid { grid-template-columns: subgrid; }
+}
+
+/* Column spans against the 12/8/4 grid. Mobile-first: a span fills the row
+   below md, clamps to 8 columns on tablet and opens to 12 from xl up. */
+[class*="fq-span-"] { grid-column: 1 / -1; min-width: 0; }
+@media (min-width: 768px) {
+  .fq-span-1 { grid-column: span 1 / span 1; }
+  .fq-span-2 { grid-column: span 2 / span 2; }
+  .fq-span-3 { grid-column: span 3 / span 3; }
+  .fq-span-4 { grid-column: span 4 / span 4; }
+  .fq-span-5 { grid-column: span 5 / span 5; }
+  .fq-span-6 { grid-column: span 6 / span 6; }
+  .fq-span-7 { grid-column: span 7 / span 7; }
+  .fq-span-8,
+  .fq-span-9,
+  .fq-span-10,
+  .fq-span-11,
+  .fq-span-12 { grid-column: span 8 / span 8; }
+}
+@media (min-width: 1280px) {
+  .fq-span-9 { grid-column: span 9 / span 9; }
+  .fq-span-10 { grid-column: span 10 / span 10; }
+  .fq-span-11 { grid-column: span 11 / span 11; }
+  .fq-span-12 { grid-column: span 12 / span 12; }
+}
+
+/* Fluid type bound to tokens — one clamp per step, no per-breakpoint soup. */
+.fq-theme-scope {
+  --fq-step-0: clamp(0.875rem, 0.84rem + 0.18vw, 1rem);
+  --fq-step-1: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
+  --fq-step-2: clamp(1.25rem, 1.12rem + 0.6vw, 1.6rem);
+  --fq-step-3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  --fq-step-4: clamp(1.9rem, 1.4rem + 2.4vw, 3.25rem);
+}
+.fq-theme-scope h1 { font-size: var(--fq-step-4); }
+.fq-theme-scope h2 { font-size: var(--fq-step-3); }
+.fq-theme-scope h3 { font-size: var(--fq-step-2); }
+
+/* Touch: 44px minimum on anything tappable inside a storefront surface. */
+.fq-theme-scope :is(button, a[href], [role="button"], summary, input[type="checkbox"], input[type="radio"]) {
+  min-height: 44px;
+}
+.fq-theme-scope :is(button, [role="button"]) { min-width: 44px; }
+.fq-theme-scope :is(button, a[href], [role="button"]):where(.fq-inline, .fq-inline *) {
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Sticky bars clear the iOS home indicator and the notch. */
+@utility fq-safe-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+@utility fq-safe-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+/* Nothing may push the document sideways at 320px. */
+html, body { overflow-x: clip; }
+.fq-theme-scope { min-width: 0; }
+
+
+/* ================================================= Phase 10.1 — marketing */
+/*
+ * Tokens for the public marketing surface only. They never leak into the
+ * merchant admin or a tenant storefront: every rule below is either a token on
+ * `.fq-marketing` or a utility a marketing component opts into by name.
+ *
+ * Direction: teal primary (already AA at 12px on white), a warm amber accent
+ * for proof/numbers, a display face for headlines and tabular figures for
+ * money. No Inter-on-purple-gradient default.
+ */
+@utility fq-marketing {
+  --fq-gradient-hero: radial-gradient(
+      120% 120% at 12% 0%,
+      color-mix(in oklab, var(--color-bd-teal-400) 22%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      90% 90% at 92% 8%,
+      color-mix(in oklab, var(--color-bondhu-amber-500) 16%, transparent) 0%,
+      transparent 60%
+    );
+  --fq-gradient-ink: linear-gradient(
+    92deg,
+    var(--color-foreground) 0%,
+    color-mix(in oklab, var(--color-bd-teal-700) 70%, var(--color-foreground)) 100%
+  );
+  --shadow-lift: 0 1px 2px rgb(16 32 28 / 0.05), 0 12px 32px -12px rgb(16 32 28 / 0.22);
+  --shadow-lift-lg: 0 2px 4px rgb(16 32 28 / 0.06), 0 32px 64px -24px rgb(16 32 28 / 0.28);
+  --ring-focus: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-bd-teal-600);
+
+  /* Section rhythm — one scale, used for every vertical gap on the site. */
+  --fq-rhythm-xs: clamp(1rem, 0.9rem + 0.6vw, 1.5rem);
+  --fq-rhythm-sm: clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem);
+  --fq-rhythm-md: clamp(2.5rem, 2rem + 2.2vw, 4.5rem);
+  --fq-rhythm-lg: clamp(4rem, 3rem + 4vw, 7.5rem);
+  --fq-measure: 68ch;
+}
+
+/* Reading measure. The class is used across every marketing band; without this
+   rule it silently no-ops and body copy runs to 120ch on a wide monitor. */
+@utility fq-measure {
+  max-width: var(--fq-measure, 68ch);
+}
+
+@utility fq-section {
+  padding-block: var(--fq-rhythm-lg, 4rem);
+}
+
+@utility fq-lift {
+  box-shadow: var(--shadow-lift);
+}
+
+/* Focus is never removed on marketing surfaces — it is styled. */
+.fq-marketing :is(a, button, [role="button"], input, select, textarea, summary):focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+  border-radius: var(--radius-fq-md);
+}
+
+/* Skip link: off-screen until focused, then pinned top-left above everything. */
+@utility fq-skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-fq-md);
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  transition: top 160ms var(--ease-fq-out);
+}
+.fq-skip-link:focus-visible {
+  top: 0.5rem;
+}
+
+/* GradientMesh blobs. Composited transforms only; the drift is dropped whenever
+   the primitive resolves to reduced/off intent (data-drifting="false") and by
+   the global prefers-reduced-motion block above. */
+.fq-mesh-blob {
+  position: absolute;
+  width: 46rem;
+  height: 46rem;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.55;
+  transform: translate3d(0, 0, 0);
+}
+/* On porcelain the mesh is a whisper, not a light show: indigo and sky at low
+   alpha, so it tints the canvas without ever competing with type. */
+.fq-mesh-blob-a {
+  top: -18rem;
+  left: -12rem;
+  background: radial-gradient(circle, oklch(0.70 0.165 250 / 0.5), transparent 68%);
+}
+.fq-mesh-blob-b {
+  top: -22rem;
+  right: -14rem;
+  background: radial-gradient(circle, oklch(0.62 0.19 268 / 0.42), transparent 68%);
+}
+.fq-mesh-blob-c {
+  top: 6rem;
+  left: 38%;
+  background: radial-gradient(circle, oklch(0.74 0.14 225 / 0.3), transparent 70%);
+}
+.fq-site .fq-mesh-blob {
+  opacity: 0.3;
+}
+.fq-mesh-blob[data-drifting="true"] {
+  animation: fq-mesh-drift 24s var(--ease-fq-out) infinite alternate;
+  will-change: transform;
+}
+.fq-mesh-blob-b[data-drifting="true"] { animation-duration: 31s; animation-delay: -6s; }
+.fq-mesh-blob-c[data-drifting="true"] { animation-duration: 38s; animation-delay: -12s; }
+
+@keyframes fq-mesh-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(3%, 2.5%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-mesh-blob { animation: none !important; }
+  [data-motion="marquee"] > * { animation: none !important; }
+}
+
+
+/* ================= Marketing surface — Minimalist B&W + Calm Pink + Facebook Blue (see DESIGN.md) */
+/*
+ * `.fq-site` re-maps the semantic tokens for the public marketing surface only.
+ * Implements Hallmark & WCAG eye-soothing contrast guidelines:
+ *   - Light (default): Silky calm blush/pink warmth instead of sterile flat white,
+ *     deep soothing charcoal ink (11.2:1 AAA), Facebook blue action triggers (5.1:1 AA).
+ *   - Dark: Rich twilight obsidian (not OLED-glare #000), soft parchment milk ink (11.8:1 AAA),
+ *     luminous blue action triggers (4.6:1 AA).
+ */
+.fq-site {
+  /* Canvas: Silky calm blush/pink warmth instead of sterile, glare-inducing flat white */
+  --color-background: oklch(0.978 0.008 25);
+  --color-foreground: oklch(0.26 0.015 25);
+  --color-card: oklch(0.995 0.003 25);
+  --color-primary: oklch(0.48 0.23 255);
+  --color-primary-foreground: oklch(0.99 0.003 25);
+  --color-muted: oklch(0.94 0.008 25);
+  --color-muted-foreground: oklch(0.40 0.018 25);
+  --color-border: oklch(0.91 0.008 25);
+  --color-accent: oklch(0.95 0.025 25);
+  --color-accent-foreground: oklch(0.38 0.12 20);
+
+  /* One primary signal (Accessible Facebook Blue: 5.2:1 against canvas) + Brand pink focal mark */
+  --fq-signal: oklch(0.48 0.23 255);
+  --fq-violet: oklch(0.48 0.23 255);
+  --fq-magenta: oklch(0.62 0.22 18);
+  --fq-orange: oklch(0.72 0.15 40);
+  --fq-teal: oklch(0.65 0.16 175);
+  --fq-ink: oklch(0.26 0.015 25);
+  --fq-pink-calm: oklch(0.978 0.008 25);
+  --fq-pink-accent: oklch(0.62 0.22 18);
+  --fq-pink-subtle: oklch(0.95 0.025 25);
+
+  /* Porcelain is soft, not editorial-square: the console radii carry over so
+     the marketing page and the product look like one artefact. */
+  --radius-fq-sm: 8px;
+  --radius-fq-md: 12px;
+  --radius-fq-lg: 16px;
+
+  /* Elevation: gentle warm elevation cues */
+  --shadow-lift: 0 1px 3px rgba(35, 25, 30, 0.05),
+    0 12px 28px -10px rgba(35, 25, 30, 0.08);
+  --shadow-lift-lg: 0 2px 6px rgba(35, 25, 30, 0.06),
+    0 28px 60px -20px rgba(35, 25, 30, 0.12);
+  --ring-focus: 0 0 0 2px var(--color-background), 0 0 0 4px var(--fq-signal);
+
+  /* Marketing type: Space Grotesk for display, DM Sans for body/UI — the same
+     pairing the console uses, so the marketing page and the product read as one
+     product. The metric-matched `* Fallback` faces sit immediately after the
+     real family so the pre-swap render has the same box as the post-swap
+     render; without them the swap re-wrapped whole bands (see the @font-face
+     block above). Bangla keeps Noto Sans Bengali so matras never fall back. */
+  --font-display-fq: "Space Grotesk", "Geist Fallback", "DM Sans",
+    "Manrope Fallback", "Noto Sans Bengali", "Noto Sans Bengali Fallback",
+    system-ui, sans-serif;
+  --font-sans: "DM Sans", "Manrope Fallback", "Space Grotesk", "Geist Fallback",
+    "Noto Sans Bengali", "Noto Sans Bengali Fallback", system-ui, sans-serif;
+
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Dark mode theme override for public marketing surfaces */
+.fq-site[data-theme="dark"],
+.dark .fq-site,
+:root.dark .fq-site {
+  --color-background: oklch(0.14 0.005 285);
+  --color-foreground: oklch(0.95 0.005 285);
+  --color-card: oklch(0.18 0.008 285);
+  --color-card-foreground: oklch(0.95 0.005 285);
+  --color-primary: oklch(0.70 0.21 255);
+  --color-primary-foreground: oklch(0.99 0.003 25);
+  --color-muted: oklch(0.22 0.01 285);
+  --color-muted-foreground: oklch(0.70 0.015 285);
+  --color-border: oklch(0.26 0.01 285);
+  --color-accent: oklch(0.22 0.01 285);
+  --color-accent-foreground: oklch(0.95 0.005 285);
+
+  --fq-signal: oklch(0.65 0.18 265);
+  --fq-violet: oklch(0.65 0.18 265);
+  --fq-magenta: oklch(0.72 0.18 20);
+  --fq-orange: oklch(0.76 0.14 235);
+  --fq-teal: oklch(0.72 0.13 225);
+  --fq-ink: oklch(0.95 0.005 285);
+  --fq-pink-calm: oklch(0.20 0.015 25);
+  --fq-pink-accent: oklch(0.72 0.18 20);
+  --fq-pink-subtle: oklch(0.25 0.025 25);
+
+  --shadow-lift: 0 1px 2px oklch(0 0 0 / 0.5),
+    0 18px 40px -24px oklch(0 0 0 / 0.9);
+  --shadow-lift-lg: 0 2px 4px oklch(0 0 0 / 0.6),
+    0 40px 80px -36px oklch(0 0 0 / 1);
+}
+
+.fq-site .fq-glass {
+  background-color: color-mix(in oklab, var(--color-card) 70%, transparent);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(12px);
+}
+
+.fq-site[data-theme="dark"] .fq-glass,
+.dark .fq-site .fq-glass,
+:root.dark .fq-site .fq-glass {
+  background-color: color-mix(in oklab, var(--color-card) 40%, transparent);
+  border: 1px solid color-mix(in oklab, #ffffff 10%, transparent);
+  box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(16px);
+}
+
+.fq-site :is(h1, h2, h3, .fq-display) {
+  font-family: var(--font-display-fq);
+}
+
+
+/* Links and selection are the only chromatic signals on the canvas. */
+.fq-site ::selection { background: color-mix(in oklab, var(--fq-signal) 35%, transparent); }
+.fq-site .fq-link { color: var(--fq-signal); }
+
+/* ---------------------------------------------------- editorial primitives */
+
+/* Editorial divider in place of a card edge. */
+@utility fq-rule {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(to right, var(--fq-edge), rgb(255 255 255 / 0.02));
+}
+
+/* Numbered index tag used down the left rail of editorial scenes. */
+@utility fq-index {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  color: var(--color-muted-foreground);
+}
+
+/* Masked line reveal — the one authored typography moment. Each line sits in
+   an overflow-clipped box and rises into it on a per-line delay. Static before
+   hydration and inert under reduced motion. */
+@utility fq-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.04em;
+  & > span {
+    display: block;
+    will-change: transform;
+  }
+}
+
+[data-choreo="on"] .fq-line > span {
+  animation: fq-line-rise 900ms var(--ease-fq-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation-delay: var(--fq-line-delay, 0ms);
+}
+
+@keyframes fq-line-rise {
+  from { transform: translate3d(0, 108%, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-choreo="on"] .fq-line > span { animation: none !important; }
+}
+
+/* Display type: poster tracking in latin, neutral tracking in Bangla. */
+@utility fq-display {
+  font-weight: 600;
+  letter-spacing: -0.042em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+:where([lang="bn"]) .fq-display { letter-spacing: 0; line-height: 1.35; }
+
+/* The signature container: 4% white, blurred, and a 1px 14% white edge —
+ * TODO §10.3 makes the edge the elevation, so the ambient shadow below it is
+ * only a depth cue and never the sole signal that the surface is raised. */
+@utility fq-glass {
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid var(--fq-edge, rgb(255 255 255 / 0.14));
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-lift);
+}
+
+@utility fq-glass-hover {
+  transition: border-color 200ms var(--ease-fq-out), transform 200ms var(--ease-fq-out);
+  &:hover {
+    border-color: rgb(255 255 255 / 0.16);
+    transform: translateY(-2px);
+  }
+}
+
+/* Aurora atmosphere — low-alpha behind content, never a section fill. */
+@utility fq-aurora {
+  position: relative;
+  isolation: isolate;
+  /* Phase 10.3: the field is inset -10% horizontally, which counts toward the
+   * band's scrollWidth and shows up as 38px of phantom horizontal scroll at
+   * 375px. `clip` contains the atmosphere without creating a scroll container
+   * (so `position: sticky` inside a band keeps working, unlike `hidden`). */
+  overflow: clip;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto -10%;
+    height: 140%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(48% 60% at 14% 8%, color-mix(in oklab, var(--fq-violet) 42%, transparent), transparent 70%),
+      radial-gradient(42% 52% at 82% 0%, color-mix(in oklab, var(--fq-magenta) 32%, transparent), transparent 72%),
+      radial-gradient(46% 46% at 60% 90%, color-mix(in oklab, var(--fq-teal) 30%, transparent), transparent 70%);
+    filter: blur(30px);
+    opacity: 0.55;
+  }
+}
+
+/* Phase 10.4 — aurora drift (TODO §10.4).
+ *
+ * The loop window (24–38s) lives in `src/lib/motion-policy.ts` as
+ * MOTION_TOKENS.drift and is asserted against this block by
+ * `src/lib/motion-choreography.test.ts`, so the CSS and the spec cannot drift
+ * apart. Three properties matter and all three are deliberate:
+ *
+ *   • it animates transform only, on a pseudo element that already has its own
+ *     compositing layer, so a frame costs no layout and no repaint of content;
+ *   • it is gated on `data-band-drift="true"`, which `Band` only sets after
+ *     hydration at full motion intent — the first paint is always static;
+ *   • `alternate` avoids the visible snap a looping keyframe gets when the
+ *     start and end frames differ, which at 31s is otherwise a "glitch" report
+ *     nobody can reproduce on demand.
+ */
+@keyframes fq-aurora-drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.06); }
+}
+
+.fq-aurora[data-band-drift="true"]::before {
+  animation: fq-aurora-drift 31s var(--ease-fq-in-out, ease-in-out) infinite alternate;
+  will-change: transform;
+}
+
+/* A second drifting field in one viewport is a §10.3 chroma violation, but if a
+   route ever nests one the slower loop keeps them from beating against each
+   other while the gate reports it. */
+.fq-aurora[data-band-drift="true"] .fq-aurora[data-band-drift="true"]::before {
+  animation-duration: 38s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-aurora[data-band-drift="true"]::before { animation: none !important; }
+}
+
+/* Full-saturation gradient spotlight tile. Scarce by design: 1–2 per page. */
+@utility fq-spotlight {
+  background-color: var(--fq-signal);
+  background-image: linear-gradient(
+    118deg,
+    color-mix(in oklab, var(--fq-signal) 100%, #fff 6%),
+    var(--fq-magenta) 92%
+  );
+  color: var(--fq-ink, hsl(36 14% 6%));
+  border: 1px solid rgb(0 0 0 / 0.18);
+}
+
+@utility fq-hairline {
+  border-color: rgb(255 255 255 / 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-glass-hover:hover { transform: none; }
+}
+
+
+/* ========================== Phase 10.3 — visual rhythm (TODO §10.3) =======
+ * The numeric spec lives in `src/lib/site-rhythm.ts` and is asserted against
+ * this block by `src/lib/site-rhythm.test.ts`, so the rhythm cannot drift on
+ * one side without failing on the other. Bands consume these utilities; no
+ * marketing route re-types a container width or a section padding again.
+ */
+.fq-site {
+  --fq-container: 1200px;
+  --fq-container-narrow: 768px;
+  --fq-container-wide: 1440px;
+  --fq-gutter: 16px;
+  --fq-band-y: 72px;
+  --fq-band-y-tight: 40px;
+  /* Edge-light elevation: TODO §10.3 pins the inner edge at 14% white. */
+  --fq-edge: rgb(255 255 255 / 0.14);
+  --fq-edge-soft: rgb(255 255 255 / 0.08);
+  /* Body copy: Manrope 17/1.6. Set on the scope so every band inherits it. */
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .fq-site {
+    --fq-gutter: 24px;
+    --fq-band-y: 112px;
+    --fq-band-y-tight: 56px;
+  }
+}
+
+/* Bangla resets poster tracking and opens the line box for matras, on every
+ * element in the subtree rather than only on `.fq-display`. `.font-bangla`
+ * is included because routes tag single Bangla spans inside an English page,
+ * where there is no `lang="bn"` ancestor to inherit from. */
+.fq-site :is([lang="bn"], [lang="bn"] *, .font-bangla, .font-bangla-display) {
+  letter-spacing: 0;
+  line-height: max(1.35em, 1.6em);
+}
+
+/* TODO §10.6 / WCAG 2.5.8 — a 24px floor on every pointer target.
+ *
+ * One scope-wide rule rather than a utility sprinkled across nine route files,
+ * so a new marketing page inherits the floor instead of having to remember it.
+ *
+ * `@layer base` is load-bearing, not decoration. Unlayered CSS beats every
+ * cascade layer, so the first version of this rule — written outside a layer
+ * with a `.fq-site :is(...)` selector — silently *overrode* `min-h-11` and
+ * shrank every 44px header control to 24px. Inside the base layer the utility
+ * layer wins, so the rule can only ever raise a target that has no explicit
+ * height of its own.
+ *
+ * `min-height` is ignored on `display: inline`, which is exactly right: a link
+ * inside a sentence is exempt under 2.5.8. Standalone inline links that are
+ * *not* in running prose get `fq-tap` instead.
+ */
+@layer base {
+  .fq-site :is(a[href], button, summary, [role="button"]) {
+    min-height: 24px;
+  }
+  .fq-site :is(input[type="checkbox"], input[type="radio"]) {
+    min-width: 24px;
+    min-height: 24px;
+  }
+}
+
+/* A standalone link (a card's onward link, an email address in a contact
+ * panel, a version switcher) is a target, not prose. `fq-tap` gives it a real
+ * 24px box without turning it into a button. */
+@utility fq-tap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Both axes: a two-glyph link ("v1") clears 24px tall and still fails on
+     width. WCAG 2.5.8 is a 24×24 rule, not a height rule. */
+  min-height: 24px;
+  min-width: 24px;
+}
+
+
+@utility fq-band {
+  padding-block: var(--fq-band-y, 72px);
+}
+
+@utility fq-band-tight {
+  padding-block: var(--fq-band-y-tight, 40px);
+}
+
+@utility fq-band-inner {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--fq-gutter, 16px);
+  max-width: calc(var(--fq-container) + var(--fq-gutter) * 2);
+}
+
+@utility fq-band-inner-narrow {
+  max-width: calc(var(--fq-container-narrow) + var(--fq-gutter) * 2);
+}
+
+@utility fq-band-inner-wide {
+  max-width: calc(var(--fq-container-wide) + var(--fq-gutter) * 2);
+}
+
+/* Elevation is the edge, not the shadow: promote the 1px edge to 14% and keep
+ * the ambient shadow strictly as a depth cue beneath it. */
+@utility fq-edge-light {
+  border: 1px solid var(--fq-edge);
+  box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.1) inset;
+}
+
+/* ------------------------------------------------------------------
+ * `/admin` console skin — "Slate & Signal" (Phase 2 token layer).
+ *
+ * Scoped to `.fq-admin` so the storefront, marketing site and `/root`
+ * console are untouched. Rules the tokens encode:
+ *   - exactly two text tones (foreground + muted-foreground)
+ *   - one signal colour (ink-blue) for CTA / focus / active nav
+ *   - brand teal reserved for data and brand moments, never for chrome
+ *   - elevation is a hairline plus a micro shadow; only modals get depth
+ *   - radii 6 / 10 / 14, no other steps
+ * ------------------------------------------------------------------ */
+.fq-admin {
+  /* Porcelain Light — cool porcelain canvas, pure-white plates, indigo signal.
+     Type: Space Grotesk for headings/metrics, DM Sans for UI text. */
+  --font-sans: "DM Sans", "Manrope Fallback", "Noto Sans Bengali",
+    "Noto Sans Bengali Fallback", system-ui, sans-serif;
+  --fq-font-display: "Space Grotesk", "Geist Fallback", var(--font-sans);
+  font-family: var(--font-sans);
+
+  /* surfaces */
+  --color-background: oklch(0.19 0.014 255);
+  --color-card: oklch(0.238 0.015 255);
+  --color-card-foreground: oklch(0.905 0.008 250);
+  --color-popover: oklch(0.238 0.015 255);
+  --color-popover-foreground: oklch(0.905 0.008 250);
+  --color-muted: oklch(0.25 0.015 255);
+  --color-sidebar: oklch(0.20 0.015 255);
+
+  /* ink — exactly two tones */
+  --color-foreground: oklch(0.878 0.008 250);
+  --color-muted-foreground: oklch(0.735 0.02 250);
+
+  /* signal — facebook-style blue */
+  --color-primary: oklch(0.70 0.165 250);
+  --color-primary-foreground: oklch(0.16 0.04 255);
+  --color-ring: oklch(0.70 0.165 250);
+
+  /* accent tints derived from the signal */
+  --color-accent: oklch(0.3 0.075 255);
+  --color-accent-foreground: oklch(0.9 0.07 250);
+  --fq-signal: oklch(0.70 0.165 250);
+  --fq-signal-soft: oklch(0.3 0.075 255);
+  --fq-brand: oklch(0.74 0.15 255);
+  --fq-brand-ink: oklch(0.9 0.07 250);
+
+  /* status — badges only, never a bare colour cue */
+  --fq-success: oklch(0.72 0.15 150);
+  --fq-warning: oklch(0.82 0.14 85);
+  --fq-danger: oklch(0.66 0.19 25);
+  --color-destructive: oklch(0.66 0.19 25);
+  --color-destructive-foreground: oklch(0.99 0 0);
+
+  /* hairlines only — 1px, never 2px */
+  --color-border: oklch(0.305 0.015 255);
+  --color-input: oklch(0.305 0.015 255);
+  --color-secondary: oklch(0.25 0.015 255);
+  --color-secondary-foreground: oklch(0.905 0.008 250);
+
+  /* geometry */
+  --radius-fq-sm: 8px;
+  --radius-fq-md: 12px;
+  --radius-fq-lg: 16px;
+  --radius: 12px;
+
+  /* density scale — every console gap comes from these */
+  --fq-space-1: 4px;
+  --fq-space-2: 8px;
+  --fq-space-3: 12px;
+  --fq-space-4: 16px;
+  --fq-space-5: 24px;
+  --fq-space-6: 32px;
+  --fq-row-h: 44px;
+
+  /* elevation — a plate is a hairline plus a soft, wide, low-alpha shadow */
+  --fq-scrim: oklch(0.1 0.01 60 / 0.62);
+  --fq-admin-shadow: 0 1px 2px oklch(0 0 0 / 0.45),
+    0 8px 24px -14px oklch(0 0 0 / 0.6);
+  --fq-admin-shadow-overlay: 0 16px 44px -12px oklch(0 0 0 / 0.7);
+  --fq-admin-shadow-lift: 0 2px 4px oklch(0 0 0 / 0.5),
+    0 18px 40px -20px oklch(0 0 0 / 0.7);
+
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+
+  /* Porcelain isn't flat: a faint indigo wash pins the canvas behind the
+     plates so white cards read as raised rather than as holes. */
+  background-image: radial-gradient(
+      90% 60% at 100% 0%,
+      oklch(0.70 0.165 250 / 0.1) 0%,
+      transparent 60%
+    ),
+    radial-gradient(70% 50% at 0% 0%, oklch(0.62 0.19 268 / 0.07) 0%, transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Space Grotesk carries every heading and metric in the console. */
+.fq-admin :is(h1, h2, h3, .fq-num, .fq-display-num) {
+  font-family: var(--fq-font-display);
+}
+
+.fq-admin.dark,
+.dark .fq-admin {
+  --color-background: oklch(0.172 0.014 255);
+  --color-card: oklch(0.218 0.015 255);
+  --color-card-foreground: oklch(0.905 0.008 250);
+  --color-popover: oklch(0.218 0.015 255);
+  --color-popover-foreground: oklch(0.905 0.008 250);
+  --color-muted: oklch(0.245 0.015 255);
+  --color-sidebar: oklch(0.18 0.015 255);
+
+  --color-foreground: oklch(0.878 0.008 250);
+  --color-muted-foreground: oklch(0.735 0.02 250);
+
+  --color-primary: oklch(0.70 0.165 250);
+  --color-primary-foreground: oklch(0.16 0.03 50);
+  --color-ring: oklch(0.70 0.165 250);
+
+  --color-accent: oklch(0.29 0.075 255);
+  --color-accent-foreground: oklch(0.9 0.07 250);
+  --fq-signal: oklch(0.70 0.165 250);
+  --fq-signal-soft: oklch(0.29 0.075 255);
+  --fq-brand: oklch(0.74 0.15 255);
+  --fq-brand-ink: oklch(0.9 0.07 250);
+
+  --fq-success: oklch(0.68 0.14 150);
+  --fq-warning: oklch(0.81 0.14 80);
+  --fq-danger: oklch(0.64 0.18 25);
+  --color-destructive: oklch(0.64 0.18 25);
+
+  --color-border: oklch(0.295 0.015 255);
+  --color-input: oklch(0.295 0.015 255);
+  --color-secondary: oklch(0.245 0.015 255);
+  --color-secondary-foreground: oklch(0.905 0.008 250);
+
+  --fq-scrim: oklch(0.12 0.006 260 / 0.6);
+  --fq-admin-shadow: 0 1px 2px oklch(0 0 0 / 0.4);
+  --fq-admin-shadow-overlay: 0 16px 40px -12px oklch(0 0 0 / 0.6);
+}
+
+/* Legacy plates keep the micro shadow; nothing in the console gets more. */
+.fq-admin .shadow-xs,
+.fq-admin .shadow-sm,
+.fq-admin .shadow,
+.fq-admin .bg-card {
+  box-shadow: var(--fq-admin-shadow);
+}
+
+/* Only overlays earn real depth. */
+.fq-admin [role="dialog"],
+.fq-admin [data-slot="dialog-content"],
+.fq-admin [data-slot="popover-content"],
+.fq-admin [data-slot="dropdown-menu-content"] {
+  box-shadow: var(--fq-admin-shadow-overlay);
+}
+
+/* Quiet headings, loud data. */
+.fq-admin :is(h1, h2, h3) {
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+/* Money and metrics never jitter between rows. */
+.fq-admin :is(td, th) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hairlines only — a 2px border is always a mistake in the console. */
+.fq-admin :is(.border-2, .border-x-2, .border-y-2) {
+  border-width: 1px;
+}
+
+/* Focus lands on the signal colour, everywhere. */
+.fq-admin :is(a, button, [role="button"], input, select, textarea):focus-visible {
+  outline: 2px solid var(--fq-signal, var(--color-primary, currentColor));
+  outline-offset: 2px;
+}
+
+.fq-admin .fq-iconbtn:focus-visible,
+.fq-admin .fq-iconbtn:focus {
+  outline: 2px solid var(--fq-signal, var(--color-primary, currentColor));
+  outline-offset: 2px;
+}
+
+/* Cards read as a plate: hairline edge, a top inner light and a soft shadow. */
+@utility fq-card {
+  position: relative;
+  border-radius: var(--radius-fq-lg);
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--fq-admin-shadow, 0 1px 2px rgb(0 0 0 / 0.05));
+}
+
+/* Interactive plates lift on hover; transform + shadow only, so it is free. */
+@utility fq-card-interactive {
+  transition:
+    transform 180ms var(--ease-fq-out),
+    box-shadow 180ms var(--ease-fq-out),
+    border-color 180ms var(--ease-fq-out);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--fq-admin-shadow-lift, var(--fq-admin-shadow));
+    border-color: color-mix(in oklab, var(--fq-signal) 28%, var(--color-border));
+  }
+}
+
+/* The one loud surface per screen: the hero metric plate. Indigo ink,
+   porcelain type, and a soft signal bloom in the corner. */
+@utility fq-plate-signal {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-fq-lg);
+  color: var(--color-primary-foreground);
+  background-color: oklch(0.28 0.09 275);
+  background-image: radial-gradient(
+      110% 130% at 8% 0%,
+      color-mix(in oklab, var(--fq-signal) 85%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(80% 110% at 100% 100%, oklch(0.62 0.16 220 / 0.55) 0%, transparent 60%);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.14) inset,
+    0 20px 44px -22px oklch(0.28 0.09 275 / 0.85);
+}
+
+/* Thin bordered "chip" used for deltas, filters and counts. */
+@utility fq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid color-mix(in oklab, currentColor 26%, transparent);
+  background-color: color-mix(in oklab, currentColor 9%, transparent);
+}
+
+/* A hairline that fades out at both ends — used between dense rows. */
+@utility fq-divide-soft {
+  & > * + * {
+    border-top: 1px solid color-mix(in oklab, var(--color-border) 75%, transparent);
+  }
+}
+
+/* Every money / metric cell opts into tabular figures explicitly. */
+@utility fq-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Second (and only second) text tone. */
+@utility fq-sub {
+  color: var(--color-muted-foreground);
+}
+
+/* Brand teal for data, not for chrome. */
+@utility fq-brand-ink {
+  color: var(--fq-brand-ink);
+}
+
+/* Status pill: colour never carries the meaning alone — pair with a label. */
+@utility fq-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fq-space-1, 4px);
+  border-radius: var(--radius-fq-sm);
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  border: 1px solid color-mix(in oklab, currentColor 28%, transparent);
+  background-color: color-mix(in oklab, currentColor 10%, transparent);
+}
+
+
+/* ------------------------------------------------------------------------- *
+ * Phase 9 — console motion, skeleton and state layer.
+ *
+ * The console is a tool, not a landing page: motion is opacity/transform only,
+ * 160–240ms, and never blocks input. Everything below is scoped to `.fq-admin`
+ * so the marketing site keeps its slower, expressive curves.
+ * ------------------------------------------------------------------------- */
+
+.fq-admin {
+  --fq-dur-fast: 120ms;
+  --fq-dur: 160ms;
+  --fq-dur-slow: 240ms;
+  --fq-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes fq-fade-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fq-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fq-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Route/section content settles in once; it never re-animates on re-render. */
+@utility fq-enter {
+  animation: fq-fade-rise var(--fq-dur-slow, 240ms) var(--fq-ease) both;
+}
+
+@utility fq-enter-fade {
+  animation: fq-fade var(--fq-dur, 160ms) var(--fq-ease) both;
+}
+
+/* Loading geometry: a moving sheen reads as "in flight" without a spinner. */
+@utility fq-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-foreground) 6%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: fq-shimmer 1.4s linear infinite;
+}
+
+/* An optimistic row is visibly provisional until the server confirms it. */
+@utility fq-pending {
+  opacity: 0.55;
+  transition: opacity var(--fq-dur, 160ms) var(--fq-ease);
+}
+
+/* Interactive chrome shares one duration so nothing feels out of step. */
+.fq-admin :is(a, button, [role="button"], [role="tab"], input, select, textarea) {
+  transition-duration: var(--fq-dur-fast, 120ms);
+  transition-timing-function: var(--fq-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-admin *,
+  .fq-admin *::before,
+  .fq-admin *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------------- *
+ * Component layer — magicui / shadcn / daisyUI / floatui inspired primitives.
+ *
+ * These are *component* effects, not palette changes: they add depth, edge
+ * light, beams, sheen and pattern to existing plates without touching a single
+ * colour token. Everything derives from `currentColor`, `--fq-signal` or the
+ * existing surface tokens, so both themes inherit them for free.
+ * ------------------------------------------------------------------------- */
+
+@keyframes fq-beam {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes fq-sheen {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(240%) skewX(-18deg);
+  }
+}
+
+@keyframes fq-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--fq-signal) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* magicui "border beam": a conic light travelling the card edge on hover. */
+@utility fq-beam {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg 300deg,
+      color-mix(in oklab, var(--fq-signal) 90%, transparent) 340deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 220ms var(--ease-fq-out, ease);
+    pointer-events: none;
+    z-index: 1;
+  }
+  &:hover::before,
+  &:focus-within::before {
+    opacity: 1;
+    animation: fq-beam 2.6s linear infinite;
+  }
+}
+
+/* daisyUI-ish glossy button: a sheen sweeps across on hover. */
+@utility fq-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 45%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, white 34%, transparent),
+      transparent
+    );
+    transform: translateX(-140%) skewX(-18deg);
+    pointer-events: none;
+  }
+  &:hover::after {
+    animation: fq-sheen 900ms var(--ease-fq-out, ease) 1;
+  }
+}
+
+/* floatui-style patterned plate: a faint dot field behind the content. */
+@utility fq-dots {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: radial-gradient(
+      currentColor 1px,
+      transparent 1px
+    );
+    background-size: 14px 14px;
+    opacity: 0.07;
+    mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+/* Grid field variant for hero plates. */
+@utility fq-gridlines {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image:
+      linear-gradient(to right, currentColor 1px, transparent 1px),
+      linear-gradient(to bottom, currentColor 1px, transparent 1px);
+    background-size: 44px 44px;
+    opacity: 0.06;
+    mask-image: radial-gradient(90% 120% at 0% 0%, #000 0%, transparent 72%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+/* shadcn-style inner edge light on the top of a plate. */
+@utility fq-edge-inner {
+  box-shadow:
+    inset 0 1px 0 0 var(--fq-edge-light, color-mix(in oklab, white 12%, transparent)),
+    var(--fq-admin-shadow, 0 1px 2px rgb(0 0 0 / 0.05));
+}
+
+/* Live/attention affordance for a small dot or icon button. */
+@utility fq-ring-pulse {
+  animation: fq-pulse-ring 2s var(--ease-fq-out, ease) infinite;
+}
+
+/* Row-level hover accent for dense tables: a signal bar slides in at the left. */
+@utility fq-row-accent {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--fq-signal);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 160ms var(--ease-fq-out, ease);
+  }
+  &:hover::before {
+    transform: scaleY(1);
+  }
+}
+
+/* Same accent for <tr>. The bar lives on the first *cell*, never on the row:
+   Chromium wraps generated content of a table-row — even absolutely
+   positioned — in an anonymous cell, shifting every column one slot right. */
+@utility fq-tr-accent {
+  & > :is(td, th):first-child {
+    position: relative;
+  }
+  & > :is(td, th):first-child::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--fq-signal);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 160ms var(--ease-fq-out, ease);
+  }
+  &:hover > :is(td, th):first-child::before,
+  &:focus > :is(td, th):first-child::before {
+    transform: scaleY(1);
+  }
+}
+
+/* magicui-style spotlight: a soft signal glow tracks the top of the plate on
+   hover, so a card reacts to attention without moving the layout. */
+@utility fq-hover-spotlight {
+  position: relative;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: radial-gradient(
+      70% 60% at 50% 0%,
+      color-mix(in oklab, var(--fq-signal) 22%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 240ms var(--ease-fq-out, ease);
+    pointer-events: none;
+    z-index: -1;
+  }
+  &:hover::after,
+  &:focus-within::after {
+    opacity: 1;
+  }
+}
+
+/* shadcn-style focus treatment: a signal ring plus a faint outer glow. */
+@utility fq-focus-glow {
+  transition:
+    border-color 150ms var(--ease-fq-out, ease),
+    box-shadow 150ms var(--ease-fq-out, ease);
+  &:hover {
+    border-color: color-mix(in oklab, var(--fq-signal) 34%, var(--border));
+  }
+  &:focus-visible,
+  &:focus-within {
+    border-color: color-mix(in oklab, var(--fq-signal) 62%, var(--border));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--fq-signal) 22%, transparent),
+      0 6px 20px -14px var(--fq-signal);
+    outline: none;
+  }
+}
+
+/* daisyUI-style active tab pill: signal fill with an inner edge light. */
+@utility fq-pill-active {
+  background: color-mix(in oklab, var(--fq-signal) 16%, transparent);
+  color: var(--fq-signal);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--fq-signal) 34%, transparent),
+    0 6px 18px -14px var(--fq-signal);
+}
+
+/* uiverse-style glow on a hero surface: a wide signal halo under the plate. */
+@utility fq-halo {
+  box-shadow:
+    var(--fq-admin-shadow, 0 1px 2px rgb(0 0 0 / 0.05)),
+    0 24px 70px -40px color-mix(in oklab, var(--fq-signal) 80%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+ * Console canvas — gradient + pattern + slow animation.
+ *
+ * The ink/canvas pair now sits inside a comfort band (~12–13:1) instead of at
+ * ~16:1, so the canvas can no longer rely on brute contrast to separate plates
+ * from background. Depth comes from three cheap composited layers instead:
+ * a drifting blue aurora, a hairline dot grid, and a vignette. All decorative,
+ * all `pointer-events: none`, all parked under prefers-reduced-motion.
+ * ------------------------------------------------------------------------- */
+.fq-admin,
+.fq-site {
+  position: relative;
+  isolation: isolate;
+}
+
+.fq-admin::before,
+.fq-site::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60% 45% at 12% 0%, color-mix(in oklab, var(--fq-signal) 22%, transparent) 0%, transparent 62%),
+    radial-gradient(55% 40% at 92% 8%, color-mix(in oklab, var(--fq-brand, var(--fq-signal)) 16%, transparent) 0%, transparent 60%),
+    radial-gradient(70% 55% at 50% 108%, color-mix(in oklab, var(--fq-signal) 12%, transparent) 0%, transparent 66%);
+  opacity: 0.55;
+  animation: fq-canvas-drift 42s ease-in-out infinite alternate;
+}
+
+@utility fq-feature-card {
+  border-radius: var(--radius-lg);
+  background-color: color-mix(in oklab, var(--color-card) 60%, transparent);
+  backdrop-filter: blur(24px);
+  border: 1px solid color-mix(in oklab, var(--color-foreground) 8%, transparent);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--color-primary) 20%, transparent);
+    border-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
+    transform: translateY(-4px);
+  }
+}
+
+@utility fq-feature-card-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, color-mix(in oklab, var(--color-primary) 8%, transparent), transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.fq-feature-card:hover .fq-feature-card-glow {
+  opacity: 1;
+}
+
+@keyframes fq-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+/* Primary CTA: Monochrome High-Contrast (Linear inspired) */
+@utility fq-cta-primary {
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  border: 1px solid transparent;
+  box-shadow: inset 0 -2px 4px color-mix(in oklab, var(--color-background) 20%, transparent), 0 2px 8px color-mix(in oklab, var(--color-foreground) 10%, transparent);
+  transition: all 0.2s ease;
+  font-weight: 600;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: inset 0 -1px 2px color-mix(in oklab, var(--color-background) 10%, transparent), 0 4px 12px color-mix(in oklab, var(--color-foreground) 20%, transparent);
+    opacity: 0.95;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Secondary CTA: Frosted Glass Edge + Dim Metallic Shimmer */
+@utility fq-cta-secondary {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--color-card) 40%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+  color: var(--color-foreground);
+  box-shadow: 0 2px 8px -2px color-mix(in oklab, oklch(0 0 0) 20%, transparent);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0; width: 50%;
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-foreground) 4%, transparent), transparent);
+    animation: fq-shimmer 4s infinite;
+    pointer-events: none;
+  }
+  
+  &:hover {
+    background: color-mix(in oklab, var(--color-card) 60%, transparent);
+    border-color: color-mix(in oklab, var(--color-foreground) 15%, transparent);
+    box-shadow: 0 4px 12px -2px color-mix(in oklab, oklch(0 0 0) 30%, transparent);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: scale(0.98) translateY(0);
+  }
+}
+
+.fq-admin.dark::before,
+.dark .fq-admin::before,
+.dark .fq-site::before,
+:root.dark .fq-site::before {
+  opacity: 0.85;
+  background-image:
+    radial-gradient(65% 55% at 15% 0%, color-mix(in oklab, oklch(0.55 0.12 280) 30%, transparent) 0%, transparent 70%),
+    radial-gradient(55% 40% at 85% 15%, color-mix(in oklab, oklch(0.60 0.15 65) 20%, transparent) 0%, transparent 60%),
+    radial-gradient(70% 55% at 50% 105%, color-mix(in oklab, oklch(0.50 0.10 200) 25%, transparent) 0%, transparent 70%);
+}
+
+.fq-admin::after,
+.fq-site::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-foreground) 12%, transparent) 1px, transparent 0),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, oklch(0 0 0 / 0.35) 100%);
+  background-size: 22px 22px, 100% 100%;
+  opacity: 0.5;
+}
+
+@keyframes fq-canvas-drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
+  to { transform: translate3d(1.5%, 1.5%, 0) scale(1.09); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-admin::before,
+  .fq-site::before {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phase 14 — page builder (studio)                                    */
+/* ------------------------------------------------------------------ */
+
+.fq-studio {
+  --fq-studio-bar: oklch(0.22 0.012 255);
+  --fq-studio-bar-ink: oklch(0.96 0.004 255);
+}
+
+.fq-studio-bar {
+  background: var(--fq-studio-bar);
+  color: var(--fq-studio-bar-ink);
+  border-bottom: 1px solid color-mix(in oklab, var(--fq-studio-bar-ink) 14%, transparent);
+}
+
+.fq-studio-bar button:focus-visible,
+.fq-studio :focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Phase 3 — Motion & Text FX Utilities                               */
+/* ------------------------------------------------------------------ */
+
+/* vengenceui.com — featured card halo glow with signal token */
+@utility fq-card-glow {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: radial-gradient(
+      85% 65% at 50% 0%,
+      color-mix(in oklab, var(--fq-signal) 35%, transparent) 0%,
+      transparent 75%
+    );
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 300ms var(--ease-fq-out, ease);
+  }
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ripplix.com — smooth horizontal wave divider */
+@utility fq-wave-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--fq-signal) 28%, var(--border)) 50%,
+    transparent 100%
+  );
+}
+
+/* text-effects.colorion.co — fx-aurora text shimmer */
+@utility fx-aurora {
+  background-image: linear-gradient(
+    135deg,
+    currentColor 0%,
+    color-mix(in oklab, var(--fq-signal) 80%, currentColor) 50%,
+    currentColor 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: fx-aurora-shift 8s ease-in-out infinite alternate;
+}
+
+@keyframes fx-aurora-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* text-effects.colorion.co — fx-spotlight subtle beam sweep */
+@utility fx-spotlight {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--fq-signal) 18%, transparent) 50%,
+      transparent 100%
+    );
+    animation: fx-spotlight-sweep 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes fx-spotlight-sweep {
+  0%, 20% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* text-effects.colorion.co — fx-decoder technical term spacing */
+@utility fx-decoder {
+  transition: letter-spacing 300ms var(--ease-fq-out, ease), opacity 300ms var(--ease-fq-out, ease);
+  letter-spacing: -0.01em;
+}
+
+/* text-effects.colorion.co — fx-datastream cryptographic hash badge */
+@utility fx-datastream {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.04em;
+  background: color-mix(in oklab, var(--fq-signal) 12%, transparent);
+  color: var(--fq-signal);
+  border-radius: var(--radius-fq-sm);
+  padding: 0.125rem 0.375rem;
+}
+
+/* text-effects.colorion.co — fx-scanner laser scan bar */
+@utility fx-scanner {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--fq-signal);
+    box-shadow: 0 0 8px 1px var(--fq-signal);
+    top: 0;
+    animation: fx-scanner-line 2.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes fx-scanner-line {
+  0% { top: 10%; opacity: 0.25; }
+  50% { opacity: 0.9; }
+  100% { top: 90%; opacity: 0.25; }
+}
+
+/* text-effects.colorion.co — fx-ticker tabular metric styling */
+@utility fx-ticker {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* text-effects.colorion.co — fx-hologram security protocol shimmer */
+@utility fx-hologram {
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklab, var(--fq-signal) 15%, transparent),
+    color-mix(in oklab, var(--color-foreground) 8%, transparent) 50%,
+    color-mix(in oklab, var(--fq-signal) 15%, transparent)
+  );
+  background-size: 200% 200%;
+  animation: fx-hologram-shimmer 5s ease infinite;
+}
+
+@keyframes fx-hologram-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* text-effects.colorion.co — fx-softblur quote focus */
+@utility fx-softblur {
+  filter: blur(0px);
+  transition: filter 400ms var(--ease-fq-out, ease);
+}
+
+/* text-effects.colorion.co — fx-marker subtle key takeaway underline */
+@utility fx-marker {
+  position: relative;
+  display: inline;
+  background-image: linear-gradient(
+    transparent 65%,
+    color-mix(in oklab, var(--fq-signal) 20%, transparent) 65%
+  );
+  background-repeat: no-repeat;
+}
+
+/* text-effects.colorion.co — fx-inktrap studio manifesto heading */
+@utility fx-inktrap {
+  font-feature-settings: "ss01", "ss02", "cv01";
+  letter-spacing: -0.03em;
+}
+
+/* text-effects.colorion.co — fx-typewriter terminal caret */
+@utility fx-typewriter {
+  border-right: 2px solid var(--fq-signal);
+  animation: fx-caret-blink 1s step-end infinite;
+}
+
+@keyframes fx-caret-blink {
+  from, to { border-color: transparent; }
+  50% { border-color: var(--fq-signal); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-aurora,
+  .fx-hologram {
+    animation: none;
+  }
+  .fx-spotlight::after,
+  .fx-scanner::after {
+    animation: none;
+    display: none;
+  }
+  .fx-typewriter {
+    border-right: none;
+    animation: none;
+  }
+}
+
+
+@utility fq-viewport-floor {
+  min-height: 100vh;
+  @supports (height: 100dvh) {
+    min-height: 100dvh;
+  }
+}
+
+@utility fq-subgrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  @supports (grid-template-columns: subgrid) {
+    grid-template-columns: subgrid;
+  }
+}
+
+/* Grid System */
+@utility fq-grid-12-8-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--fq-gutter);
+}
+@media (min-width: 768px) {
+  .fq-grid-12-8-4 {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .fq-grid-12-8-4 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}

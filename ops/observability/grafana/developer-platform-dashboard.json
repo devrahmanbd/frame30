@@ -1,0 +1,173 @@
+{
+  "title": "Framique — Developer platform (Phase 3)",
+  "uid": "framique-developer-platform",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "tags": ["framique", "api", "phase-3"],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      },
+      {
+        "name": "route",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "query": "label_values(framique_api_request_total, route)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "REST API", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "stat",
+      "title": "API requests / s",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_api_request_total{route=~\"$route\"}[5m]))", "legendFormat": "rps" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps", "decimals": 2 } }
+    },
+    {
+      "type": "stat",
+      "title": "p95 latency",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(framique_api_request_ms_bucket{route=~\"$route\"}[10m])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "type": "gauge",
+      "title": "5xx share",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "sum(rate(framique_api_request_total{status=~\"5..\"}[15m])) / clamp_min(sum(rate(framique_api_request_total[15m])), 0.001)",
+          "legendFormat": "5xx"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.01 },
+              { "color": "red", "value": 0.05 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests by status class",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (status) (rate(framique_api_request_total{route=~\"$route\"}[5m]))", "legendFormat": "{{status}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Errors by route (4xx/5xx)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        {
+          "expr": "topk(10, sum by (route) (rate(framique_api_request_total{status=~\"4..|5..\"}[15m])))",
+          "legendFormat": "{{route}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Throttling and idempotent replays",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(rate(framique_api_request_total{status=\"429\"}[15m]))", "legendFormat": "429 throttled" },
+        { "expr": "sum(rate(framique_api_request_total{status=\"replay\"}[15m]))", "legendFormat": "idempotent replay" }
+      ]
+    },
+    { "type": "row", "title": "OAuth 2.1", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 } },
+    {
+      "type": "stat",
+      "title": "Refresh-token reuse detections (24h)",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum(increase(framique_oauth_token_total{action=\"reuse_detected\"}[24h]))", "legendFormat": "reuse" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Token lifecycle",
+      "gridPos": { "h": 8, "w": 9, "x": 6, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (action) (rate(framique_oauth_token_total[15m]))", "legendFormat": "{{action}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Authorization codes",
+      "gridPos": { "h": 8, "w": 9, "x": 15, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_oauth_code_total[15m]))", "legendFormat": "{{outcome}}" },
+        { "expr": "sum by (action) (rate(framique_oauth_app_total[1h]))", "legendFormat": "app {{action}}" }
+      ]
+    },
+    { "type": "row", "title": "Webhook registry", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 } },
+    {
+      "type": "timeseries",
+      "title": "Deliveries, replays and dead letters",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (outcome) (rate(framique_webhook_delivery_total[15m]))", "legendFormat": "{{outcome}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Endpoint lifecycle + events fanned out",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "targets": [
+        { "expr": "sum by (action) (rate(framique_webhook_endpoint_total[1h]))", "legendFormat": "{{action}}" },
+        { "expr": "topk(10, sum by (event) (rate(framique_webhook_event_total[15m])))", "legendFormat": "{{event}}" }
+      ]
+    }
+  ]
+}
