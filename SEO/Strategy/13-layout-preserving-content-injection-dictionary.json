@@ -1,0 +1,113 @@
+{
+  "routes": {
+    "/": {
+      "targetFile": "src/lib/marketing/home.content.ts",
+      "h1": {
+        "en": "Sell online and in-store. Take bKash, cards, and COD on one ledger.",
+        "bn": "অনলাইন স্টোর, সরাসরি বিকাশ পেমেন্ট আর কুরিয়ার বুকিং — সবই এক প্ল্যাটফর্মে।"
+      },
+      "subheadline": {
+        "en": "Launch a high-conversion, sovereign online storefront in minutes. Framique unites visual layout freedom, sub-45ms edge server-side rendering, and native local payment rails with 0% platform transaction fees. Collect payments via direct tokenized bKash and Nagad merchant settlement, automate Steadfast and Pathao courier dispatch from your order drawer, and manage online sales alongside physical counter POS on a single unified inventory ledger. No third-party plugin bloat, no monthly dollar subscriptions, and zero hidden revenue cuts.",
+        "bn": "কয়েক মিনিটেই লাইভ করুন আপনার ব্র্যান্ডেড অনলাইন স্টোর। ফ্রামিক দিচ্ছে আধুনিক ভিজ্যুয়াল ডিজাইন স্বাধীনতা, সাব-৪৫মি.সে. এজ স্পিড এবং ০% ট্রানজ্যাকশন ফি। নিজস্ব বিকাশ ও নগদ মার্চেন্ট সেটেলমেন্টে পেমেন্ট গ্রহণ করুন, অর্ডার ড্যাশবোর্ড থেকেই ১-ক্লিকে স্টিডফাস্ট ও পাঠাও কুরিয়ার বুক করুন এবং অনলাইন ও অফলাইন বিক্রির হিসাব রাখুন একটিমাত্র ইনভেন্টরি লেজারে।"
+      },
+      "eyebrow": "Sovereign Cloud E-Commerce Engine",
+      "primaryKeyword": "cloud ecommerce cms",
+      "secondaryKeywords": ["shopify alternative bangladesh", "0 transaction fee online store", "best ecommerce platform for small business"]
+    },
+    "/pricing": {
+      "targetFile": "src/routes/pricing.tsx",
+      "h1": {
+        "en": "Pay a flat fee. Keep 100% of your sales.",
+        "bn": "একটি নির্ধারিত মাসিক ফি দিন। নিজের আয়ের শতভাগ নিজের কাছে রাখুন।"
+      },
+      "subheadline": {
+        "en": "Marketplaces take up to 15% of your revenue and foreign platforms charge an extra 2% on external payment gateways. Framique eliminates the app tax with transparent flat monthly platform tiers and zero sales commission.",
+        "bn": "মার্কেটপ্লেসের ১৫% কমিশন এবং অন্যান্য প্ল্যাটফর্মের ২% ট্রানজ্যাকশন ফি পরিহার করুন। ফ্রামিকের স্বচ্ছ ফ্ল্যাট প্রাইসিংয়ে নিজের উপার্জনের সম্পূর্ণ অংশ আপনার।"
+      },
+      "eyebrow": "Transparent Flat Pricing · Zero Commission",
+      "primaryKeyword": "ecommerce cms with 0 transaction fee",
+      "secondaryKeywords": ["shopify pricing vs framique", "flat fee ecommerce platform", "tco ecommerce calculator"]
+    },
+    "/features": {
+      "targetFile": "src/routes/features.tsx",
+      "h1": {
+        "en": "Stop stitching plugins. Start selling.",
+        "bn": "প্লাগিনের ঝামেলা শেষ করুন। সরাসরি ব্যবসা বৃদ্ধিতে মনোযোগ দিন।"
+      },
+      "subheadline": {
+        "en": "Framique replaces 10 disparate SaaS subscriptions with a single unified cloud commerce operating system: custom Bento grid storefronts, POS, tokenized bKash/Nagad checkout, and automated courier fulfillment out of the box.",
+        "bn": "ফ্রামিক দিচ্ছে একটি সম্পূর্ণ সমন্বিত ক্লাউড কমার্স অপারেটিং সিস্টেম: কাস্টম স্টোরফ্রন্ট, পিওএস, সরাসরি বিকাশ-নগদ চেকআউট এবং স্বয়ংক্রিয় কুরিয়ার বুকিং।"
+      },
+      "eyebrow": "Everything You Need, Built-In",
+      "primaryKeyword": "saas ecommerce builder features",
+      "secondaryKeywords": ["all in one ecommerce software", "pos and online store unified", "automated courier booking ecommerce"]
+    },
+    "/faq": {
+      "targetFile": "src/lib/marketing/faq.content.ts",
+      "h1": {
+        "en": "Frequently Asked Questions: Architecture, Pricing & Local Rails",
+        "bn": "সাধারণ প্রশ্নোত্তর: আর্কিটেকচার, প্রাইসিং এবং লোকাল কমার্স"
+      },
+      "subheadline": {
+        "en": "Plain answers regarding BDT pricing, tokenized bKash and Nagad settlement, Cash-on-Delivery risk controls, courier booking APIs, database tenant isolation, and custom domains.",
+        "bn": "টাকায় দাম, বিকাশ ও নগদ মার্চেন্ট সেটেলমেন্ট, সিওডি রিস্ক স্কোরিং, কুরিয়ার বুকিং এবং ডেটাবেস সিকিউরিটি নিয়ে স্পষ্ট প্রশ্নোত্তর।"
+      },
+      "eyebrow": "Zero Sales Fluff · Direct Answers",
+      "primaryKeyword": "framique ecommerce faq",
+      "secondaryKeywords": ["bkash payment gateway integration questions", "how to reduce cod delivery returns", "switch from shopify to local platform"]
+    },
+    "/builder": {
+      "targetFile": "src/lib/marketing/builder.content.ts",
+      "h1": {
+        "en": "Storefront builder — sections, tokens, versions",
+        "bn": "স্টোরফ্রন্ট বিল্ডার — সেকশন, টোকেন ও ভার্সন"
+      },
+      "subheadline": {
+        "en": "Assemble a high-converting storefront from modular Bento grids, customize design tokens visually with OKLCH precision, and publish with 1-click instant rollback. Freeform design freedom backed by real commerce muscle.",
+        "bn": "সেকশন থেকে স্টোরফ্রন্ট সাজান, পুরো স্টোরের ডিজাইন টোকেন একবারেই বদলান, ভার্সন পাবলিশ করুন এবং এক ক্লিকে রোলব্যাক করুন।"
+      },
+      "primaryKeyword": "headless ecommerce visual builder",
+      "secondaryKeywords": ["framer like ecommerce builder", "visual website builder for online store"]
+    },
+    "/payments": {
+      "targetFile": "src/lib/marketing/payments.content.ts",
+      "h1": {
+        "en": "Payments — bKash, Nagad, card and COD, reconciled",
+        "bn": "পেমেন্ট — বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারি"
+      },
+      "subheadline": {
+        "en": "Accept bKash, Nagad, Rocket, card and cash on delivery in one checkout. Every single taka matches an order, with payouts settling directly to your merchant accounts without platform escrow delay.",
+        "bn": "একটি চেকআউটেই বিকাশ, নগদ, রকেট, উপায়, কার্ড ও ক্যাশ অন ডেলিভারি নিন। প্রতিটি টাকা অর্ডারের সাথে মেলে, সরাসরি মার্চেন্ট অ্যাকাউন্টে জমা হয়।"
+      },
+      "primaryKeyword": "bkash integrated ecommerce website",
+      "secondaryKeywords": ["nagad online payment integration", "single step checkout mobile ecommerce"]
+    },
+    "/fulfilment": {
+      "targetFile": "src/lib/marketing/fulfilment.content.ts",
+      "h1": {
+        "en": "Fulfilment — courier booking, labels and tracking",
+        "bn": "ফুলফিলমেন্ট — কুরিয়ার বুকিং, লেবেল ও ট্র্যাকিং"
+      },
+      "subheadline": {
+        "en": "Book Steadfast, Pathao, RedX and Paperfly pickups directly from your order drawer. Pre-dispatch fraud scoring flags repeat-refusal phone numbers, reducing COD return losses by up to 60%.",
+        "bn": "অর্ডার ড্রয়ার থেকেই স্টেডফাস্ট, পাঠাও, রেডএক্স ও পেপারফ্লাই পিকআপ বুক করুন, লেবেল প্রিন্ট করুন ও ডেলিভারি ট্র্যাক করুন। সিওডি রিটার্ন নিজেই মিলে যায়।"
+      },
+      "primaryKeyword": "steadfast pathao courier automated booking",
+      "secondaryKeywords": ["ecommerce order fulfillment bangladesh", "reduce cod return rate"]
+    },
+    "/about": {
+      "targetFile": "src/routes/about.tsx",
+      "h1": {
+        "en": "We are building the commerce OS for Bangladesh.",
+        "bn": "আমরা তৈরি করছি বাংলাদেশের নিজস্ব সার্বভৌম কমার্স ওএস।"
+      },
+      "subheadline": {
+        "en": "Foreign platforms were never architected for COD, bKash, or local logistics. Framique is engineered from first principles: sub-45ms edge performance, open React code, and zero vendor lock-in.",
+        "bn": "আমদানি করা সফটওয়্যার বাংলাদেশের স্থানীয় সিওডি এবং মোবাইল পেমেন্ট বাজারের জন্য তৈরি হয়নি। ফ্রামিক দিচ্ছে স্থানীয় কমার্সের উপযোগী সম্পূর্ণ আধুনিক পরিকাঠামো।"
+      },
+      "eyebrow": "Our Story · Engineering Principles",
+      "primaryKeyword": "cloud commerce operating system bangladesh",
+      "secondaryKeywords": ["open architecture saas cms", "zero vendor lock in ecommerce"]
+    }
+  }
+}
