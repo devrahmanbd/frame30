@@ -1,0 +1,4 @@
+/Users/rahman/Documents/frame30/src/assets/marketing/merchant.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/team-studio.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/inventory-desk.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/support-team.jpg

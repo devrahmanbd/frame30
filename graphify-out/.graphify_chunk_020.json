@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {"id": "mkt_shop_owner_phone", "type": "image", "label": "Shop Owner Phone Marketing Image", "properties": {"asset": "shop-owner-phone", "format": "jpg", "category": "merchant_usage"}},
+    {"id": "mkt_pos_counter", "type": "image", "label": "POS Counter Marketing Image", "properties": {"asset": "pos-counter", "format": "jpg", "category": "point_of_sale"}},
+    {"id": "mkt_packing_station", "type": "image", "label": "Packing Station Marketing Image", "properties": {"asset": "packing-station", "format": "jpg", "category": "fulfillment"}},
+    {"id": "mkt_merchant", "type": "image", "label": "Merchant Marketing Image", "properties": {"asset": "merchant", "format": "jpg", "category": "merchant_profile"}},
+    {"id": "mkt_team_studio", "type": "image", "label": "Team Studio Marketing Image", "properties": {"asset": "team-studio", "format": "jpg", "category": "team_collaboration"}}
+  ],
+  "edges": [
+    {"source": "mkt_shop_owner_phone", "target": "mkt_merchant", "type": "depicts", "properties": {"relation": "user_persona"}},
+    {"source": "mkt_pos_counter", "target": "mkt_packing_station", "type": "related_to", "properties": {"relation": "retail_operations"}},
+    {"source": "mkt_team_studio", "target": "mkt_merchant", "type": "related_to", "properties": {"relation": "business_team"}}
+  ],
+  "hyperedges": [
+    {"id": "he_merchant_persona", "nodes": ["mkt_shop_owner_phone", "mkt_merchant", "mkt_team_studio"], "label": "Merchant Personas", "properties": {"category": "target_audience"}},
+    {"id": "he_retail_operations", "nodes": ["mkt_pos_counter", "mkt_packing_station"], "label": "Retail Operations", "properties": {"category": "operations"}},
+    {"id": "he_business_scenarios", "nodes": ["mkt_shop_owner_phone", "mkt_pos_counter", "mkt_packing_station"], "label": "Business Use Cases", "properties": {"category": "use_case"}}
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

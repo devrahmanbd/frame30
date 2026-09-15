@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/docs/02-merchant/wp-reference/el_66_template_library.png
+/Users/rahman/Documents/frame30/docs/02-merchant/wp-reference/wp_media_details.png
+/Users/rahman/Documents/frame30/docs/02-merchant/wp-reference/wp_media_grid.png
+/Users/rahman/Documents/frame30/public/favicon.ico
+/Users/rahman/Documents/frame30/public/apple-touch-icon.png

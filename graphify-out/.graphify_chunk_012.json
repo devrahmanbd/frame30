@@ -1,0 +1,248 @@
+{
+  "nodes": [
+    {
+      "id": "el_3b_presets",
+      "label": "Elementor Structure Presets Selector",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_3b_presets_layouts",
+      "label": "Column Layout Preset Options",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_24_image_added",
+      "label": "Elementor Image Widget Added to Canvas",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_24_image_edit_panel",
+      "label": "Image Widget Edit Panel with Content Settings",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_24_image_structure",
+      "label": "Structure Panel Showing Flexbox and Image Hierarchy",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_pages_bulk_edit",
+      "label": "WordPress Bulk Edit Interface for Pages",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_bulk_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_pages_bulk_edit_fields",
+      "label": "Bulk Edit Field Selectors for Author and Status",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_bulk_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_8_customize",
+      "label": "WordPress Customizer Interface",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_8_customize.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_8_customize_sidebar",
+      "label": "Customizer Sidebar with Site Identity and Homepage Settings",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_8_customize.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_7_dropped",
+      "label": "Elementor Image Widgets Dropped into Canvas",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_7_dropped.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_7_dropped_search",
+      "label": "Image Widget Search Results in Elementor Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_7_dropped.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "el_3b_presets",
+      "target": "el_3b_presets_layouts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_24_image_added",
+      "target": "el_24_image_edit_panel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_24_image_added",
+      "target": "el_24_image_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_pages_bulk_edit",
+      "target": "wp_pages_bulk_edit_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_bulk_edit.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "themes_8_customize",
+      "target": "themes_8_customize_sidebar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/themes_8_customize.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_7_dropped",
+      "target": "el_7_dropped_search",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_7_dropped.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_3b_presets",
+      "target": "el_24_image_added",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_24_image_added",
+      "target": "el_7_dropped",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/el_24_image_added.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_pages_bulk_edit",
+      "target": "themes_8_customize",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_bulk_edit.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "elementor_page_building_flow",
+      "label": "Elementor Page Building Workflow",
+      "nodes": ["el_3b_presets", "el_24_image_added", "el_7_dropped"],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png"
+    },
+    {
+      "id": "wp_administration_screens",
+      "label": "WordPress Administration and Customization Screens",
+      "nodes": ["wp_pages_bulk_edit", "themes_8_customize"],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_bulk_edit.png"
+    },
+    {
+      "id": "elementor_image_workflow",
+      "label": "Elementor Image Widget Workflow",
+      "nodes": ["el_3b_presets", "el_7_dropped", "el_24_image_added"],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/el_3b_presets.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

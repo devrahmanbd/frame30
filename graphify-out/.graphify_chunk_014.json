@@ -1,0 +1,206 @@
+{
+  "nodes": [
+    {
+      "id": "el_66_template_library",
+      "label": "Elementor Template Library Modal",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_66_library_blocks_tab",
+      "label": "Template Library Blocks Tab with Category Filter",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_66_library_pro_templates",
+      "label": "Pro-Only Template Previews in Library",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_media_details",
+      "label": "WordPress Media Attachment Details Dialog",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_media_details.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_media_details_metadata",
+      "label": "Attachment Metadata: Alt Text Title Caption File URL",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_media_details.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_media_grid",
+      "label": "WordPress Media Library Grid View",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_media_grid.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_media_grid_toolbar",
+      "label": "Media Library Toolbar with Bulk Select and Filters",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_media_grid.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "favicon_ico",
+      "label": "Framique Favicon ICO File",
+      "file_type": "image",
+      "source_file": "public/favicon.ico",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "apple_touch_icon",
+      "label": "Framique Apple Touch Icon",
+      "file_type": "image",
+      "source_file": "public/apple-touch-icon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "el_66_template_library",
+      "target": "el_66_library_blocks_tab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_66_template_library",
+      "target": "el_66_library_pro_templates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_media_details",
+      "target": "wp_media_details_metadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_media_details.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_media_grid",
+      "target": "wp_media_grid_toolbar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_media_grid.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_media_details",
+      "target": "wp_media_grid",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/wp_media_details.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_66_template_library",
+      "target": "wp_media_grid",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "favicon_ico",
+      "target": "apple_touch_icon",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "public/favicon.ico",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "wp_media_management",
+      "label": "WordPress Media Library Management",
+      "nodes": ["wp_media_details", "wp_media_details_metadata", "wp_media_grid", "wp_media_grid_toolbar"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_media_grid.png"
+    },
+    {
+      "id": "framique_brand_assets",
+      "label": "Framique Brand Icon Assets",
+      "nodes": ["favicon_ico", "apple_touch_icon"],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/favicon.ico"
+    },
+    {
+      "id": "elementor_template_system",
+      "label": "Elementor Template Library System",
+      "nodes": ["el_66_template_library", "el_66_library_blocks_tab", "el_66_library_pro_templates"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_66_template_library.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

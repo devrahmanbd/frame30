@@ -2,13 +2,19 @@
 
 > Keep the repository in a clean, working state. All tests and type checks must pass before pushing changes.
 
+## What Framique Is
+
+Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
+
 ## Stack
 
 - **Runtime**: Bun (ESM, `"type": "module"`)
 - **Framework**: TanStack Start + TanStack Router + TanStack React Query
 - **Styling**: Tailwind CSS v4 + shadcn/ui (New York style)
-- **Backend**: Self-hosted Supabase (Postgres, RLS, GoTrue)
+- **Backend**: Self-hosted Supabase (Postgres, RLS, GoTrue) + Redis
 - **Build**: Vite 8 + Nitro
+- **Edge**: OpenResty + ACME TLS, Blue/Green canary deploys
+- **Observability**: Prometheus + Grafana + Loki + Sentry (all self-hosted)
 
 ## Commands
 
@@ -57,6 +63,14 @@ bun run a11y:gate                 # axe-core, >= 90 score
 - Test files live next to the code they test in `src/lib/`.
 - `[A]` (money, security, tenant isolation) features need deny cases + replay cases + audit assertions, not just happy paths.
 - E2E suites: `store_loop`, `admin_loop`, `builder_loop`, `market_loop`, `public_loop`, `failure_loop`, `owner_loop`, `currency_gate`, `fraud_loop`, `ai_support_loop`, `tenant_isolation`.
+
+## Bun Supply-Chain Guard
+
+`bunfig.toml` enforces a **24h minimum release age** for all npm packages. No bypasses in `minimumReleaseAgeExcludes` without explicit approval. This prevents supply-chain attacks from freshly published malicious packages.
+
+## SEO & Marketing
+
+`SEO/` contains the full semantic SEO vault: keyword research, topical authority maps, content briefs, schema specs, comparison routes, and editorial playbooks. See `SEO/README.md` for the master index.
 
 ## Related Docs
 

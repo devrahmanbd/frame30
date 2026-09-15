@@ -1,0 +1,269 @@
+{
+  "nodes": [
+    {
+      "id": "themes_3_install",
+      "label": "WordPress Theme Repository Installation Grid",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_3_install.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_3_install_filters",
+      "label": "Theme Filter Tabs: Popular Latest Block Themes Favorites",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_3_install.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_1",
+      "label": "WordPress Installed Themes Management Page",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_1.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_1_active_theme",
+      "label": "Active Theme Card with Customize Button",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_1.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_45_keyboard_shortcuts",
+      "label": "Elementor Keyboard Shortcuts Modal",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_45_shortcuts_actions",
+      "label": "Keyboard Shortcuts for Actions: Undo Redo Copy Paste Delete",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_45_shortcuts_panels",
+      "label": "Keyboard Shortcuts for Panels: Finder Structure History",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_61_global_colors",
+      "label": "Elementor Site Settings Global Colors and Fonts",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_61_system_colors",
+      "label": "System Color Palette: Primary Secondary Text Accent",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_61_global_fonts",
+      "label": "Global Fonts Typography Settings Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_page_settings",
+      "label": "Elementor Post Settings Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_page_settings.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_page_settings_general",
+      "label": "Page Settings General Section with Title and Status",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_page_settings.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "themes_3_install",
+      "target": "themes_3_install_filters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/themes_3_install.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "themes_1",
+      "target": "themes_1_active_theme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/themes_1.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_45_keyboard_shortcuts",
+      "target": "el_45_shortcuts_actions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_45_keyboard_shortcuts",
+      "target": "el_45_shortcuts_panels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_61_global_colors",
+      "target": "el_61_system_colors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_61_global_colors",
+      "target": "el_61_global_fonts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_page_settings",
+      "target": "el_page_settings_general",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_page_settings.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "themes_3_install",
+      "target": "themes_1",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/themes_3_install.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_61_global_colors",
+      "target": "el_page_settings",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_45_keyboard_shortcuts",
+      "target": "el_page_settings",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "wp_theme_management",
+      "label": "WordPress Theme Installation and Management",
+      "nodes": ["themes_3_install", "themes_3_install_filters", "themes_1", "themes_1_active_theme"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/themes_3_install.png"
+    },
+    {
+      "id": "elementor_design_system",
+      "label": "Elementor Design System Settings",
+      "nodes": ["el_61_global_colors", "el_61_system_colors", "el_61_global_fonts"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_61_site_Global_Colors.png"
+    },
+    {
+      "id": "elementor_editor_productivity",
+      "label": "Elementor Editor Productivity Features",
+      "nodes": ["el_45_keyboard_shortcuts", "el_45_shortcuts_actions", "el_45_shortcuts_panels"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_45_Keyboard_Shortcuts.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

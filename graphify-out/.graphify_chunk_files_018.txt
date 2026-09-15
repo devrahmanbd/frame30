@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/public/media/og/docs.png
+/Users/rahman/Documents/frame30/public/media/og/legal.png
+/Users/rahman/Documents/frame30/public/media/og/customers.png
+/Users/rahman/Documents/frame30/public/media/og/about.png
+/Users/rahman/Documents/frame30/public/media/og/security.png

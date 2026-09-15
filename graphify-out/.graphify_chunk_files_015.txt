@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/public/frame.svg
+/Users/rahman/Documents/frame30/public/logo.svg
+/Users/rahman/Documents/frame30/public/favicon.svg
+/Users/rahman/Documents/frame30/public/media/stills/storefront-mobile.png
+/Users/rahman/Documents/frame30/public/media/stills/storefront-mobile.webp

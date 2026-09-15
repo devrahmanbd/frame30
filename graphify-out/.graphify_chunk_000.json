@@ -1,0 +1,649 @@
+{
+  "chunk_index": 0,
+  "total_chunks": 22,
+  "source_files": [
+    "REPORT.md",
+    "TODO.md",
+    "README.md",
+    "BUILD.md",
+    "SYSTEM.md",
+    "DESIGN.md",
+    "AGENTS.md",
+    "docs/02-merchant/identity-runtime.md",
+    "docs/02-merchant/staff-rbac.md",
+    "docs/02-merchant/customers.md",
+    "docs/02-merchant/staff-approval.md",
+    "docs/02-merchant/README.md",
+    "docs/02-merchant/admin-backbone.md",
+    "docs/02-merchant/options-and-variants.md",
+    "docs/02-merchant/console-ux-checklist.md",
+    "docs/02-merchant/console-route-audit.md",
+    "docs/15-e2e/engineering-gates.md",
+    "docs/15-e2e/admin_loop.md",
+    "docs/15-e2e/owner_loop.md",
+    "docs/15-e2e/fraud_loop.md",
+    "docs/15-e2e/README.md",
+    "docs/15-e2e/theme_registry.md",
+    "docs/15-e2e/ai_support_loop.md",
+    "docs/15-e2e/marketplace_loop.md",
+    "docs/04-builder/theme-plan-marketplace.md"
+  ],
+  "nodes": [
+    {
+      "id": "framique",
+      "type": "concept",
+      "label": "Framique Platform",
+      "description": "Full-stack cloud hosting service provider for ecommerce storefronts. BDT-first, multi-tenant, with CMS, visual builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure.",
+      "source_file": "README.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Central project entity; all other nodes relate back to it."
+      }
+    },
+    {
+      "id": "merchant_admin",
+      "type": "module",
+      "label": "Merchant Admin Module",
+      "description": "The merchant admin console covering RBAC, identity, customers, staff approval, product options/variants, console UX, and route audit.",
+      "source_file": "docs/02-merchant/README.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Aggregates all 02-merchant sub-specs into a single module."
+      }
+    },
+    {
+      "id": "rbac_system",
+      "type": "concept",
+      "label": "RBAC System",
+      "description": "Role-based access control with owner, manager, staff roles. Permission grants per resource (products, orders, themes, etc.). Enforced via Postgres RLS and RPC grants.",
+      "source_file": "docs/02-merchant/staff-rbac.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Core security subsystem referenced across all merchant and E2E specs."
+      }
+    },
+    {
+      "id": "identity_system",
+      "type": "concept",
+      "label": "Identity & Auth System",
+      "description": "Merchant identity runtime covering GoTrue auth, session management, MFA, staff login, and tenant scoping.",
+      "source_file": "docs/02-merchant/identity-runtime.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Foundational auth layer; referenced by RBAC and staff approval."
+      }
+    },
+    {
+      "id": "customers_module",
+      "type": "module",
+      "label": "Customers Module",
+      "description": "Customer list, profiles, order history, tags, and export for merchant admins.",
+      "source_file": "docs/02-merchant/customers.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Core merchant-facing data entity."
+      }
+    },
+    {
+      "id": "staff_approval",
+      "type": "concept",
+      "label": "Staff Approval Workflow",
+      "description": "Owner-approval gate for new staff accounts. Invites, approval, rejection, and revocation flows.",
+      "source_file": "docs/02-merchant/staff-approval.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Crosses RBAC, identity, and audit concerns."
+      }
+    },
+    {
+      "id": "admin_backbone",
+      "type": "concept",
+      "label": "Admin Backbone",
+      "description": "Architectural foundation for the merchant admin console: layout, navigation, data loading patterns, and component structure.",
+      "source_file": "docs/02-merchant/admin-backbone.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Structural foundation for all console pages."
+      }
+    },
+    {
+      "id": "options_variants",
+      "type": "concept",
+      "label": "Options & Variants System",
+      "description": "Product option types (size, color) and variant generation with matrix views, SKU creation, and inventory tracking.",
+      "source_file": "docs/02-merchant/options-and-variants.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Core product data model component."
+      }
+    },
+    {
+      "id": "console_ux",
+      "type": "concept",
+      "label": "Console UX Checklist",
+      "description": "UX standards and checklist for the merchant admin console pages: layout, responsiveness, error states, loading states.",
+      "source_file": "docs/02-merchant/console-ux-checklist.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Quality gate for all console implementations."
+      }
+    },
+    {
+      "id": "console_route_audit",
+      "type": "concept",
+      "label": "Console Route Audit",
+      "description": "Audit of all admin console routes: route definitions, auth guards, permission checks, and data loading.",
+      "source_file": "docs/02-merchant/console-route-audit.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Security and completeness audit for navigation surface."
+      }
+    },
+    {
+      "id": "engineering_gates",
+      "type": "concept",
+      "label": "Engineering Gates",
+      "description": "Release quality gates: typecheck, unit tests, contract tests, schema check, E2E, Lighthouse a11y, performance, and security scans.",
+      "source_file": "docs/15-e2e/engineering-gates.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Cross-cutting quality enforcement referenced by AGENTS.md."
+      }
+    },
+    {
+      "id": "admin_loop",
+      "type": "test_suite",
+      "label": "Admin Loop E2E",
+      "description": "End-to-end test suite for the merchant admin console: login, navigation, CRUD operations, RBAC enforcement.",
+      "source_file": "docs/15-e2e/admin_loop.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Primary admin console validation suite."
+      }
+    },
+    {
+      "id": "owner_loop",
+      "type": "test_suite",
+      "label": "Owner Loop E2E",
+      "description": "End-to-end test suite for owner-specific workflows: staff management, approval gates, billing, settings.",
+      "source_file": "docs/15-e2e/owner_loop.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Validates owner-level RBAC and approval workflows."
+      }
+    },
+    {
+      "id": "fraud_loop",
+      "type": "test_suite",
+      "label": "Fraud Loop E2E",
+      "description": "End-to-end test suite for fraud detection: risk scoring, order flags, manual review, chargeback handling.",
+      "source_file": "docs/15-e2e/fraud_loop.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Validates commerce security and risk subsystem."
+      }
+    },
+    {
+      "id": "theme_registry",
+      "type": "module",
+      "label": "Theme Registry",
+      "description": "Theme install, switch, snapshot, publish, rollback, token overrides, and CDN purge. Includes fallback handling and widget validation. Maps to Tenant006 schema.",
+      "source_file": "docs/15-e2e/theme_registry.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Crosses builder, storefront runtime, and E2E concerns."
+      }
+    },
+    {
+      "id": "ai_support_loop",
+      "type": "test_suite",
+      "label": "AI Support Loop E2E",
+      "description": "End-to-end test suite for AI-powered customer support: provenance chips, money/order/stock answers via server-pinned lookups, provider-down fallback to static FAQ, escalation with order ids.",
+      "source_file": "docs/15-e2e/ai_support_loop.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Validates AI support integration with commerce data."
+      }
+    },
+    {
+      "id": "marketplace_loop",
+      "type": "test_suite",
+      "label": "Marketplace Loop E2E",
+      "description": "End-to-end test suite for the theme marketplace: listing lifecycle, review round-trips, install with rollback, 70/30 payout math, marketplace-down resilience.",
+      "source_file": "docs/15-e2e/marketplace_loop.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Validates marketplace economics and theme distribution."
+      }
+    },
+    {
+      "id": "theme_plan_bazaar",
+      "type": "plan",
+      "label": "Theme Plan Bazaar",
+      "description": "Amazon-class marketplace theme with 48 new + 9 upgraded widgets. AST v3 nesting, data-bound widget contract, responsive panel, demo import.",
+      "source_file": "docs/04-builder/theme-plan-marketplace.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Defines the flagship theme composition and builder contract."
+      }
+    },
+    {
+      "id": "design_system",
+      "type": "concept",
+      "label": "Design System",
+      "description": "Framique design tokens: Facebook Blue + pink palette, typography scale, spacing, shadows, component variants. shadcn/ui New York style.",
+      "source_file": "DESIGN.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Visual language referenced by all UI specs."
+      }
+    },
+    {
+      "id": "architecture",
+      "type": "concept",
+      "label": "Architecture",
+      "description": "System architecture: Bun runtime, TanStack Start + Router + React Query, Tailwind CSS v4, Supabase (Postgres/RLS/GoTrue), Redis, Vite 8 + Nitro, OpenResty edge, Prometheus/Grafana/Loki/Sentry observability.",
+      "source_file": "SYSTEM.md",
+      "line": 1,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Foundational technical decisions affecting all modules."
+      }
+    },
+    {
+      "id": "multi_tenancy",
+      "type": "concept",
+      "label": "Multi-Tenancy",
+      "description": "Tenant isolation via RLS on every public table, explicit GRANTs per role, merchant-scoped data. Each merchant gets a storefront at store.framique.com/<slug>.",
+      "source_file": "SYSTEM.md",
+      "line": 5,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Core architectural constraint referenced across all modules."
+      }
+    },
+    {
+      "id": "rls",
+      "type": "concept",
+      "label": "Row-Level Security",
+      "description": "Postgres RLS policies on every public table. No client-trusted decisions for price, discount, stock, tax, entitlement, risk, or role.",
+      "source_file": "AGENTS.md",
+      "line": 40,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Security enforcement mechanism for multi-tenancy and RBAC."
+      }
+    },
+    {
+      "id": "e2e_testing",
+      "type": "concept",
+      "label": "E2E Testing Framework",
+      "description": "Playwright-based E2E test suites: store_loop, admin_loop, builder_loop, market_loop, public_loop, failure_loop, owner_loop, currency_gate, fraud_loop, ai_support_loop, tenant_isolation.",
+      "source_file": "AGENTS.md",
+      "line": 60,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Quality validation layer for all user-facing flows."
+      }
+    },
+    {
+      "id": "money_rules",
+      "type": "concept",
+      "label": "Money Rules",
+      "description": "Integer minor units for money (amount_minor_int + currency_code). No floats stored, transmitted, or computed. Server-side only price/discount/tax resolution.",
+      "source_file": "AGENTS.md",
+      "line": 35,
+      "file_type": "document",
+      "confidence_score": 1.0,
+      "attributes": {
+        "rationale": "Non-negotiable financial data integrity rule."
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_framique_has_merchant_admin",
+      "source": "framique",
+      "target": "merchant_admin",
+      "relation": "has_module",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "README.md describes Framique as encompassing merchant admin capabilities."
+      }
+    },
+    {
+      "id": "e_merchant_admin_has_rbac",
+      "source": "merchant_admin",
+      "target": "rbac_system",
+      "relation": "implements",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/README.md lists RBAC as a core sub-spec."
+      }
+    },
+    {
+      "id": "e_merchant_admin_has_identity",
+      "source": "merchant_admin",
+      "target": "identity_system",
+      "relation": "implements",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/README.md lists identity-runtime as a sub-spec."
+      }
+    },
+    {
+      "id": "e_merchant_admin_has_customers",
+      "source": "merchant_admin",
+      "target": "customers_module",
+      "relation": "implements",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/README.md lists customers as a sub-spec."
+      }
+    },
+    {
+      "id": "e_staff_approval_uses_rbac",
+      "source": "staff_approval",
+      "target": "rbac_system",
+      "relation": "depends_on",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/staff-approval.md references RBAC for role grants."
+      }
+    },
+    {
+      "id": "e_staff_approval_uses_identity",
+      "source": "staff_approval",
+      "target": "identity_system",
+      "relation": "depends_on",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/staff-approval.md references identity for invite/auth flows."
+      }
+    },
+    {
+      "id": "e_theme_registry_uses_rbac",
+      "source": "theme_registry",
+      "target": "rbac_system",
+      "relation": "depends_on",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/theme_registry.md references Tenant004 staff_has roles grants."
+      }
+    },
+    {
+      "id": "e_theme_registry_part_of_bazaar",
+      "source": "theme_registry",
+      "target": "theme_plan_bazaar",
+      "relation": "serves",
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "Theme registry provides the install/publish mechanics that the Bazaar theme composition uses."
+      }
+    },
+    {
+      "id": "e_bazaar_uses_design_system",
+      "source": "theme_plan_bazaar",
+      "target": "design_system",
+      "relation": "references",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/04-builder/theme-plan-marketplace.md references fq-* token system from the design system."
+      }
+    },
+    {
+      "id": "e_theme_registry_tested_by_e2e",
+      "source": "theme_registry",
+      "target": "e2e_testing",
+      "relation": "tested_by",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/theme_registry.md defines E2E acceptance contract for Tenant006."
+      }
+    },
+    {
+      "id": "e_admin_loop_tests_merchant_admin",
+      "source": "admin_loop",
+      "target": "merchant_admin",
+      "relation": "tests",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/admin_loop.md tests merchant admin console flows."
+      }
+    },
+    {
+      "id": "e_owner_loop_tests_rbac",
+      "source": "owner_loop",
+      "target": "rbac_system",
+      "relation": "tests",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/owner_loop.md tests owner-level RBAC and approval gates."
+      }
+    },
+    {
+      "id": "e_fraud_loop_tests_framique",
+      "source": "fraud_loop",
+      "target": "framique",
+      "relation": "tests",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/fraud_loop.md tests fraud detection across the commerce engine."
+      }
+    },
+    {
+      "id": "e_ai_support_loop_tests_framique",
+      "source": "ai_support_loop",
+      "target": "framique",
+      "relation": "tests",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/ai_support_loop.md tests AI support integration with commerce data."
+      }
+    },
+    {
+      "id": "e_marketplace_loop_tests_theme_registry",
+      "source": "marketplace_loop",
+      "target": "theme_registry",
+      "relation": "tests",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/marketplace_loop.md tests theme install/publish via Tenant006."
+      }
+    },
+    {
+      "id": "e_admin_backbone_supports_console_ux",
+      "source": "admin_backbone",
+      "target": "console_ux",
+      "relation": "supports",
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "Admin backbone provides the structural foundation; console UX checklist defines the quality standards applied to it."
+      }
+    },
+    {
+      "id": "e_console_route_audit_covers_admin",
+      "source": "console_route_audit",
+      "target": "merchant_admin",
+      "relation": "audits",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/console-route-audit.md audits all admin console routes."
+      }
+    },
+    {
+      "id": "e_options_variants_part_of_products",
+      "source": "options_variants",
+      "target": "framique",
+      "relation": "part_of",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/02-merchant/options-and-variants.md defines product variant system within the platform."
+      }
+    },
+    {
+      "id": "e_engineering_gates_enforce_quality",
+      "source": "engineering_gates",
+      "target": "e2e_testing",
+      "relation": "gates",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "docs/15-e2e/engineering-gates.md defines the release quality gates including E2E."
+      }
+    },
+    {
+      "id": "e_rbac_enforced_by_rls",
+      "source": "rbac_system",
+      "target": "rls",
+      "relation": "enforced_by",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "AGENTS.md states RLS on every public table plus explicit GRANTs per role."
+      }
+    },
+    {
+      "id": "e_multi_tenancy_enforced_by_rls",
+      "source": "multi_tenancy",
+      "target": "rls",
+      "relation": "enforced_by",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "SYSTEM.md describes tenant isolation via RLS policies."
+      }
+    },
+    {
+      "id": "e_framique_uses_architecture",
+      "source": "framique",
+      "target": "architecture",
+      "relation": "built_on",
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "SYSTEM.md defines the full stack architecture Framique is built on."
+      }
+    },
+    {
+      "id": "e_money_rules_apply_to_ai_support",
+      "source": "money_rules",
+      "target": "ai_support_loop",
+      "relation": "constrains",
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "AI support loop requires fmtBDT with integer minor units (docs/15-e2e/ai_support_loop.md Golden B)."
+      }
+    },
+    {
+      "id": "e_money_rules_apply_to_marketplace",
+      "source": "money_rules",
+      "target": "marketplace_loop",
+      "relation": "constrains",
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "Marketplace loop 70/30 payout math must equal the ledger using integer amounts (docs/15-e2e/marketplace_loop.md Golden E)."
+      }
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "he_security_enforcement",
+      "type": "cross_cutting",
+      "label": "Security Enforcement Stack",
+      "description": "RBAC + RLS + identity + multi-tenancy work together as a layered security enforcement mechanism across the platform.",
+      "member_nodes": ["rbac_system", "rls", "identity_system", "multi_tenancy"],
+      "confidence_score": 1.0,
+      "attributes": {
+        "source_type": "EXTRACTED",
+        "evidence": "AGENTS.md rules 4-5: RLS on every public table plus GRANTs per role; SYSTEM.md: tenant isolation via RLS."
+      }
+    },
+    {
+      "id": "he_theme_lifecycle",
+      "type": "workflow",
+      "label": "Theme Lifecycle",
+      "description": "Theme registry + Bazaar composition + marketplace loop form the end-to-end theme lifecycle: design, install, publish, serve, rollback, distribute.",
+      "member_nodes": ["theme_registry", "theme_plan_bazaar", "marketplace_loop"],
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "Theme registry defines mechanics, Bazaar defines composition, marketplace loop validates distribution."
+      }
+    },
+    {
+      "id": "he_quality_gates",
+      "type": "process",
+      "label": "Quality Gate Pipeline",
+      "description": "Engineering gates + E2E testing framework + console UX checklist form the quality enforcement pipeline: standards definition, automated validation, release gating.",
+      "member_nodes": ["engineering_gates", "e2e_testing", "console_ux"],
+      "confidence_score": 0.85,
+      "attributes": {
+        "source_type": "INFERRED",
+        "evidence": "Engineering gates define the pipeline, E2E testing provides automated validation, console UX defines per-page standards."
+      }
+    }
+  ]
+}

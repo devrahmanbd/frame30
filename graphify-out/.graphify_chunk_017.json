@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {"id": "og_home", "type": "image", "label": "Home Page OG Image", "properties": {"page": "home", "format": "png", "purpose": "social_preview"}},
+    {"id": "og_contact", "type": "image", "label": "Contact Page OG Image", "properties": {"page": "contact", "format": "png", "purpose": "social_preview"}},
+    {"id": "og_status", "type": "image", "label": "Status Page OG Image", "properties": {"page": "status", "format": "png", "purpose": "social_preview"}},
+    {"id": "og_blog", "type": "image", "label": "Blog Page OG Image", "properties": {"page": "blog", "format": "png", "purpose": "social_preview"}},
+    {"id": "og_payments", "type": "image", "label": "Payments Page OG Image", "properties": {"page": "payments", "format": "png", "purpose": "social_preview"}}
+  ],
+  "edges": [
+    {"source": "og_home", "target": "og_contact", "type": "related_to", "properties": {"relation": "site_navigation"}},
+    {"source": "og_payments", "target": "og_status", "type": "related_to", "properties": {"relation": "commerce_infrastructure"}}
+  ],
+  "hyperedges": [
+    {"id": "he_social_previews", "nodes": ["og_home", "og_contact", "og_blog", "og_payments"], "label": "Marketing Pages OG", "properties": {"category": "marketing"}},
+    {"id": "he_infrastructure_pages", "nodes": ["og_status", "og_payments"], "label": "Infrastructure Pages", "properties": {"category": "system"}},
+    {"id": "he_main_navigation", "nodes": ["og_home", "og_contact", "og_blog"], "label": "Main Site Navigation", "properties": {"category": "navigation"}}
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

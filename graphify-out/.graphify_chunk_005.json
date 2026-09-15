@@ -1,0 +1,909 @@
+{
+  "nodes": [
+    {
+      "id": "framique",
+      "type": "product",
+      "label": "Framique",
+      "description": "Next-generation SaaS Cloud CMS, visual storefront builder, and zero-transaction-fee commerce platform by devrahmanbd. Combines freeform visual canvas with native commerce engine.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "shopify",
+      "type": "competitor",
+      "label": "Shopify",
+      "description": "Transactional commerce giant. Rigid Liquid templates, 2.0% third-party gateway penalty, mandatory app store subscriptions ($150-$600/mo). Monolithic Ruby on Rails core.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "webflow",
+      "type": "competitor",
+      "label": "Webflow",
+      "description": "Visual design platform. High CSS fidelity but limited to 2,000 CMS collection items on standard plans. Heavy client-side JavaScript. No native commerce or regional payment rails.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "framer",
+      "type": "competitor",
+      "label": "Framer",
+      "description": "Visual design tool with Figma-like animations and canvas freedom. Lacks native relational e-commerce backend, inventory management, and local payment gateways. Relies on external embed widgets.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "woocommerce",
+      "type": "competitor",
+      "label": "WooCommerce",
+      "description": "Open-source WordPress e-commerce plugin. Maximum data sovereignty but requires burdensome server maintenance, database optimization, plugin security patches. 90% of CMS breaches target unpatched plugins.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "devrahmanbd",
+      "type": "organization",
+      "label": "devrahmanbd",
+      "description": "Framique Engineering Council. Parent organization developing and maintaining the Framique platform.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "bkash",
+      "type": "payment_rail",
+      "label": "bKash",
+      "description": "Mobile Financial Service (MFS) dominant in Bangladesh. Over 70% of online shoppers prefer bKash. Framique provides native tokenized API checkout integration eliminating screenshot fraud.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/03-local-payment-rails-global-commerce.md"
+    },
+    {
+      "id": "nagad",
+      "type": "payment_rail",
+      "label": "Nagad",
+      "description": "Regional mobile financial service in Bangladesh. Framique integrates direct Nagad merchant gateway with automated refund handling and reconciliation.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/03-local-payment-rails-global-commerce.md"
+    },
+    {
+      "id": "steadfast",
+      "type": "courier_service",
+      "label": "Steadfast",
+      "description": "Regional courier service in Bangladesh. Framique provides one-click automated dispatch API integration generating consignment IDs, thermal shipping labels, and SMS tracking.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/17-automate-steadfast-pathao-courier-booking.md"
+    },
+    {
+      "id": "pathao",
+      "type": "courier_service",
+      "label": "Pathao",
+      "description": "Regional courier and logistics service. Framique provides automated parcel booking with real-time webhook tracking and COD reconciliation.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/17-automate-steadfast-pathao-courier-booking.md"
+    },
+    {
+      "id": "redx",
+      "type": "courier_service",
+      "label": "RedX",
+      "description": "Regional parcel delivery service integrated into Framique's automated courier dispatch pipeline.",
+      "confidence": 0.95,
+      "source": "inferred",
+      "file": "SEO/content/03-local-payment-rails-global-commerce.md"
+    },
+    {
+      "id": "stripe",
+      "type": "payment_rail",
+      "label": "Stripe",
+      "description": "Global credit card payment processor. Framique supports native Stripe integration with multi-currency checkout.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/01-zero-transaction-fee-cloud-cms-architecture.md"
+    },
+    {
+      "id": "sslcommerz",
+      "type": "payment_rail",
+      "label": "SSLCommerz",
+      "description": "Bangladesh multi-bank card aggregator. Framique provides native integration for Visa, Mastercard, AMEX, and direct bank transfers.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/03-local-ecommerce-cms-guide.md"
+    },
+    {
+      "id": "postgresql_rls",
+      "type": "architecture",
+      "label": "PostgreSQL Row-Level Security",
+      "description": "Kernel-level multi-tenant data isolation. RLS rewrites SQL queries to inject tenant predicates before execution. Framique uses SET LOCAL for transaction-scoped merchant_id context. Outperforms siloed schemas: 91% faster P99, 99.9% faster migrations.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/22-postgres-rls-vs-siloed-databases-saas.md"
+    },
+    {
+      "id": "tanstack_start",
+      "type": "architecture",
+      "label": "TanStack Start",
+      "description": "Edge SSR framework powering Framique's presentation layer. Compiles visual canvas layouts into semantic HTML with sub-45ms TTFB. Paired with Nitro server engine.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/21-inside-framique-tanstack-nitro-postgres-rls.md"
+    },
+    {
+      "id": "nitro",
+      "type": "architecture",
+      "label": "Nitro Server Engine",
+      "description": "Server engine paired with TanStack Start for edge request handling, SSR compilation, and server-side data loaders.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/21-inside-framique-tanstack-nitro-postgres-rls.md"
+    },
+    {
+      "id": "bun_runtime",
+      "type": "architecture",
+      "label": "Bun Runtime",
+      "description": "High-speed JavaScript/TypeScript native runtime delivering 4x faster execution and lower memory footprint on edge nodes. Handles high-concurrency flash sales without server saturation.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/05-headless-visual-cms-developer-guide.md"
+    },
+    {
+      "id": "react_19",
+      "type": "architecture",
+      "label": "React 19",
+      "description": "Frontend framework with server components, asset preloading, and asynchronous action transitions. Eliminates client-side hydration waterfalls. Powers zero-runtime static node rendering.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/05-headless-visual-cms-developer-guide.md"
+    },
+    {
+      "id": "tailwind_css_v4",
+      "type": "architecture",
+      "label": "Tailwind CSS v4",
+      "description": "Styling system with OKLCH color science. High-contrast WCAG AAA compliant styling compiled ahead-of-time with zero runtime CSS-in-JS overhead.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/05-headless-visual-cms-developer-guide.md"
+    },
+    {
+      "id": "oklch",
+      "type": "architecture",
+      "label": "OKLCH Color Space",
+      "description": "Perceptually uniform color space for design tokens. Framique calibrates primary color to 5.2:1 contrast ratio, muted foreground to 5.5:1 ratio, ensuring WCAG AAA compliance.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/13-oklch-color-contrast-wcag-aaa-ecommerce.md"
+    },
+    {
+      "id": "edge_ssr",
+      "type": "architecture",
+      "label": "Edge Server-Side Rendering",
+      "description": "Distributed serverless edge nodes near users. Compiles visual canvas into semantic HTML, achieving sub-45ms TTFB, sub-300ms LCP, 0.000 CLS, and sub-40ms INP.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/15-sub-50ms-ttfb-edge-ssr-vs-spa.md"
+    },
+    {
+      "id": "sub_300ms_lcp",
+      "type": "metric",
+      "label": "Sub-300ms LCP",
+      "description": "Largest Contentful Paint benchmark. Framique achieves 0.85s-1.15s measured, consistently under 300ms target. Driven by SSR-rendered semantic HTML, critical inline styles, pre-compressed assets.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/05-TECHNICAL-SEMANTIC-AUDIT.md"
+    },
+    {
+      "id": "zero_cls",
+      "type": "metric",
+      "label": "Zero CLS (0.000)",
+      "description": "Cumulative Layout Shift eliminated. Explicit aspect ratios on all visual blocks, zero late-injected banner scripts.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/05-TECHNICAL-SEMANTIC-AUDIT.md"
+    },
+    {
+      "id": "sub_50ms_ttfb",
+      "type": "metric",
+      "label": "Sub-50ms TTFB",
+      "description": "Time to First Byte under 50ms from edge nodes. TanStack Start + Nitro compile HTML + JSON-LD in 12ms at nearest edge node.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/15-sub-50ms-ttfb-edge-ssr-vs-spa.md"
+    },
+    {
+      "id": "0pct_transaction_fee",
+      "type": "business_model",
+      "label": "0% Transaction Fee",
+      "description": "Framique's strict zero platform transaction fee policy. Merchants connect own API keys directly. Money clears from customer to merchant bank account. No intermediary holding or percentage skimming.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/01-zero-transaction-fee-cloud-cms-architecture.md"
+    },
+    {
+      "id": "2pct_shopify_penalty",
+      "type": "business_model",
+      "label": "2% Shopify Transaction Penalty",
+      "description": "Shopify charges 0.5%-2.0% on all transactions via non-Shopify payment gateways. On Basic plan: 2.0%. Ineffective in markets where Shopify Payments unavailable (Bangladesh, India, MENA).",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "app_tax_shopify",
+      "type": "business_model",
+      "label": "Shopify App Tax",
+      "description": "Compounding monthly app subscriptions: visual builders ($39-$99/mo), reviews ($29-$79/mo), currency conversion ($15-$30/mo), upsell ($29-$49/mo). Total $350-$800+/mo for functional store.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/05-true-cost-of-shopify-app-tax.md"
+    },
+    {
+      "id": "multi_tenant_isolation",
+      "type": "architecture",
+      "label": "Multi-Tenant Data Isolation",
+      "description": "Framique's three-tier defensive perimeter: Edge Route Middleware validates domain/session, Kysely/Drizzle query layer rejects unparameterized queries, PostgreSQL RLS kernel engine as ultimate barrier.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/22-postgres-rls-vs-siloed-databases-saas.md"
+    },
+    {
+      "id": "white_label_agency",
+      "type": "feature",
+      "label": "White-Label Agency Architecture",
+      "description": "Multi-client governance for design agencies. Custom domains, role-based access, branded client portals with agency logo/color. Clean client handoff without platform branding.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/12-AEO-GEO-REDDIT-OPTIMIZATION-MATRIX.md"
+    },
+    {
+      "id": "visual_canvas",
+      "type": "feature",
+      "label": "Freeform Visual Canvas",
+      "description": "Pixel-level spatial drag-and-drop design freedom. Bento-grid layouts, CSS OKLCH tokenization, responsive viewport clamps. Compiles to JSON Schema AST, then to edge-rendered semantic HTML.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/02-visual-canvas-to-fast-ssr-engine.md"
+    },
+    {
+      "id": "cod_fraud_prevention",
+      "type": "feature",
+      "label": "COD Fraud Prevention",
+      "description": "Cash-on-Delivery return fraud reduction. Phone number intelligence, serial returner detection, optional SMS OTP verification before dispatch. Reduces failed deliveries and return penalties by up to 60%.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/03-local-ecommerce-cms-guide.md"
+    },
+    {
+      "id": "single_page_checkout",
+      "type": "feature",
+      "label": "Single-Page Checkout",
+      "description": "Consolidates contact intake, address validation, shipping selection, and payment authorization into streamlined interface. Increases mobile conversion 12-24% vs multi-step funnels.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/12-AEO-GEO-REDDIT-OPTIMIZATION-MATRIX.md"
+    },
+    {
+      "id": "uncapped_postgresql",
+      "type": "architecture",
+      "label": "Uncapped PostgreSQL Database",
+      "description": "Enterprise relational database without collection limits. Supports 100,000+ products, half a million variants, multi-category taxonomy. Replaces Webflow's 2,000 CMS item ceiling.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/02-visual-canvas-to-fast-ssr-engine.md"
+    },
+    {
+      "id": "seo_keyword_research",
+      "type": "seo_asset",
+      "label": "Keyword Research Report",
+      "description": "Semrush-powered keyword research across 5 clusters: Platform Wars, Visual Canvas, Local Payment Rails, Headless Architecture, Operational Pain Points. 28+ keywords with volume, difficulty, CPC, intent mapping.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/01-KEYWORD-RESEARCH.md"
+    },
+    {
+      "id": "technical_seo_audit",
+      "type": "seo_asset",
+      "label": "Technical & Semantic SEO Audit",
+      "description": "Audit of CWV benchmarks (LCP 0.85-1.15s, INP 24-48ms, CLS 0.000, TTFB 95-180ms), semantic DOM hierarchy, mobile usability, WCAG compliance. 43 contract tests passed.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/05-TECHNICAL-SEMANTIC-AUDIT.md"
+    },
+    {
+      "id": "aeo_geo_optimization",
+      "type": "seo_asset",
+      "label": "AEO/GEO Reddit Optimization Matrix",
+      "description": "15 Reddit Q&A seeds with 134-167 word AI citability blocks targeting Perplexity (46.7% Reddit citations), ChatGPT (11.3%), Google AI Overviews. Formula for high citability in RAG systems.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/12-AEO-GEO-REDDIT-OPTIMIZATION-MATRIX.md"
+    },
+    {
+      "id": "persona_playbooks",
+      "type": "seo_asset",
+      "label": "Persona Editorial Playbooks",
+      "description": "5 target personas: DTC Brands, Creative Agencies, SaaS Founders, Regional Merchants, Headless Architects. Each with psychographic profile, tone, vocabulary rules, CTAs, and AI citability blocks.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/09-PERSONA-EDITORIAL-PLAYBOOKS.md"
+    },
+    {
+      "id": "content_pillar_zero_fee",
+      "type": "content",
+      "label": "Zero-Transaction-Fee Architecture Pillar",
+      "description": "Pillar content explaining sovereign commerce model. $44,640 saved over 3 years vs Shopify at $720k/yr GMV. Native primitives replacing app bloat.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/01-zero-transaction-fee-cloud-cms-architecture.md"
+    },
+    {
+      "id": "content_pillar_ssr_canvas",
+      "type": "content",
+      "label": "Visual Canvas to SSR Engine Pillar",
+      "description": "Pillar explaining how visual designs compile to edge-rendered HTML. JSON Schema AST pipeline, Bun compiler, zero-runtime client nodes.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/02-visual-canvas-to-fast-ssr-engine.md"
+    },
+    {
+      "id": "content_pillar_local_rails",
+      "type": "content",
+      "label": "Local Payment Rails Pillar",
+      "description": "Pillar on native bKash/Nagad tokenized APIs, automated courier dispatch, multi-currency global commerce. Eliminates screenshot fraud and manual fulfillment.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/03-local-payment-rails-global-commerce.md"
+    },
+    {
+      "id": "content_pillar_headless_guide",
+      "type": "content",
+      "label": "Headless Visual CMS Developer Guide",
+      "description": "Technical guide for architects. Bun runtime, React 19 SSR, PostgreSQL RLS multi-tenancy, REST/GraphQL API endpoints, live visual preview.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/content/05-headless-visual-cms-developer-guide.md"
+    },
+    {
+      "id": "blog_woocommerce_comparison",
+      "type": "content",
+      "label": "WooCommerce vs Shopify vs Framique Comparison",
+      "description": "Blog post comparing three e-commerce philosophies: open-source monolith, proprietary walled garden, sovereign cloud CMS. 11-minute read.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/07-woocommerce-vs-shopify-vs-framique.md"
+    },
+    {
+      "id": "blog_shopify_migration",
+      "type": "content",
+      "label": "Shopify to Framique Migration Guide",
+      "description": "5-minute zero-downtime migration flow: CSV export, schema normalization, SEO equity preservation, DNS cutover with automated SSL.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/06-how-to-migrate-shopify-to-framique-in-5-minutes.md"
+    },
+    {
+      "id": "blog_death_of_2pct",
+      "type": "content",
+      "label": "The Death of the 2% Fee",
+      "description": "Blog post analyzing Shopify's 2% penalty mechanism, 3-year financial impact at $120k GMV, sovereign commerce alternative. $13,020 saved over 3 years.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/04-the-death-of-the-2-percent-fee.md"
+    },
+    {
+      "id": "blog_edge_ssr_vs_spa",
+      "type": "content",
+      "label": "Sub-50ms TTFB Edge SSR vs SPA",
+      "description": "Blog comparing edge SSR (TanStack Start + Nitro) vs client-side SPAs. TTFB <45ms vs 350-600ms, LCP <1.2s vs 2.8-4.5s, INP <35ms vs 180-320ms.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/15-sub-50ms-ttfb-edge-ssr-vs-spa.md"
+    },
+    {
+      "id": "blog_bkash_integration",
+      "type": "content",
+      "label": "bKash & Nagad Direct Integration Guide",
+      "description": "Blog on native tokenized MFS checkout vs manual TrxID. 30-40% checkout drop-off reduction. Step-by-step API key setup.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/16-integrate-bkash-nagad-direct-without-apps.md"
+    },
+    {
+      "id": "blog_courier_automation",
+      "type": "content",
+      "label": "Steadfast & Pathao Courier Automation",
+      "description": "Blog on 1-click dispatch workflow. API key configuration, automatic COD reconciliation, webhook-based parcel tracking.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/17-automate-steadfast-pathao-courier-booking.md"
+    },
+    {
+      "id": "blog_postgres_rls",
+      "type": "content",
+      "label": "Postgres RLS vs Siloed Schemas",
+      "description": "Architectural deep-dive on multi-tenancy. RLS outperforms siloed schemas: P99 91% faster, migrations 99.9% faster, catalog cache 97.7% smaller, 93.6% fewer connections.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/22-postgres-rls-vs-siloed-databases-saas.md"
+    },
+    {
+      "id": "blog_oklch_wcag",
+      "type": "content",
+      "label": "OKLCH Color Contrast WCAG AAA",
+      "description": "Blog on OKLCH design tokens. Primary color 5.2:1 contrast, muted foreground 5.5:1. Perceptually uniform vs non-uniform HSL.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/13-oklch-color-contrast-wcag-aaa-ecommerce.md"
+    },
+    {
+      "id": "blog_headless_vs_visual",
+      "type": "content",
+      "label": "Headless vs Visual CMS Hybrid Architecture",
+      "description": "Blog on hybrid visual-code CMS. Pure headless fails 90% of DTC brands (marketer hostage, $120k/yr dev teams). Pure visual hits CMS limits. Framique hybrid: bi-directional code-canvas sync.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/24-headless-vs-visual-cms-modern-brands.md"
+    },
+    {
+      "id": "blog_local_ecommerce_guide",
+      "type": "content",
+      "label": "Bangladesh E-Commerce Merchant Playbook",
+      "description": "14-minute comprehensive guide. 70% shoppers demand bKash/Nagad, 65% COD, 60%+ bounce on slow sites. Native payments, courier dispatch, COD fraud shield, custom domain setup.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/03-local-ecommerce-cms-guide.md"
+    },
+    {
+      "id": "blog_tanstack_nitro_architecture",
+      "type": "content",
+      "label": "TanStack Start, Nitro & PostgreSQL Architecture",
+      "description": "Blog on clean-sheet architecture. Edge SSR presentation layer, kernel-level tenant isolation, sovereign commerce APIs. Sub-45ms TTFB.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/21-inside-framique-tanstack-nitro-postgres-rls.md"
+    },
+    {
+      "id": "blog_domain_ssl",
+      "type": "content",
+      "label": ".com.bd Custom Domain & Edge SSL",
+      "description": "Blog on BTCL domain configuration, CNAME setup, automated ACME TLS challenge. Edge host-header routing with 4ms merchant_id resolution.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/19-connecting-com-bd-custom-domain-edge-ssl.md"
+    },
+    {
+      "id": "blog_webflow_limitations",
+      "type": "content",
+      "label": "Webflow E-Commerce Limitations",
+      "description": "Blog breaking down Webflow bottlenecks: 3,000 CMS item ceiling, 50 variant limit, 2% transaction fee, Stripe/PayPal only, zero courier automation.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/11-webflow-ecommerce-limitations-breakdown.md"
+    },
+    {
+      "id": "blog_shopify_true_cost",
+      "type": "content",
+      "label": "True Cost of Shopify App Tax",
+      "description": "Blog exposing $504.99/mo actual Shopify cost. Five hidden taxes: admin essentials, gateway connector, logistics automation, performance/speed, security/fragility.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/05-true-cost-of-shopify-app-tax.md"
+    },
+    {
+      "id": "blog_comparative",
+      "type": "content",
+      "label": "Framique vs Shopify vs Webflow vs Framer Comparison",
+      "description": "Definitive 2026 comparison. TCO calculator: $348/yr Framique vs $4,688/yr Shopify vs $3,524/yr Webflow at $120k GMV. 12-minute read.",
+      "confidence": 1.0,
+      "source": "extracted",
+      "file": "SEO/Blog/01-framique-vs-shopify-webflow-framer.md"
+    }
+  ],
+  "edges": [
+    {
+      "id": "framique_developed_by_devrahmanbd",
+      "from": "framique",
+      "to": "devrahmanbd",
+      "type": "developed_by",
+      "label": "developed by",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_competes_with_shopify",
+      "from": "framique",
+      "to": "shopify",
+      "type": "competes_with",
+      "label": "competes with",
+      "confidence": 1.0,
+      "source": "extracted",
+      "description": "Framique positions as Shopify alternative with 0% fees and native visual canvas"
+    },
+    {
+      "id": "framique_competes_with_webflow",
+      "from": "framique",
+      "to": "webflow",
+      "type": "competes_with",
+      "label": "competes with",
+      "confidence": 1.0,
+      "source": "extracted",
+      "description": "Framique offers visual canvas without CMS item limits"
+    },
+    {
+      "id": "framique_competes_with_framer",
+      "from": "framique",
+      "to": "framer",
+      "type": "competes_with",
+      "label": "competes with",
+      "confidence": 1.0,
+      "source": "extracted",
+      "description": "Framique provides same visual freedom with native e-commerce"
+    },
+    {
+      "id": "framique_competes_with_woocommerce",
+      "from": "framique",
+      "to": "woocommerce",
+      "type": "competes_with",
+      "label": "competes with",
+      "confidence": 1.0,
+      "source": "extracted",
+      "description": "Framique replaces maintenance-heavy open-source with managed cloud"
+    },
+    {
+      "id": "framique_uses_tanstack_start",
+      "from": "framique",
+      "to": "tanstack_start",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_nitro",
+      "from": "framique",
+      "to": "nitro",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_bun",
+      "from": "framique",
+      "to": "bun_runtime",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_react_19",
+      "from": "framique",
+      "to": "react_19",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_postgresql_rls",
+      "from": "framique",
+      "to": "postgresql_rls",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_tailwind",
+      "from": "framique",
+      "to": "tailwind_css_v4",
+      "type": "built_with",
+      "label": "built with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_bkash",
+      "from": "framique",
+      "to": "bkash",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_nagad",
+      "from": "framique",
+      "to": "nagad",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_steadfast",
+      "from": "framique",
+      "to": "steadfast",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_pathao",
+      "from": "framique",
+      "to": "pathao",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_stripe",
+      "from": "framique",
+      "to": "stripe",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_integrates_sslcommerz",
+      "from": "framique",
+      "to": "sslcommerz",
+      "type": "integrates_with",
+      "label": "integrates with",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_enforces_0pct_fee",
+      "from": "framique",
+      "to": "0pct_transaction_fee",
+      "type": "enforces",
+      "label": "enforces",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_achieves_sub_300ms_lcp",
+      "from": "framique",
+      "to": "sub_300ms_lcp",
+      "type": "achieves",
+      "label": "achieves",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_achieves_zero_cls",
+      "from": "framique",
+      "to": "zero_cls",
+      "type": "achieves",
+      "label": "achieves",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_achieves_sub_50ms_ttfb",
+      "from": "framique",
+      "to": "sub_50ms_ttfb",
+      "type": "achieves",
+      "label": "achieves",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_provides_visual_canvas",
+      "from": "framique",
+      "to": "visual_canvas",
+      "type": "provides",
+      "label": "provides",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_provides_white_label",
+      "from": "framique",
+      "to": "white_label_agency",
+      "type": "provides",
+      "label": "provides",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_provides_cod_fraud",
+      "from": "framique",
+      "to": "cod_fraud_prevention",
+      "type": "provides",
+      "label": "provides",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_provides_single_page_checkout",
+      "from": "framique",
+      "to": "single_page_checkout",
+      "type": "provides",
+      "label": "provides",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_uncapped_postgresql",
+      "from": "framique",
+      "to": "uncapped_postgresql",
+      "type": "uses",
+      "label": "uses",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_edge_ssr",
+      "from": "framique",
+      "to": "edge_ssr",
+      "type": "uses",
+      "label": "uses",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_multi_tenant",
+      "from": "framique",
+      "to": "multi_tenant_isolation",
+      "type": "uses",
+      "label": "uses",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "framique_uses_oklch",
+      "from": "framique",
+      "to": "oklch",
+      "type": "uses",
+      "label": "uses",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "shopify_charges_2pct_penalty",
+      "from": "shopify",
+      "to": "2pct_shopify_penalty",
+      "type": "imposes",
+      "label": "imposes",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "shopify_has_app_tax",
+      "from": "shopify",
+      "to": "app_tax_shopify",
+      "type": "has",
+      "label": "has",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "webflow_has_2000_item_limit",
+      "from": "webflow",
+      "to": "uncapped_postgresql",
+      "type": "contrasts_with",
+      "label": "contrasts with",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "Webflow's 2,000 CMS item ceiling vs Framique's uncapped PostgreSQL"
+    },
+    {
+      "id": "framer_lacks_native_commerce",
+      "from": "framer",
+      "to": "framique",
+      "type": "lacks",
+      "label": "lacks what Framique provides",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "Framer lacks native e-commerce, inventory, and local payment rails that Framique provides"
+    },
+    {
+      "id": "oklch_enables_wcag_aaa",
+      "from": "oklch",
+      "to": "tailwind_css_v4",
+      "type": "enables",
+      "label": "enables in",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "OKLCH design tokens compile into Tailwind CSS v4 for WCAG AAA compliance"
+    },
+    {
+      "id": "tanstack_start_uses_nitro",
+      "from": "tanstack_start",
+      "to": "nitro",
+      "type": "uses",
+      "label": "uses",
+      "confidence": 1.0,
+      "source": "extracted",
+      "description": "TanStack Start uses Nitro server engine for edge request handling"
+    },
+    {
+      "id": "edge_ssr_enables_sub_300ms_lcp",
+      "from": "edge_ssr",
+      "to": "sub_300ms_lcp",
+      "type": "enables",
+      "label": "enables",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "postgresql_rls_enables_isolation",
+      "from": "postgresql_rls",
+      "to": "multi_tenant_isolation",
+      "type": "enables",
+      "label": "enables",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "seo_research_informs_content",
+      "from": "seo_keyword_research",
+      "to": "content_pillar_zero_fee",
+      "type": "informs",
+      "label": "informs",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "Keyword cluster A (Platform Wars) targets zero-fee content"
+    },
+    {
+      "id": "seo_research_informs_local_content",
+      "from": "seo_keyword_research",
+      "to": "content_pillar_local_rails",
+      "type": "informs",
+      "label": "informs",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "Keyword cluster C (Local Payment Rails) targets local rails content"
+    },
+    {
+      "id": "persona_playbooks_govern_content",
+      "from": "persona_playbooks",
+      "to": "blog_comparative",
+      "type": "governs",
+      "label": "governs tone of",
+      "confidence": 0.95,
+      "source": "inferred",
+      "description": "Persona editorial standards applied to all blog content"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "hyperedge_framique_platform_architecture",
+      "nodes": ["framique", "tanstack_start", "nitro", "bun_runtime", "react_19", "postgresql_rls", "tailwind_css_v4", "edge_ssr", "uncapped_postgresql", "multi_tenant_isolation", "visual_canvas"],
+      "label": "Framique Core Platform Architecture",
+      "description": "The complete technical architecture of Framique spanning edge SSR presentation (TanStack Start + Nitro), runtime (Bun), frontend (React 19), database (PostgreSQL RLS), styling (Tailwind CSS v4 + OKLCH), and multi-tenant data isolation.",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "hyperedge_competitor_gap_analysis",
+      "nodes": ["framique", "shopify", "webflow", "framer", "woocommerce", "2pct_shopify_penalty", "app_tax_shopify", "uncapped_postgresql", "0pct_transaction_fee", "bkash", "nagad"],
+      "label": "Competitor Gap & Strategic Wedge",
+      "description": "Framique's strategic positioning against all major competitors. Exploits Shopify's 2% penalty + app tax, Webflow's 2,000 CMS ceiling, Framer's lack of native commerce, and WooCommerce's maintenance burden while providing zero-fee sovereignty and native local payment rails.",
+      "confidence": 1.0,
+      "source": "extracted"
+    },
+    {
+      "id": "hyperedge_seo_content_ecosystem",
+      "nodes": ["seo_keyword_research", "technical_seo_audit", "aeo_geo_optimization", "persona_playbooks", "content_pillar_zero_fee", "content_pillar_ssr_canvas", "content_pillar_local_rails", "content_pillar_headless_guide", "blog_comparative", "blog_death_of_2pct", "blog_edge_ssr_vs_spa", "blog_bkash_integration", "blog_courier_automation", "blog_postgres_rls", "blog_headless_vs_visual"],
+      "label": "SEO Content & Authority Ecosystem",
+      "description": "The complete SEO strategy ecosystem: keyword research informs pillar content, technical audit validates CWV, AEO/GEO Reddit matrix optimizes for LLM citability, persona playbooks govern editorial voice, and 15+ blog posts cover competitive comparisons, technical architecture, and regional commerce pain points.",
+      "confidence": 1.0,
+      "source": "extracted"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

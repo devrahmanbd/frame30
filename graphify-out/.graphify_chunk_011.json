@@ -1,0 +1,332 @@
+{
+  "nodes": [
+    {
+      "id": "el_2_canvas",
+      "label": "Elementor Editor Canvas",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_2_canvas_drag_area",
+      "label": "Drag Widget Here Drop Zone",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_2_canvas_structure_panel",
+      "label": "Structure Navigator Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_2_canvas_widget_panel",
+      "label": "Elementor Widgets Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_2_canvas_atomic_elements",
+      "label": "Atomic Elements Widget Group",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_2_canvas_atomic_form",
+      "label": "Atomic Form Widget Group",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_pages_quick_edit",
+      "label": "WordPress Pages Quick Edit Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_quick_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_pages_quick_edit_fields",
+      "label": "Quick Edit Metadata Fields",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_quick_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_settings_advanced",
+      "label": "Elementor Advanced Settings Page",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_settings_google_fonts",
+      "label": "Google Fonts Toggle Setting",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "el_settings_file_uploads",
+      "label": "Unfiltered File Uploads Setting",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_post_edit",
+      "label": "WordPress Post Editor Block Interface",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_post_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wp_post_edit_sidebar",
+      "label": "Post Settings Sidebar Panel",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/wp_post_edit.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_4_upload",
+      "label": "WordPress Theme Upload Interface",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_4_upload.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "themes_4_upload_gallery",
+      "label": "Theme Repository Gallery Grid",
+      "file_type": "image",
+      "source_file": "docs/02-merchant/wp-reference/themes_4_upload.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "el_2_canvas",
+      "target": "el_2_canvas_drag_area",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas",
+      "target": "el_2_canvas_structure_panel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas",
+      "target": "el_2_canvas_widget_panel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas_widget_panel",
+      "target": "el_2_canvas_atomic_elements",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas_widget_panel",
+      "target": "el_2_canvas_atomic_form",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas",
+      "target": "el_2_canvas_drag_area",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_pages_quick_edit",
+      "target": "wp_pages_quick_edit_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_quick_edit.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_settings_advanced",
+      "target": "el_settings_google_fonts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_settings_advanced",
+      "target": "el_settings_file_uploads",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_post_edit",
+      "target": "wp_post_edit_sidebar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/wp_post_edit.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "themes_4_upload",
+      "target": "themes_4_upload_gallery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/themes_4_upload.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "el_2_canvas",
+      "target": "el_settings_advanced",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "wp_pages_quick_edit",
+      "target": "wp_post_edit",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_quick_edit.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "elementor_editor_ui",
+      "label": "Elementor Visual Editor Interface",
+      "nodes": ["el_2_canvas", "el_2_canvas_drag_area", "el_2_canvas_structure_panel", "el_2_canvas_widget_panel"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_2_canvas.png"
+    },
+    {
+      "id": "wp_content_management",
+      "label": "WordPress Content Management Screens",
+      "nodes": ["wp_pages_quick_edit", "wp_post_edit", "themes_4_upload"],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/02-merchant/wp-reference/wp_pages_quick_edit.png"
+    },
+    {
+      "id": "el_configuration_panels",
+      "label": "Elementor Configuration and Settings Panels",
+      "nodes": ["el_settings_advanced", "el_settings_google_fonts", "el_settings_file_uploads"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/02-merchant/wp-reference/el_settings_Advanced.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

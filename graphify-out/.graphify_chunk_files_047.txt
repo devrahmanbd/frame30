@@ -1,0 +1,15 @@
+/Users/rahman/Documents/frame30/SEO/Strategy/03-awareness-stage-keyword-research.md
+/Users/rahman/Documents/frame30/SEO/Strategy/09-reddit-community-seed-execution-tracker.md
+/Users/rahman/Documents/frame30/SEO/Strategy/10-competitor-comparison-architecture.md
+/Users/rahman/Documents/frame30/SEO/Strategy/02-topical-authority-map.md
+/Users/rahman/Documents/frame30/SEO/Strategy/05-reddit-search-and-tagline-playbook.md
+/Users/rahman/Documents/frame30/SEO/Strategy/04-semantic-keyword-clusters.md
+/Users/rahman/Documents/frame30/SEO/Strategy/README.md
+/Users/rahman/Documents/frame30/SEO/Strategy/11-tagline-to-landing-page-conversion-playbook.md
+/Users/rahman/Documents/frame30/SEO/Strategy/12-public-pages-seo-content-injection-blueprints.md
+/Users/rahman/Documents/frame30/SEO/Strategy/08-flagship-content-briefs.md
+/Users/rahman/Documents/frame30/SEO/Strategy/06-reddit-aeo-geo-citation-engine.md
+/Users/rahman/Documents/frame30/SEO/Strategy/07-12-week-content-calendar.md
+/Users/rahman/Documents/frame30/SEO/Strategy/01-platform-keyword-research.md
+/Users/rahman/Documents/frame30/migration/README.md
+/Users/rahman/Documents/frame30/src/routes/README.md

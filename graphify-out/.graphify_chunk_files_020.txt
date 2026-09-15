@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/src/assets/marketing/shop-owner-phone.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/pos-counter.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/packing-station.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/merchant.jpg
+/Users/rahman/Documents/frame30/src/assets/marketing/team-studio.jpg

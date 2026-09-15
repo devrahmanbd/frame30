@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/public/media/og/pricing.png
+/Users/rahman/Documents/frame30/public/media/og/builder.png
+/Users/rahman/Documents/frame30/public/media/og/home.png
+/Users/rahman/Documents/frame30/public/media/og/contact.png
+/Users/rahman/Documents/frame30/public/media/og/status.png

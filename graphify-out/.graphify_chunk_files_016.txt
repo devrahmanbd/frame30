@@ -1,0 +1,5 @@
+/Users/rahman/Documents/frame30/public/media/icons/sprite.svg
+/Users/rahman/Documents/frame30/public/media/og/fulfilment.png
+/Users/rahman/Documents/frame30/public/media/og/features.png
+/Users/rahman/Documents/frame30/public/media/og/pricing.png
+/Users/rahman/Documents/frame30/public/media/og/builder.png

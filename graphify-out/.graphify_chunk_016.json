@@ -1,0 +1,289 @@
+{
+  "nodes": [
+    {
+      "id": "sprite_svg",
+      "label": "Framique Icon Sprite SVG Sheet",
+      "file_type": "image",
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprite_arrow_right",
+      "label": "Arrow Right Icon",
+      "file_type": "image",
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprite_banknote",
+      "label": "Banknote Icon",
+      "file_type": "image",
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sprite_boxes",
+      "label": "Boxes Icon",
+      "file_type": "image",
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_fulfilment",
+      "label": "Framique Fulfilment OG Image",
+      "file_type": "image",
+      "source_file": "public/media/og/fulfilment.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_fulfilment_couriers",
+      "label": "SteadFast Pathao RedX Paperfly Courier Partners",
+      "file_type": "rationale",
+      "source_file": "public/media/og/fulfilment.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_features",
+      "label": "Framique Features OG Image",
+      "file_type": "image",
+      "source_file": "public/media/og/features.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_features_capabilities",
+      "label": "Page Builder Catalog Inventory Orders POS Shipping Analytics",
+      "file_type": "rationale",
+      "source_file": "public/media/og/features.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_pricing",
+      "label": "Framique Pricing OG Image",
+      "file_type": "image",
+      "source_file": "public/media/og/pricing.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_pricing_bdt",
+      "label": "BDT Pricing with VAT at Invoice Time",
+      "file_type": "rationale",
+      "source_file": "public/media/og/pricing.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_builder",
+      "label": "Framique Storefront Builder OG Image",
+      "file_type": "image",
+      "source_file": "public/media/og/builder.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "og_builder_sections_tokens",
+      "label": "Sections Tokens Versions Builder Features",
+      "file_type": "rationale",
+      "source_file": "public/media/og/builder.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "sprite_svg",
+      "target": "sprite_arrow_right",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprite_svg",
+      "target": "sprite_banknote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "sprite_svg",
+      "target": "sprite_boxes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/icons/sprite.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_fulfilment",
+      "target": "og_fulfilment_couriers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/og/fulfilment.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_features",
+      "target": "og_features_capabilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/og/features.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_pricing",
+      "target": "og_pricing_bdt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/og/pricing.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_builder",
+      "target": "og_builder_sections_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/og/builder.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_fulfilment",
+      "target": "og_features",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/media/og/fulfilment.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_pricing",
+      "target": "og_features",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public/media/og/pricing.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_builder",
+      "target": "og_features",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/media/og/builder.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_fulfilment_couriers",
+      "target": "sprite_boxes",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "public/media/og/fulfilment.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "og_pricing_bdt",
+      "target": "sprite_banknote",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public/media/og/pricing.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "framique_og_images",
+      "label": "Framique Open Graph Social Preview Images",
+      "nodes": ["og_fulfilment", "og_features", "og_pricing", "og_builder"],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/og/features.png"
+    },
+    {
+      "id": "framique_icon_set",
+      "label": "Framique Icon Sprite Symbol Set",
+      "nodes": ["sprite_svg", "sprite_arrow_right", "sprite_banknote", "sprite_boxes"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/icons/sprite.svg"
+    },
+    {
+      "id": "framique_platform_capabilities",
+      "label": "Framique Core Platform Capabilities",
+      "nodes": ["og_fulfilment_couriers", "og_features_capabilities", "og_pricing_bdt", "og_builder_sections_tokens"],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/media/og/features.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

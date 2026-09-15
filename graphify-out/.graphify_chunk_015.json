@@ -1,0 +1,236 @@
+{
+  "nodes": [
+    {
+      "id": "frame_svg",
+      "label": "Framique Logo Mark SVG",
+      "file_type": "image",
+      "source_file": "public/frame.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "logo_svg",
+      "label": "Framique Logo SVG with Dark Mode Support",
+      "file_type": "image",
+      "source_file": "public/logo.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "favicon_svg",
+      "label": "Framique SVG Favicon",
+      "file_type": "image",
+      "source_file": "public/favicon.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_mobile_png",
+      "label": "Framique Storefront Mobile Landing Page Screenshot",
+      "file_type": "image",
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_mobile_webp",
+      "label": "Framique Storefront Mobile Landing Page WebP",
+      "file_type": "image",
+      "source_file": "public/media/stills/storefront-mobile.webp",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_hero_headline",
+      "label": "Sell in Bangladesh Ship Worldwide Hero Headline",
+      "file_type": "rationale",
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_bilingual_support",
+      "label": "Bangla and English Bilingual UI Support",
+      "file_type": "rationale",
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_payment_methods",
+      "label": "bKash Nagad Card COD Payment Methods",
+      "file_type": "rationale",
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "storefront_cta",
+      "label": "Start Free No Card CTA Button",
+      "file_type": "rationale",
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "frame_svg",
+      "target": "logo_svg",
+      "relation": "semantically_similar_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/frame.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "logo_svg",
+      "target": "favicon_svg",
+      "relation": "semantically_similar_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/logo.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_mobile_png",
+      "target": "storefront_mobile_webp",
+      "relation": "semantically_similar_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_mobile_png",
+      "target": "storefront_hero_headline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_mobile_png",
+      "target": "storefront_bilingual_support",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_mobile_png",
+      "target": "storefront_payment_methods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_mobile_png",
+      "target": "storefront_cta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_hero_headline",
+      "target": "storefront_bilingual_support",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "storefront_payment_methods",
+      "target": "storefront_cta",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "public/media/stills/storefront-mobile.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "frame_svg",
+      "target": "storefront_mobile_png",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "public/frame.svg",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "framique_logo_variants",
+      "label": "Framique Brand Logo Variants",
+      "nodes": ["frame_svg", "logo_svg", "favicon_svg"],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/logo.svg"
+    },
+    {
+      "id": "storefront_landing_value_props",
+      "label": "Storefront Landing Page Value Propositions",
+      "nodes": ["storefront_hero_headline", "storefront_bilingual_support", "storefront_payment_methods", "storefront_cta"],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png"
+    },
+    {
+      "id": "storefront_image_formats",
+      "label": "Storefront Screenshot Format Variants",
+      "nodes": ["storefront_mobile_png", "storefront_mobile_webp"],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "public/media/stills/storefront-mobile.png"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
