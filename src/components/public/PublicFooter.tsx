@@ -1,5 +1,6 @@
-import { useState, useId, useRef, useCallback, type ReactNode } from "react";
+import { useState, useId, useRef, useEffect, useCallback, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import gsap from "gsap";
 import { ArrowRight, Loader2, Check } from "lucide-react";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { useLang } from "@/lib/i18n";
@@ -62,15 +63,134 @@ export interface PublicFooterProps {
  * and pure monochromatic glassmorphism matching the public header.
  */
 function SculpturalEmblem() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const shadowRef = useRef<HTMLDivElement>(null);
+  const rimRef = useRef<SVGPathElement>(null);
+  const foldRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !svgRef.current) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        reduceMotion: "(prefers-reduced-motion: reduce)",
+        noPreference: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduceMotion } = context.conditions as {
+          reduceMotion: boolean;
+          noPreference: boolean;
+        };
+
+        if (reduceMotion) {
+          gsap.set([svgRef.current, shadowRef.current], {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          });
+          return;
+        }
+
+        // 1. Entrance animation on mount
+        gsap.fromTo(
+          svgRef.current,
+          { autoAlpha: 0, y: 24, scale: 0.94 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" }
+        );
+
+        // 2. Coordinated floating levitation cycle (physics-inspired)
+        const floatTl = gsap.timeline({
+          repeat: -1,
+          yoyo: true,
+          defaults: { ease: "sine.inOut" },
+        });
+
+        floatTl
+          .to(
+            svgRef.current,
+            {
+              y: -12,
+              rotation: 1.6,
+              duration: 3.2,
+            },
+            0
+          )
+          .to(
+            shadowRef.current,
+            {
+              scaleX: 0.84,
+              scaleY: 0.42,
+              opacity: 0.35,
+              duration: 3.2,
+            },
+            0
+          );
+
+        // 3. Specular rim highlight shimmer
+        if (rimRef.current) {
+          gsap.to(rimRef.current, {
+            opacity: 1,
+            strokeWidth: 4,
+            duration: 2.2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        // 4. Subtle underfold ambient depth breathing
+        if (foldRef.current) {
+          gsap.to(foldRef.current, {
+            opacity: 0.8,
+            duration: 3.2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        }
+
+        // 5. GPU & CPU conservation: pause infinite animation when tab is inactive
+        const handleVisibilityChange = () => {
+          if (document.hidden) {
+            floatTl.pause();
+          } else {
+            floatTl.resume();
+          }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        return () => {
+          document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+      },
+      containerRef
+    );
+
+    return () => {
+      mm.revert();
+    };
+  }, []);
+
   return (
-    <div className="relative mx-auto mt-12 mb-4 w-full max-w-[320px] sm:max-w-[420px] h-[160px] sm:h-[220px] flex items-center justify-center select-none pointer-events-none">
+    <div
+      ref={containerRef}
+      className="relative mx-auto mt-12 mb-4 w-full max-w-[320px] sm:max-w-[420px] h-[160px] sm:h-[220px] flex items-center justify-center select-none pointer-events-none"
+    >
       {/* Soft depth occlusion shadow */}
-      <div className="absolute inset-x-12 bottom-2 h-8 bg-foreground/[0.06] dark:bg-black/60 blur-xl rounded-full transform scale-y-50" />
+      <div
+        ref={shadowRef}
+        className="absolute inset-x-12 bottom-2 h-8 bg-foreground/[0.06] dark:bg-black/60 blur-xl rounded-full transform scale-y-50"
+      />
 
       {/* Floating 3D Sculptural Ribbon SVG */}
       <svg
+        ref={svgRef}
         viewBox="0 0 400 240"
-        className="w-full h-full drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_40px_rgba(0,0,0,0.65)] transition-transform duration-700 hover:scale-105"
+        className="w-full h-full drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_25px_40px_rgba(0,0,0,0.65)]"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
@@ -101,6 +221,7 @@ function SculpturalEmblem() {
         <g className="text-foreground">
           {/* Base bottom loop */}
           <path
+            ref={foldRef}
             d="M 120 170 C 170 210, 240 205, 290 155 C 330 115, 310 80, 265 95 C 215 112, 175 165, 120 170 Z"
             fill="url(#ribbonFold)"
           />
@@ -113,6 +234,7 @@ function SculpturalEmblem() {
 
           {/* Top crest highlight stroke */}
           <path
+            ref={rimRef}
             d="M 175 55 C 220 45, 275 75, 265 130"
             stroke="url(#ribbonRim)"
             strokeWidth="3.5"
