@@ -51,9 +51,6 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-/** Rails printed in the footer trust strip — settlement rails only */
-const FOOTER_RAILS = ["bKash", "Nagad", "Rocket", "Bank transfer", "Cash on delivery"] as const;
-
 export interface PublicFooterProps {
   /** If true, omits the top "Built for What Comes Next" CTA section */
   hideCta?: boolean;
@@ -430,22 +427,7 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                   : "In the new era of technology, we look to the future with certainty and pride for our company and businesses."}
               </p>
 
-              {/* Settlement Rails Pills */}
-              <div className="pt-2 flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] font-medium text-muted-foreground/70 mr-1">
-                  {lang === "bn" ? "পেমেন্ট রেল:" : "Settled through:"}
-                </span>
-                {FOOTER_RAILS.map((rail) => (
-                  <span
-                    key={rail}
-                    className="rounded-fq-sm border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-                  >
-                    {rail}
-                  </span>
-                ))}
-              </div>
-
-              <div className="pt-1 text-[11px] text-muted-foreground/60">
+              <div className="pt-2 text-[11px] text-muted-foreground/60">
                 © {year} {ORG_NAP.legalName} · {ORG_NAP.locality}, {ORG_NAP.country}
               </div>
             </div>
