@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/public/PublicShell";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { Zap, Code, Terminal, Building2, Store, ArrowRight, Target } from "lucide-react";
-import { Band, BandHeading, CtaBand } from "@/components/public/bands";
+import { Band, BandHeading } from "@/components/public/bands";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 import { cn } from "@/lib/utils";
 
@@ -103,25 +103,6 @@ function AboutPage() {
           </div>
         </div>
       </Band>
-
-      {/* 3. CTA */}
-      <div className="fq-reveal fq-anim-rise">
-        <CtaBand
-          id="about-cta"
-          title="Ready to upgrade your infrastructure?"
-          body="Join the fastest-growing network of Bangladeshi merchants building on modern tech."
-          primary={
-            <Link to="/auth" search={{ mode: "signup" }} className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:scale-[0.98]">
-              Get Started
-            </Link>
-          }
-          secondary={
-            <Link to="/features" className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md border border-border bg-card px-6 py-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
-              See Features
-            </Link>
-          }
-        />
-      </div>
     </PublicShell>
   );
 }

@@ -1,10 +1,15 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { CustomerShell } from "@/components/dashboard/CustomerShell";
-import { useCustomerAccount } from "@/hooks/use-customer";
+import { Outlet, createFileRoute, useMatches, useNavigate, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { AdminShell } from "@/components/admin/AdminShell";
+import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
-import { EmptyState } from "@/components/console/primitives";
+import { chromeFromMatches } from "@/lib/console-routes";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * Merchant Console Layout — strictly for Merchants only.
+ * Platform owners attempting to access /dashboard are redirected to /root.
+ */
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -12,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       throw redirect({ to: "/auth" });
     }
     
-    // Root / Owner check
+    // Root / Owner check - Platform owners belong in /root ONLY
     const email = (user.email || "").toLowerCase();
     const ownerEmails = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com"];
     const configuredOwner = (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase();
@@ -31,58 +36,77 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
     if (adminRow) {
       throw redirect({ to: "/root" });
     }
-    
-    // Merchant check
-    if (user.user_metadata?.account_type === "merchant") {
-      throw redirect({ to: "/admin" });
-    }
   },
   head: () => ({
     meta: [
-      { title: "My account — Framique" },
+      { title: "Merchant Dashboard — Framique" },
       {
         name: "description",
-        content: "Track orders, manage returns and update your details in your Framique account.",
+        content: "Merchant control panel for managing products, orders, inventory, payouts and storefront settings.",
       },
-      { property: "og:title", content: "My account — Framique" },
-      {
-        property: "og:description",
-        content: "Track orders, manage returns and update your details.",
-      },
+      { property: "og:title", content: "Merchant Dashboard — Framique" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: CustomerLayout,
+  component: MerchantDashboardLayout,
 });
 
-function CustomerLayout() {
-  const { t, tk } = useLang();
-  const { data: account, isPending } = useCustomerAccount();
+function MerchantDashboardLayout() {
+  const { tk } = useLang();
+  const navigate = useNavigate();
+  const { data: merchant, isPending } = useMerchant();
+  const matches = useMatches();
+  const chrome = chromeFromMatches(matches);
+
+  useEffect(() => {
+    if (isPending || merchant) return;
+
+    async function resolveFallback() {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) {
+        void navigate({ to: "/auth", replace: true });
+        return;
+      }
+
+      const email = userData.user.email?.toLowerCase() || "";
+      const isOwner = email === "devrahmanbd@gmail.com" || email === "nahid52flame@gmail.com";
+      if (isOwner) {
+        void navigate({ to: "/root", replace: true });
+        return;
+      }
+
+      const { data: adminRow } = await supabase
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", userData.user.id)
+        .maybeSingle();
+
+      if (adminRow) {
+        void navigate({ to: "/root", replace: true });
+        return;
+      }
+
+      // Fresh merchant signup with no store yet -> onboarding
+      void navigate({ to: "/onboarding", replace: true });
+    }
+
+    void resolveFallback();
+  }, [isPending, merchant, navigate]);
 
   if (isPending) {
     return <p className="p-8 text-sm text-muted-foreground">{tk("common.loading")}</p>;
   }
-
-  // No customer row is an unfinished signup, not a permission failure.
-  if (!account) {
-    return (
-      <CustomerShell>
-        <EmptyState
-          title={t("Finish creating your account", "আপনার অ্যাকাউন্ট তৈরি সম্পূর্ণ করুন")}
-          description={t(
-            "We could not find a shopper profile for this login yet. Place an order or complete signup on a store to activate your account portal.",
-            "এই লগইনের জন্য এখনো কোনো ক্রেতা প্রোফাইল পাওয়া যায়নি। অ্যাকাউন্ট চালু করতে কোনো দোকানে সাইনআপ সম্পূর্ণ করুন বা একটি অর্ডার করুন।",
-          )}
-        />
-      </CustomerShell>
-    );
+  if (!merchant) {
+    return <p className="p-8 text-sm text-muted-foreground">{tk("onboarding.required")}</p>;
   }
 
+  // Editors take over the viewport (Gutenberg-style): no sidebar or topbar to tab through.
+  if (!chrome) return <Outlet />;
+
   return (
-    <CustomerShell>
+    <AdminShell>
       <Outlet />
-    </CustomerShell>
+    </AdminShell>
   );
 }

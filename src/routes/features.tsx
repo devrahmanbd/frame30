@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { PublicShell } from "@/components/public/PublicShell";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { ArrowRight, Store, Smartphone, Truck, CreditCard, ShieldCheck, Layers, LineChart } from "lucide-react";
-import { Band, BandHeading, CtaBand } from "@/components/public/bands";
+import { Band, BandHeading } from "@/components/public/bands";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 
 export const Route = createFileRoute("/features")({
@@ -127,24 +127,6 @@ function FeaturesPage() {
            ))}
         </div>
       </Band>
-
-      <div className="fq-reveal fq-anim-rise">
-        <CtaBand
-          id="features-cta"
-          title="See it all in action."
-          body="Create your account today and start selling. No credit card required."
-          primary={
-            <Link to="/auth" search={{ mode: "signup" }} className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md fq-cta-primary px-6 py-3 text-sm font-semibold">
-              Get started
-            </Link>
-          }
-          secondary={
-            <Link to="/pricing" className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md border border-border bg-card px-6 py-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
-              View Pricing
-            </Link>
-          }
-        />
-      </div>
     </PublicShell>
   );
 }

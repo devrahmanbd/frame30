@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const SOCIAL_LINKS = [
   {
     name: "YouTube",
-    href: "https://youtube.com/@framique",
+    href: "#",
     icon: (
       <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -22,7 +22,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: "Twitter",
-    href: "https://x.com/framiquebd",
+    href: "#",
     icon: (
       <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -31,7 +31,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: "Instagram",
-    href: "https://instagram.com/framiquebd",
+    href: "#",
     icon: (
       <svg className="size-4 shrink-0 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -42,7 +42,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: "Facebook",
-    href: "https://facebook.com/framiquebd",
+    href: "#",
     icon: (
       <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -253,21 +253,28 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
         <div className="mx-auto max-w-7xl">
           {/* Top Row: 4 Social Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-border/60 sm:divide-y-0 sm:divide-x divide-border/60 border-b border-border/60">
-            {SOCIAL_LINKS.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex min-h-[58px] items-center justify-between px-6 py-4 text-sm font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.03] hover:text-foreground"
-              >
-                <span className="flex items-center gap-3">
-                  <span className="text-foreground/70 transition-colors group-hover:text-primary">{item.icon}</span>
-                  <span className="tracking-tight">{item.name}</span>
-                </span>
-                <ArrowRight className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" />
-              </a>
-            ))}
+            {SOCIAL_LINKS.map((item) => {
+              const isPlaceholder = item.href === "#";
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  {...(!isPlaceholder ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  onClick={(e) => {
+                    if (isPlaceholder) e.preventDefault();
+                  }}
+                  title={isPlaceholder ? `${item.name} (Official profile launching soon)` : item.name}
+                  aria-label={isPlaceholder ? `${item.name} - official profile launching soon` : item.name}
+                  className="group flex min-h-[58px] items-center justify-between px-6 py-4 text-sm font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.03] hover:text-foreground cursor-pointer"
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="text-foreground/70 transition-colors group-hover:text-primary">{item.icon}</span>
+                    <span className="tracking-tight">{item.name}</span>
+                  </span>
+                  <ArrowRight className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" />
+                </a>
+              );
+            })}
           </div>
 
           {/* Bottom Row: 4 Links Columns */}
@@ -367,7 +374,7 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/auth" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link to="/dashboard" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
                     {lang === "bn" ? "মার্চেন্ট লগইন" : "Merchant Portal"}
                   </Link>
                 </li>

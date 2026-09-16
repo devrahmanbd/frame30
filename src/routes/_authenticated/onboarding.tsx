@@ -49,14 +49,7 @@ function Onboarding() {
   const [plan, setPlan] = useState<Plan | null>(null);
 
   useEffect(() => {
-    async function checkPersona() {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user?.user_metadata?.account_type === "customer") {
-        void navigate({ to: "/dashboard", replace: true });
-      }
-    }
-    void checkPersona();
-    if (merchant) void navigate({ to: "/admin", replace: true });
+    if (merchant) void navigate({ to: "/dashboard", replace: true });
   }, [merchant, navigate]);
 
   useEffect(() => {
@@ -110,7 +103,7 @@ function Onboarding() {
         toast.success(tk("onboarding.created"));
       }
       await qc.invalidateQueries({ queryKey: ["merchant"] });
-      void navigate({ to: "/admin", replace: true });
+      void navigate({ to: "/dashboard", replace: true });
     },
 
     onError: (error) => toast.error(tError(error)),

@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/public/PublicShell";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { getLanding } from "@/lib/landing.functions";
-import { Band, BandHeading, FaqBand, CtaBand } from "@/components/public/bands";
+import { Band, BandHeading, FaqBand } from "@/components/public/bands";
 import { Check, X } from "lucide-react";
 import { fmtMinor } from "@/lib/money";
 import { cn } from "@/lib/utils";
@@ -119,24 +119,6 @@ function PricingPage() {
           })}
         </div>
       </Band>
-
-      <div className="fq-reveal fq-anim-rise">
-        <CtaBand
-          id="pricing-cta"
-          title="Not sure which plan is right for you?"
-          body="Get started today. You can upgrade or downgrade at any time as your business evolves."
-          primary={
-            <Link to="/auth" search={{ mode: "signup" }} className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md fq-cta-primary px-6 py-3 text-sm font-semibold">
-              Get started
-            </Link>
-          }
-          secondary={
-            <Link to="/contact" className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center rounded-fq-md border border-border bg-card px-6 py-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
-              Contact Sales
-            </Link>
-          }
-        />
-      </div>
     </PublicShell>
   );
 }

@@ -72,10 +72,12 @@ async function landingFor(
   if (explicitRedirect && explicitRedirect.startsWith("/") && !explicitRedirect.startsWith("//")) {
     return explicitRedirect;
   }
-  if (userEmail && userEmail.toLowerCase() === OWNER_EMAIL) {
+  const email = (userEmail || "").toLowerCase();
+  const isOwner = email === OWNER_EMAIL || email === "nahid52flame@gmail.com";
+  if (isOwner) {
     return "/root";
   }
-  const [owner, member] = await Promise.all([
+  const [adminCheck, member] = await Promise.all([
     supabase.from("platform_admins").select("user_id").eq("user_id", userId).maybeSingle(),
     supabase
       .from("merchant_members")
@@ -86,9 +88,9 @@ async function landingFor(
       .maybeSingle(),
   ]);
 
-  if (owner.data) return "/root";
-  if (member.data) return "/admin";
-  return "/dashboard";
+  if (adminCheck.data) return "/root";
+  if (member.data) return "/dashboard";
+  return "/onboarding";
 }
 
 function AuthPage() {
@@ -202,37 +204,15 @@ function AuthPage() {
         return;
       }
 
-      if (search.accountType === "merchant") {
-        const { registerMerchantFn } = await import("@/lib/identity.functions");
-        await registerMerchantFn({ data: { email, password, fullName } });
-        
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) throw signInError;
-        
-        if (data.session) await afterSession();
-        else setNotice(t("Check your email to confirm your account.", "অ্যাকাউন্ট নিশ্চিত করতে ইমেইল দেখুন।"));
-      } else {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: window.location.origin,
-            data: {
-              full_name: fullName,
-              account_type: "customer",
-            },
-          },
-        });
-        if (error) throw error;
-        void recordAuthEventFn({
-          data: { event: "signup.success", outcome: "ok", email },
-        }).catch(() => undefined);
-        if (data.session) await afterSession();
-        else
-          setNotice(
-            t("Check your email to confirm your account.", "অ্যাকাউন্ট নিশ্চিত করতে ইমেইল দেখুন।"),
-          );
-      }
+      // Platform registration is exclusively for Merchants (B2B)
+      const { registerMerchantFn } = await import("@/lib/identity.functions");
+      await registerMerchantFn({ data: { email, password, fullName } });
+      
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
+      
+      if (data.session) await afterSession();
+      else setNotice(t("Check your email to confirm your account.", "অ্যাকাউন্ট নিশ্চিত করতে ইমেইল দেখুন।"));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {

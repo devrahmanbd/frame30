@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,46 +10,73 @@ import { useLang } from "@/lib/i18n";
  * Platform owner console — a standalone route tree.
  *
  * It deliberately sits OUTSIDE `_authenticated` and owns its own session gate,
- * its own shell and its own components, so nothing in the merchant console can
- * change what an owner sees or how this tree is protected.
+ * its own login path (/root/login), shell, and components.
+ * Non-owners are redirected to /dashboard.
+ * Unauthenticated visitors are redirected to /root/login.
  */
 const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com"];
 
 export const Route = createFileRoute("/root")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
+    const isLoginRoute = location.pathname === "/root/login" || location.pathname === "/root/auth";
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    const email = data.user.email?.toLowerCase() || "";
-    if (!OWNER_EMAILS.includes(email) && process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase() !== email) {
-      throw redirect({ to: "/admin" });
+    const user = !error && data?.user ? data.user : null;
+    const email = user?.email?.toLowerCase() || "";
+    const isKnownOwnerEmail =
+      Boolean(user) &&
+      (OWNER_EMAILS.includes(email) || process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase() === email);
+
+    // If on the login page
+    if (isLoginRoute) {
+      if (isKnownOwnerEmail) {
+        throw redirect({ to: "/root" });
+      }
+      return { user };
     }
+
+    // For protected /root routes:
+    if (!user) {
+      throw redirect({ to: "/root/login" });
+    }
+
+    let isOwner = isKnownOwnerEmail;
+    if (!isOwner) {
+      const { data: adminRow } = await supabase
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (adminRow) {
+        isOwner = true;
+      }
+    }
+
+    if (!isOwner) {
+      // Not a platform owner -> redirect to merchant dashboard
+      throw redirect({ to: "/dashboard" });
+    }
+
     const { data: adminRow } = await supabase
       .from("platform_admins")
       .select("user_id")
-      .eq("user_id", data.user.id)
+      .eq("user_id", user.id)
       .maybeSingle();
+
     if (!adminRow) {
       // Auto-provision owner row via server call
-      await platformIsAdminFn();
+      await platformIsAdminFn().catch(() => null);
     }
-    return { user: data.user };
+
+    return { user };
   },
   head: () => ({
     meta: [
-      { title: "Platform owner console — Framique" },
+      { title: "Platform Owner Console — Framique" },
       {
         name: "description",
-        content:
-          "Framique platform owner console: plan definitions, tenant usage, money and platform audit.",
+        content: "Framique platform owner console: plan definitions, tenant usage, money and platform audit.",
       },
-      { property: "og:title", content: "Framique platform owner console" },
-      {
-        property: "og:description",
-        content: "Plan builder, tenant limits and audit trail for Framique platform owners.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -58,6 +85,14 @@ export const Route = createFileRoute("/root")({
 
 function RootLayout() {
   const { tk } = useLang();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isLoginRoute = pathname === "/root/login" || pathname === "/root/auth";
+
+  // Login route renders without RootShell
+  if (isLoginRoute) {
+    return <Outlet />;
+  }
+
   const isAdmin = useServerFn(platformIsAdminFn);
   const { data, isPending } = useQuery({
     queryKey: ["root", "gate"],
