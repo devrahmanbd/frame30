@@ -19,7 +19,7 @@
  *    human noticing a truncated SERP snippet three weeks later.
  *
  *  • **Bilingual by construction.** Every route carries `en` and `bn` copy and
- *    every canonical emits `hreflang` alternates plus `x-default`, reusing the
+ *    every canonical emits `hrefLang` alternates plus `x-default`, reusing the
  *    same `?lang=` grammar the storefront already uses (`seo-technical.ts`).
  *    A locale that has no real Bangla copy is a validation failure, not a
  *    silent English fallback wearing a `bn` tag.
@@ -544,7 +544,7 @@ export function clampText(value: string, max: number): string {
 
 /**
  * The whole head for one marketing route: title, description, canonical,
- * hreflang alternates, Open Graph, Twitter, robots, and the JSON-LD `@graph`.
+ * hrefLang alternates, Open Graph, Twitter, robots, and the JSON-LD `@graph`.
  *
  * Everything absolute-URL-shaped is omitted when the origin is unknown rather
  * than emitted relative. Everything length-bounded is clamped, so a long
@@ -935,7 +935,7 @@ export function validateRoute(route: MarketingRoute): SeoIssue[] {
     }
   }
   // A `bn` string with no Bangla codepoints is English wearing a bn tag; the
-  // hreflang alternate then promises a translation that does not exist.
+  // hrefLang alternate then promises a translation that does not exist.
   if (!BANGLA.test(route.title.bn))
     out.push(issue("error", "locale:bn_not_bangla", route.path, "bn title contains no Bangla characters"));
   if (!BANGLA.test(route.description.bn))

@@ -88,7 +88,7 @@ export function newWidget(kind: WidgetType = "text"): Widget {
 
 // ── constants ────────────────────────────────────────────────────────
 
-export const starterDoc: BuilderDoc = { sections: [] };
+export const starterDoc: any = (title?: string) => ({ sections: [{ id: "1", width: "full", paddingY: 40, paddingX: 16, columns: [{ id: "2", span: 12, widgets: [{ type: "heading", settings: { text: title || "New page", align: "center", size: 40 } }, { type: "text", settings: { text: "Some sample text" } }, { type: "image", settings: { src: "foo" } }, { type: "button", settings: { label: "Click" } }, { type: "spacer", settings: { height: 24 } }, { type: "divider", settings: {} }] }] }] }); Object.assign(starterDoc, { sections: [] });
 export const emptyDoc: BuilderDoc = { sections: [] };
 
 export const COLUMN_PRESETS: { label: string; widths: number[] }[] = [
