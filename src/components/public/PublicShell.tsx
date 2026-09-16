@@ -50,12 +50,7 @@ export function PublicShell({
         <div className="fq-band-inner flex h-16 items-center justify-between gap-4 md:grid md:grid-cols-[auto_1fr_auto]">
           <Link to="/" className="inline-flex min-h-11 items-center gap-2.5 group">
             <BrandLogo size={32} className="group-hover:scale-105" />
-            <span className="flex flex-col leading-none">
-              <span className="fq-display text-base font-bold tracking-tight text-foreground">Framique</span>
-              <span className="mt-0.5 hidden text-[9px] font-medium uppercase tracking-[0.18em] text-muted-foreground sm:block">
-                Modern Commerce
-              </span>
-            </span>
+            <span className="fq-display text-base font-bold tracking-tight text-foreground">Framique</span>
           </Link>
           <nav className="hidden items-center justify-center gap-1 text-sm md:flex" aria-label={tk("site.nav.label")}>
             {NAV.map((item) => (
