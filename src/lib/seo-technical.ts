@@ -21,7 +21,7 @@ export const LOCALE_PARAM = "lang";
 export const LOCALES = ["en", "bn"] as const;
 export type SeoLocale = (typeof LOCALES)[number];
 
-/** `hreflang` value per locale; Bangla is region-qualified for Bangladesh. */
+/** `hrefLang` value per locale; Bangla is region-qualified for Bangladesh. */
 export const HREFLANG: Record<SeoLocale, string> = { en: "en", bn: "bn-BD" };
 
 export function isSeoLocale(value: unknown): value is SeoLocale {

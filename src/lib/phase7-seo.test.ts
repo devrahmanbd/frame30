@@ -21,7 +21,7 @@ const params = (q: Record<string, unknown> = {}) => normalizeSearchParams(q);
 describe("Phase 7.1 — locale alternates", () => {
   it("emits distinct per-locale hrefs plus x-default", () => {
     const links = hreflangAlternates("https://shop.test/store/acme");
-    expect(links.map((l) => l["hreflang"])).toEqual([HREFLANG.en, HREFLANG.bn, "x-default"]);
+    expect(links.map((l) => l["hrefLang"])).toEqual([HREFLANG.en, HREFLANG.bn, "x-default"]);
     expect(links[0]!["href"]).toBe(`https://shop.test/store/acme?${LOCALE_PARAM}=en`);
     expect(links[1]!["href"]).toBe(`https://shop.test/store/acme?${LOCALE_PARAM}=bn`);
     expect(links[2]!["href"]).toBe("https://shop.test/store/acme");
