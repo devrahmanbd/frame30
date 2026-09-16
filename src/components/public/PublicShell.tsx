@@ -4,11 +4,9 @@ import { Menu, X } from "lucide-react";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLang } from "@/lib/i18n";
 import { PUBLIC_BANGLA_ENABLED } from "@/lib/public-locale";
-import { LEGAL_DOCS, ORG_NAP, napAddressLine } from "@/lib/legal";
-import { NewsletterBlock } from "@/components/public/NewsletterForm";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
-import { marketingRoute, type MarketingRouteId } from "@/lib/marketing-seo";
+import { PublicFooter } from "@/components/public/PublicFooter";
 
 const NAV = [
   { to: "/features", key: "site.nav.features" },
@@ -19,67 +17,17 @@ const NAV = [
   { to: "/contact", key: "site.nav.contact" },
 ] as const;
 
-/**
- * Phase 10.2 — the deep-dive pages are reachable from the shared footer of
- * every public page, so no registered marketing route is an orphan and the
- * crawl depth from `/` stays at one click. Labels come from the SEO registry
- * so nav copy and breadcrumb copy can never drift apart.
- */
-const FOOTER_PRODUCT: readonly MarketingRouteId[] = [
-  "features",
-  "builder",
-  "payments",
-  "fulfilment",
-  "pricing",
-];
-const FOOTER_COMPANY: readonly MarketingRouteId[] = [
-  "customers",
-  "about",
-  "security",
-  "faq",
-  "blog",
-  "status",
-];
-
-/** Rails printed in the footer trust strip — settlement rails only, no logos. */
-const FOOTER_RAILS = ["bKash", "Nagad", "Rocket", "Bank transfer", "Cash on delivery"] as const;
-
-function FooterColumn({
-  title,
-  children}: {
-  title: string;
+export interface PublicShellProps {
   children: ReactNode;
-}) {
-  return (
-    <nav aria-label={title} className="min-w-0">
-      <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">{title}</h3>
-      <ul className="mt-3 space-y-1">{children}</ul>
-    </nav>
-  );
-}
-
-function FooterLink({ children, ...rest }: { children: ReactNode } & Record<string, unknown>) {
-  return (
-    <li>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <Link
-        {...(rest as any)}
-        className="inline-flex min-h-9 items-center text-sm text-foreground/80 transition-colors hover:text-primary"
-      >
-        {children}
-      </Link>
-    </li>
-  );
+  hideFooterCta?: boolean;
 }
 
 /** Shared chrome for every public marketing page. */
 export function PublicShell({
-  children}: {
-  children: ReactNode;
-  
-}) {
+  children,
+  hideFooterCta = false,
+}: PublicShellProps) {
   const { tk, lang, setLang } = useLang();
-  const year = new Date().getFullYear();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -190,121 +138,8 @@ export function PublicShell({
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border bg-card">
-        {/* Newsletter section with softer framing */}
-        <div className="bg-muted/30">
-          <div className="fq-band-inner py-12 md:py-16">
-            <NewsletterBlock source="footer" />
-          </div>
-        </div>
-
-        {/* Main Footer Links */}
-        <div className="fq-band-inner py-16 md:py-24">
-          <div className="grid gap-12 lg:grid-cols-12">
-            {/* Company identity + NAP */}
-            <div className="lg:col-span-4">
-              <div className="flex items-center gap-2.5">
-                <BrandLogo size={28} />
-                <span className="fq-display text-base font-semibold tracking-tight">{ORG_NAP.legalName}</span>
-              </div>
-              <p className="mt-4 max-w-[280px] text-sm text-muted-foreground leading-relaxed">
-                {tk("site.footer.tagline")}
-              </p>
-              
-              <address className="mt-8 space-y-2 text-sm not-italic text-muted-foreground">
-                <p className="text-xs font-semibold uppercase tracking-wider text-foreground/70">
-                  {tk("site.footer.address")}
-                </p>
-                <div className="space-y-1">
-                  <p className="text-foreground/80">{napAddressLine()}</p>
-                  <p className="flex items-center gap-2">
-                    <a className="hover:text-primary transition-colors" href={`tel:${ORG_NAP.e164Phone}`}>
-                      {ORG_NAP.phone}
-                    </a>
-                    <span className="text-border">•</span>
-                    <a className="hover:text-primary transition-colors" href={`mailto:${ORG_NAP.email}`}>
-                      {ORG_NAP.email}
-                    </a>
-                  </p>
-                  <p className="text-foreground/70">{ORG_NAP.hours}</p>
-                </div>
-              </address>
-            </div>
-
-            {/* Links Grid */}
-            <div className="grid grid-cols-2 gap-10 sm:grid-cols-2 md:grid-cols-4 lg:col-span-8">
-              <FooterColumn title={tk("site.footer.product")}>
-                {FOOTER_PRODUCT.map((id) => {
-                  const route = marketingRoute(id);
-                  return (
-                    <FooterLink key={route.path} to={route.path}>
-                      {route.label[lang] ?? route.label.en}
-                    </FooterLink>
-                  );
-                })}
-              </FooterColumn>
-
-              <FooterColumn title={tk("site.footer.company")}>
-                {FOOTER_COMPANY.map((id) => {
-                  const route = marketingRoute(id);
-                  return (
-                    <FooterLink key={route.path} to={route.path}>
-                      {route.label[lang] ?? route.label.en}
-                    </FooterLink>
-                  );
-                })}
-                <FooterLink to="/docs">{tk("site.nav.docs")}</FooterLink>
-              </FooterColumn>
-
-              <FooterColumn title={tk("site.footer.merchants")}>
-                <FooterLink to="/auth">{tk("site.nav.sign_in")}</FooterLink>
-                <FooterLink to="/admin">{tk("site.nav.dashboard")}</FooterLink>
-                <FooterLink to="/contact">{tk("site.nav.contact")}</FooterLink>
-              </FooterColumn>
-
-              <FooterColumn title={tk("site.footer.legal_group")}>
-                <FooterLink to="/legal">{tk("site.footer.legal_group")}</FooterLink>
-                {LEGAL_DOCS.map((doc) => (
-                  <FooterLink key={doc.slug} to="/legal/$doc" params={{ doc: doc.slug }}>
-                    {doc.title[lang]}
-                  </FooterLink>
-                ))}
-              </FooterColumn>
-            </div>
-          </div>
-        </div>
-
-        {/* Unified Bottom Footer */}
-        <div className="border-t border-border">
-          <div className="fq-band-inner py-8 flex flex-col items-center justify-between gap-6 md:flex-row text-xs text-muted-foreground">
-            
-            <div className="flex flex-col gap-1 items-center md:items-start">
-              <span className="font-medium text-foreground/80">© {year} {ORG_NAP.legalName}</span>
-              <span className="text-foreground/60">{tk("site.footer.legal")}</span>
-            </div>
-
-            <div className="flex flex-wrap justify-center items-center gap-2">
-              <span className="font-medium text-foreground/60 mr-2">Settled through:</span>
-              {FOOTER_RAILS.map((rail) => (
-                <span key={rail} className="rounded-fq-sm bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground">
-                  {rail}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 font-medium text-foreground/70">
-              <span className="hidden lg:inline">{ORG_NAP.locality}, {ORG_NAP.country}</span>
-              <Link to="/status" className="hover:text-primary transition-colors">
-                System Status
-              </Link>
-              <Link to="/contact" className="hover:text-primary transition-colors">
-                Contact
-              </Link>
-            </div>
-
-          </div>
-        </div>
-      </footer>
+      {/* Modern architectural glassmorphic footer matching header and image layout */}
+      <PublicFooter hideCta={hideFooterCta} />
     </div>
   );
 }

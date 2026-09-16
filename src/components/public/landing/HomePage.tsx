@@ -17,7 +17,6 @@ import {
   Band,
   BandHeading,
   BandSequence,
-  CtaBand,
   FaqBand,
   HeroBand,
 } from "@/components/public/bands";
@@ -29,7 +28,6 @@ import {
   type LandingData,
 } from "@/lib/landing";
 import {
-  FINAL_CTA,
   HERO,
 } from "@/lib/marketing/home.content";
 import { TESTIMONIALS } from "@/lib/marketing/testimonials.content";
@@ -477,33 +475,6 @@ export function HomePage({ data }: { data: LandingData }) {
           />
         </div>
       </Band>
-
-      {/* 7. FINAL HIGH-CONVERTING CTA */}
-      <motion.div
-         initial={{ opacity: 0, y: 30 }}
-         whileInView={{ opacity: 1, y: 0 }}
-         viewport={{ once: true }}
-         transition={{ duration: 0.8 }}
-      >
-        <CtaBand
-          id="final-cta-title"
-          tone="glass"
-          title="Start growing your ecommerce business today."
-          body="Join hundreds of modern Bangladeshi merchants who trust Framique for their storefront, payments, and logistics."
-          note="No hidden fees · Cancel anytime · Full feature access"
-          primary={
-            <Link to="/auth" search={{ mode: "signup" }} className={cn(PRIMARY_CTA, "group gap-2 min-h-[56px] px-10 text-base rounded-full")}>
-              <span>{FINAL_CTA.ctaPrimary}</span>
-              <AnimatedIcon icon={ArrowRight} variant="magnetic" size="sm" />
-            </Link>
-          }
-          secondary={
-            <Link to="/contact" className={cn(SECONDARY_CTA, "min-h-[56px] px-10 text-base rounded-full")}>
-              {FINAL_CTA.ctaSecondary}
-            </Link>
-          }
-        />
-      </motion.div>
     </BandSequence>
   );
 }
