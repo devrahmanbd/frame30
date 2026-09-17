@@ -5,6 +5,12 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { NotificationBell } from "@/components/admin/NotificationBell";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { CommandPalette, useCommandPalette } from "@/components/admin/CommandPalette";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { ADMIN_NAV, filterNav, type IconKey, type NavGroup } from "@/lib/console-nav";
 import { useCan } from "@/hooks/use-membership";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
@@ -164,10 +170,6 @@ function SidebarNav({
 /** Sub-pages of the active section, rendered as page tabs (Polaris pattern). */
 function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathname: string }) {
   const { t } = useLang();
-  const [openMore, setOpenMore] = useState(false);
-  useEffect(() => {
-    setOpenMore(false);
-  }, [pathname]);
   if (!group || group.items.length < 2) return null;
   const more = group.more ?? [];
   const moreActive = more.some((i) => isActive(pathname, i.to));
@@ -200,52 +202,37 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
         })}
 
         {more.length > 0 ? (
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setOpenMore((v) => !v)}
-              aria-expanded={openMore}
-              aria-haspopup="menu"
-              className={`flex min-h-8 items-center gap-1 whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                moreActive
-                  ? "bg-foreground/[0.07] text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              {t("More", "আরও")}
-              <ChevronDown className="size-3.5" aria-hidden />
-            </button>
-            {openMore ? (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  role="presentation"
-                  onClick={() => setOpenMore(false)}
-                />
-                <ul
-                  role="menu"
-                  className="absolute right-0 z-20 mt-1 min-w-48 rounded-fq-lg border border-border bg-card p-1 shadow-lg"
-                >
-                  {more.map((i) => (
-                    <li key={i.to} role="none">
-                      <Link
-                        to={i.to}
-                        role="menuitem"
-                        onClick={() => setOpenMore(false)}
-                        className={`block rounded-fq-md px-2.5 py-1.5 text-[13px] transition-colors ${
-                          isActive(pathname, i.to)
-                            ? "bg-foreground/[0.07] text-foreground"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        {t(i.en, i.bn)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : null}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className={`flex min-h-8 items-center gap-1 whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                  moreActive
+                    ? "bg-foreground/[0.07] text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <span>{t("More", "আরও")}</span>
+                <ChevronDown className="size-3.5" aria-hidden />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-48 z-50">
+              {more.map((i) => (
+                <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
+                  <Link
+                    to={i.to}
+                    className={`block w-full rounded-fq-md px-2.5 py-1.5 text-[13px] transition-colors ${
+                      isActive(pathname, i.to)
+                        ? "bg-foreground/[0.07] text-foreground font-medium"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    {t(i.en, i.bn)}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : null}
       </nav>
     </div>
