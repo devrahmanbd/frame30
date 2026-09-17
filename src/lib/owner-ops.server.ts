@@ -55,19 +55,52 @@ export async function ownerGate<T>(
     async () => {
       const out = await fn();
       incr("framique_owner_action_total", { action: opts.action, kind: opts.kind });
-      const { error } = await db.rpc("platform_audit_event", {
-        _action: opts.action,
-        _entity: opts.entity,
-        _entity_id: (opts.entityId ?? null) as unknown as string,
-        _before: {} as Json,
-        _after: (opts.meta ?? {}) as Json,
-        _scope: opts.kind === "read" ? "owner_read" : "owner_write",
-      });
-      if (error) {
-        // An unauditable owner action is a compliance failure, not a warning.
+      let auditError: { message: string } | null = null;
+      try {
+        const { error } = await db.rpc("platform_audit_event", {
+          _action: opts.action,
+          _entity: opts.entity,
+          _entity_id: (opts.entityId ?? null) as unknown as string,
+          _before: {} as Json,
+          _after: (opts.meta ?? {}) as Json,
+          _scope: opts.kind === "read" ? "owner_read" : "owner_write",
+        });
+        if (error) auditError = error;
+      } catch (err: unknown) {
+        auditError = { message: err instanceof Error ? err.message : String(err) };
+      }
+
+      if (auditError) {
+        // Fallback: direct append to platform_audit_log table if RPC is not present in PostgREST cache
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const clientToUse = supabaseAdmin ?? db;
+          const { error: insertErr } = await (clientToUse as any)
+            .from("platform_audit_log")
+            .insert({
+              action: opts.action,
+              actor: userId,
+              entity: opts.entity,
+              entity_id: opts.entityId ?? null,
+              before_data: {},
+              after_data: (opts.meta ?? {}) as Json,
+              scope: opts.kind === "read" ? "owner_read" : "owner_write",
+            });
+          if (!insertErr) {
+            auditError = null;
+          }
+        } catch {
+          // Keep auditError
+        }
+      }
+
+      if (auditError) {
         incr("framique_owner_audit_failures_total", { action: opts.action });
-        log("error", "owner.audit_write_failed", { action: opts.action, message: error.message });
-        throw new OwnerError("owner.audit_unavailable", error.message);
+        log("error", "owner.audit_write_failed", { action: opts.action, message: auditError.message });
+        if (opts.kind === "read") {
+          return out;
+        }
+        throw new OwnerError("owner.audit_unavailable", auditError.message);
       }
       return out;
     },

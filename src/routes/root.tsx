@@ -14,21 +14,15 @@ import { useLang } from "@/lib/i18n";
  * Non-owners are redirected to /dashboard.
  * Unauthenticated visitors are redirected to /root/login.
  */
-const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com", "flamedev7@gmail.com"];
-
 export const Route = createFileRoute("/root")({
   ssr: false,
   beforeLoad: async ({ location }) => {
     const isLoginRoute = location.pathname === "/root/login" || location.pathname === "/root/auth";
     const { data, error } = await supabase.auth.getUser();
     const user = !error && data?.user ? data.user : null;
-    const email = user?.email?.toLowerCase() || "";
-    const isKnownOwnerEmail =
-      Boolean(user) &&
-      (OWNER_EMAILS.includes(email) || process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase() === email);
 
-    let isOwner = isKnownOwnerEmail;
-    if (user && !isOwner) {
+    let isOwner = false;
+    if (user) {
       const { data: adminRow } = await supabase
         .from("platform_admins")
         .select("user_id")
@@ -36,6 +30,11 @@ export const Route = createFileRoute("/root")({
         .maybeSingle();
       if (adminRow) {
         isOwner = true;
+      } else {
+        const serverCheck = await platformIsAdminFn().catch(() => ({ admin: false }));
+        if (serverCheck?.admin) {
+          isOwner = true;
+        }
       }
     }
 
@@ -55,17 +54,6 @@ export const Route = createFileRoute("/root")({
     if (!isOwner) {
       // Not a platform owner -> redirect to merchant dashboard
       throw redirect({ to: "/dashboard" });
-    }
-
-    const { data: adminRow } = await supabase
-      .from("platform_admins")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!adminRow) {
-      // Auto-provision owner row via server call
-      await platformIsAdminFn().catch(() => null);
     }
 
     return { user };

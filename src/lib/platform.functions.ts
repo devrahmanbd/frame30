@@ -82,41 +82,38 @@ export const platformClearQuotaFn = createServerFn({ method: "POST" })
  * the /root layout can render a neutral "not available" screen rather than
  * confirming the console exists.
  *
- * Exclusively permitted for the owner of Framique (devrahmanbd@gmail.com).
+ * Exclusively permitted for operators in the platform_admins table.
  */
 export const platformIsAdminFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const claims = context.claims as Record<string, unknown> | undefined;
-    const email = (typeof claims?.["email"] === "string" ? claims["email"] : "").toLowerCase();
-    
-    const ownerEmails = [
-      "devrahmanbd@gmail.com",
-      "nahid52flame@gmail.com",
-    ];
-    
-    const configuredOwner = (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase();
-    if (configuredOwner) {
-      ownerEmails.push(configuredOwner);
-    }
-
-    if (!ownerEmails.includes(email)) {
-      return { admin: false };
-    }
-
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      await (supabaseAdmin as any)
+      const { data, error } = await (context.supabase as any)
         .from("platform_admins")
-        .upsert({ user_id: context.userId }, { onConflict: "user_id" });
+        .select("user_id")
+        .eq("user_id", context.userId)
+        .maybeSingle();
+
+      if (!error && data) {
+        return { admin: true };
+      }
+
+      // Check via service role client if user token has RLS lookup restrictions
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      if (supabaseAdmin) {
+        const { data: adminRow } = await (supabaseAdmin as any)
+          .from("platform_admins")
+          .select("user_id")
+          .eq("user_id", context.userId)
+          .maybeSingle();
+
+        if (adminRow) {
+          return { admin: true };
+        }
+      }
     } catch {
-      // Ignore if supabaseAdmin is not configured
+      // Ignore and return false
     }
 
-    const { data } = await (context.supabase as any)
-      .from("platform_admins")
-      .select("user_id")
-      .eq("user_id", context.userId)
-      .maybeSingle();
-    return { admin: Boolean(data) || ownerEmails.includes(email) };
+    return { admin: false };
   });

@@ -4,8 +4,6 @@ import { Lock, ShieldAlert, Loader2, ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { platformIsAdminFn } from "@/lib/platform.functions";
 
-const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com", "flamedev7@gmail.com"];
-
 export const Route = createFileRoute("/root/login")({
   head: () => ({
     meta: [
@@ -32,9 +30,6 @@ export function RootLoginPage() {
 
     try {
       const normalizedEmail = email.trim().toLowerCase();
-      const configuredOwner = (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase();
-      const isKnownOwnerEmail =
-        OWNER_EMAILS.includes(normalizedEmail) || (configuredOwner && configuredOwner === normalizedEmail);
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
@@ -50,15 +45,19 @@ export function RootLoginPage() {
         throw new Error("Failed to authenticate session.");
       }
 
-      // Check if user is registered in platform_admins table or is known owner
-      let isVerifiedOwner = isKnownOwnerEmail;
-      if (!isVerifiedOwner) {
-        const { data: adminRow } = await supabase
-          .from("platform_admins")
-          .select("user_id")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        if (adminRow) {
+      // Check if user is registered in platform_admins table
+      let isVerifiedOwner = false;
+      const { data: adminRow } = await supabase
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (adminRow) {
+        isVerifiedOwner = true;
+      } else {
+        const serverCheck = await platformIsAdminFn().catch(() => ({ admin: false }));
+        if (serverCheck?.admin) {
           isVerifiedOwner = true;
         }
       }
@@ -69,9 +68,6 @@ export function RootLoginPage() {
         setErrorMsg("Invalid credentials.");
         return;
       }
-
-      // Ensure owner record exists in database
-      await platformIsAdminFn().catch(() => null);
 
       // Navigate straight to root console
       void navigate({ to: "/root", replace: true });

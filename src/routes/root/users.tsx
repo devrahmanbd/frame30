@@ -40,7 +40,7 @@ function PeopleDesk() {
   const [pending, setPending] = useState<{ userId: string; grant: boolean; label: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error: queryError } = useQuery({
     queryKey: ["owner-people", page],
     queryFn: () => load({ data: { page } }),
   });
@@ -77,13 +77,15 @@ function PeopleDesk() {
       p.memberships.some((m) => m.merchantName.toLowerCase().includes(needle)),
   );
 
+  const activeError = error || (queryError instanceof Error ? queryError.message : queryError ? String(queryError) : null);
+
   return (
     <section className="space-y-8">
       <OwnerHeader title={tk("owner.people.title")} subtitle={tk("owner.people.subtitle")} />
 
-      {error ? (
+      {activeError ? (
         <p role="alert" className="rounded-fq-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {error}
+          {activeError}
         </p>
       ) : null}
 

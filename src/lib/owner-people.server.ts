@@ -118,14 +118,16 @@ export async function setOwnerRight(db: Client, actorId: string, targetUserId: s
           .upsert({ user_id: targetUserId }, { onConflict: "user_id" });
         if (error) throw new OwnerError("people.grant_failed", error.message);
       } else {
-        const target = await svc.auth.admin.getUserById(targetUserId);
-        const OWNER_EMAIL = (process.env["PLATFORM_OWNER_EMAIL"] || "devrahmanbd@gmail.com").toLowerCase();
-        if (target?.data?.user?.email?.toLowerCase() === OWNER_EMAIL) {
-          throw new OwnerError("people.cannot_demote_owner", "Cannot revoke root owner rights.");
-        }
         const remaining = await svc.from("platform_admins").select("user_id");
         if (((remaining.data ?? []) as Loose[]).length <= 1) {
           throw new OwnerError("people.last_owner");
+        }
+        const configuredOwner = process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase();
+        if (configuredOwner) {
+          const target = await svc.auth.admin.getUserById(targetUserId);
+          if (target?.data?.user?.email?.toLowerCase() === configuredOwner) {
+            throw new OwnerError("people.cannot_demote_owner", "Cannot revoke root owner rights.");
+          }
         }
         const { error } = await svc.from("platform_admins").delete().eq("user_id", targetUserId);
         if (error) throw new OwnerError("people.revoke_failed", error.message);
