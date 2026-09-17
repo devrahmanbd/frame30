@@ -28,7 +28,7 @@ export function isCompatible(compatible: unknown) {
 }
 
 export async function listCatalog(db: Client, merchantId: string) {
-  const [themes, widgets, installs] = await Promise.all([
+  const [themes, widgets, installs, themeRows] = await Promise.all([
     db.from("marketplace_themes").select(LISTING_COLUMNS).order("install_count", { ascending: false }),
     db.from("marketplace_widgets").select(LISTING_COLUMNS).order("install_count", { ascending: false }),
     db
@@ -36,6 +36,10 @@ export async function listCatalog(db: Client, merchantId: string) {
       .select("id, kind, theme_id, widget_id, listing_slug, listing_name, status, is_trial, price_minor_int, currency_code, started_at, expires_at")
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false }),
+    db
+      .from("store_themes")
+      .select("id, is_active, source_install_id")
+      .eq("merchant_id", merchantId),
   ]);
 
   const decorate = (rows: typeof themes.data, kind: Kind) =>
@@ -47,6 +51,19 @@ export async function listCatalog(db: Client, merchantId: string) {
       mine: r.seller_merchant_id === merchantId,
       builtin: false as const,
     }));
+
+  // WordPress parity: which installed listings already have a theme row,
+  // and which of those is live. Linked through source_install_id.
+  const installById = new Map(
+    ((installs.data ?? []) as { id: string; listing_slug: string }[]).map((i) => [i.id, i]),
+  );
+  const themeStates = (
+    (themeRows.data ?? []) as { id: string; is_active: boolean; source_install_id: string | null }[]
+  ).flatMap((t) => {
+    if (!t.source_install_id) return [];
+    const inst = installById.get(t.source_install_id);
+    return inst ? [{ slug: inst.listing_slug, themeId: t.id, isActive: t.is_active }] : [];
+  });
 
   return {
     // Official presets first: the marketplace is never an empty shelf even
@@ -60,13 +77,14 @@ export async function listCatalog(db: Client, merchantId: string) {
       ...decorate(widgets.data, "widget").filter((r) => r.status === "active" || r.mine),
     ],
     installs: installs.data ?? [],
+    themeStates,
   };
 }
 
 /**
  * Official built-in themes as synthetic catalog entries. They carry no DB
- * row, no price and no trial — installing one applies the preset AST
- * directly (see marketInstallFn) instead of going through the marketplace
+ * row, no price and no trial — installing one creates a NEW INACTIVE theme
+ * (see installBuiltinTheme) instead of going through the marketplace
  * ledger, consent and payment flow.
  */
 function builtinThemes() {

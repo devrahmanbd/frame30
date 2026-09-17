@@ -298,3 +298,99 @@ export async function moderate(db: Client, kind: Kind, id: string, next: "active
   if (error) throw new Error("market_moderation_failed");
   return { ok: true, status: next };
 }
+
+type LooseRpc = {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { message: string } | null }>;
+};
+
+/**
+ * WordPress-style builtin theme install: validates the official package,
+ * creates a NEW INACTIVE theme via marketplace_install_preset (the active
+ * draft is never touched), records the ledger row and links the theme back
+ * through store_themes.source_install_id.
+ */
+export async function installBuiltinTheme(
+  db: Client,
+  merchantId: string,
+  key: string,
+  idempotencyKey: string,
+) {
+  const { presetByKey } = await import("./theme-presets");
+  const preset = presetByKey(key);
+  if (!preset) throw new Error("market_listing_not_found");
+  const { registryPackage } = await import("./themes.server");
+  const pkg = registryPackage(key);
+
+  const { data, error } = await (db as unknown as LooseRpc).rpc("marketplace_install_preset", {
+    _merchant_id: merchantId,
+    _key: key,
+    _name: preset.nameEn,
+    _preset: { tokens: pkg.tokens, templates: pkg.templates },
+  });
+  if (error || !data) throw new Error("market_install_failed");
+  const installed = data as { theme_id: string; version_id: string };
+
+  const { data: ledger, error: ledgerError } = await db
+    .from("marketplace_installs")
+    .insert({
+      merchant_id: merchantId,
+      kind: "theme",
+      theme_id: null,
+      widget_id: null,
+      listing_slug: key,
+      listing_name: preset.nameEn,
+      version: preset.version,
+      price_minor_int: 0,
+      currency_code: "BDT",
+      is_trial: false,
+      status: "installed",
+      idempotency_key: idempotencyKey,
+    })
+    .select("id")
+    .single();
+  if (ledgerError || !ledger) throw new Error("market_install_failed");
+
+  await db
+    .from("store_themes")
+    .update({ source_install_id: ledger.id, source_listing_slug: key })
+    .eq("id", installed.theme_id)
+    .eq("merchant_id", merchantId);
+
+  return { themeId: installed.theme_id, versionId: installed.version_id, installId: ledger.id };
+}
+
+/**
+ * WordPress-style uninstall: removes an inactive installed theme and
+ * retires its ledger row. The active theme is refused (deleteTheme throws
+ * theme.active) — activate something else first.
+ */
+export async function uninstallBuiltinTheme(db: Client, merchantId: string, installId: string) {
+  const { data: row } = await db
+    .from("marketplace_installs")
+    .select("id, kind, listing_slug, status")
+    .eq("merchant_id", merchantId)
+    .eq("id", installId)
+    .maybeSingle();
+  if (!row || row.kind !== "theme") throw new Error("market_install_not_found");
+
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id, is_active")
+    .eq("merchant_id", merchantId)
+    .eq("source_install_id", installId)
+    .maybeSingle();
+  if (!theme) throw new Error("market_theme_not_linked");
+
+  const { deleteTheme } = await import("./themes/appearance.server");
+  await deleteTheme(db, merchantId, theme.id as string);
+
+  await db
+    .from("marketplace_installs")
+    .update({ status: "removed" as never })
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  return { ok: true };
+}

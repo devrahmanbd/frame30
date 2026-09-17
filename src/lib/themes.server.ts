@@ -477,7 +477,7 @@ export function officialThemeKeys(): string[] {
 }
 
 /** Validated official package, or a BuilderError if the preset is unusable. */
-function registryPackage(key: string): {
+export function registryPackage(key: string): {
   templates: ThemeTemplates;
   tokens: ThemeTokens;
   version: string;

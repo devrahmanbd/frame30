@@ -67,39 +67,23 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       }
     }
     if (data.kind === "theme" && builtinSlug) {
-      const key = builtinSlug;
-      const { installRegistryTheme } = await import("./themes.server");
-      const { THEME_PRESETS } = await import("./theme-presets");
-      const preset = THEME_PRESETS.find((p) => p.key === key);
-      const { versionId } = await installRegistryTheme(context.supabase, merchantId, key);
-
-      // Record in marketplace_installs so My Installs and badges track it
-      const { data: installRecord } = await context.supabase
-        .from("marketplace_installs")
-        .insert({
-          merchant_id: merchantId,
-          kind: "theme",
-          theme_id: null,
-          widget_id: null,
-          listing_slug: key,
-          listing_name: preset?.nameEn ?? key,
-          version: preset?.version ?? "1.0.0",
-          price_minor_int: 0,
-          currency_code: "BDT",
-          is_trial: false,
-          status: "installed",
-          idempotency_key: data.idempotencyKey,
-        })
-        .select("id")
-        .maybeSingle();
+      // WordPress semantics: a marketplace install adds a NEW INACTIVE
+      // theme. Activation is a separate, explicit step.
+      const { installBuiltinTheme } = await import("./marketplace-install.server");
+      const installed = await installBuiltinTheme(
+        context.supabase,
+        merchantId,
+        builtinSlug,
+        data.idempotencyKey,
+      );
 
       return {
-        installId: installRecord?.id ?? versionId,
+        installId: installed.installId,
         replayed: false,
         impacted: [] as string[],
         appVersion: APP_VERSION,
-        themeApplied: true,
-        themeNoticeKey: "marketplace.theme.applied",
+        themeApplied: false,
+        themeNoticeKey: null,
       };
     }
 
@@ -164,6 +148,16 @@ export const marketInstallStatusFn = createServerFn({ method: "POST" })
     const { setInstallStatus } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
     return setInstallStatus(context.supabase, merchantId, data.installId, data.status);
+  });
+
+/** WordPress-style uninstall: removes an inactive installed theme. */
+export const marketUninstallThemeFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ installId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { uninstallBuiltinTheme } = await import("./marketplace-install.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return uninstallBuiltinTheme(context.supabase, merchantId, data.installId);
   });
 
 export const marketMineFn = createServerFn({ method: "GET" })

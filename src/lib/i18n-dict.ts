@@ -264,6 +264,12 @@ export const DICT = {
     bn: "ট্রায়াল শুরু হয়েছে — ওয়ালেট চার্জ হয়নি।",
   },
   "marketplace.install_complete": { en: "Install complete.", bn: "ইনস্টল সম্পন্ন।" },
+  "marketplace.theme_activated": { en: "Theme activated — it is now live.", bn: "থিম সক্রিয় — এখন লাইভ।" },
+  "marketplace.theme_deleted": { en: "Theme deleted.", bn: "থিম মুছে ফেলা হয়েছে।" },
+  "marketplace.confirm_delete_theme": {
+    en: "Delete this theme and its versions? This cannot be undone.",
+    bn: "এই থিম ও এর সংস্করণগুলো মুছুন? এটি ফেরানো যাবে না।",
+  },
   "marketplace.status_updated": { en: "Status updated.", bn: "স্ট্যাটাস হালনাগাদ।" },
   "marketplace.rolled_back": { en: "Rolled back.", bn: "রোলব্যাক সম্পন্ন।" },
   "marketplace.theme.applied": {

@@ -10,14 +10,15 @@
 > Goal: same UX, same user journey, same theme/plugin/page-builder management, same sidebar system as WordPress (`/wp-admin/`). Reference WP dashboard credentials are held by the owner (never committed).
 
 ### P0 — Marketplace theme lifecycle (user complaint: activation/install/delete missing)
-- [ ] Marketplace Install creates a **new inactive** `store_themes` row (installing into the active draft is Content>Themes behavior, not marketplace behavior)
-- [ ] **Activate** button per installed theme (is_active switch, published_version coherence, audit)
-- [ ] **Live Preview** per installed theme (read-only builder preview route)
-- [ ] **Delete** button per installed theme (blocked while active with clear message; cascade versions/drafts; ledger row to terminal status)
-- [ ] Installed/active badges driven by real state on both marketplace cards and Content>Themes grid
+- [x] Content>Themes grid already has Activate / Delete / Preview / Customize (`ThemesScreen.tsx` + `themeActivateFn`/`themeDeleteFn`)
+- [x] Marketplace Install creates a **new inactive** `store_themes` row (`marketplace_install_preset` routine + `installBuiltinTheme`, replay-guarded)
+- [x] **Activate** button per installed marketplace theme (reuses `themeActivateFn`; Active badge)
+- [ ] **Live Preview** per installed marketplace theme (read-only builder preview route)
+- [x] **Delete** button per installed marketplace theme (server refuses active; cascade; ledger → `removed` status)
+- [x] Installed/active badges driven by real state on marketplace cards (`isLiveInstall` + `themeStates`)
 
 ### P0 — Plugin lifecycle (Installed Plugins table parity)
-- [ ] **Activate / Deactivate** per installed plugin (plugin_state.enabled + ledger status sync)
+- [x] Activate/Deactivate toggle + Settings form (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`)
 - [ ] **Delete** per installed plugin (remove plugin_state row, ledger to terminal status, confirm dialog)
 - [ ] Add New flow routes to marketplace widgets tab (WP parity: Plugins › Add New)
 
@@ -26,7 +27,9 @@
 - [ ] Single nav source of truth; no route reachable only by URL
 
 ### P1 — Page builder management parity
-- [ ] Expose versions/drafts/publish/rollback/schedules uniformly (all exist server-side; close any UI gaps vs WP revision/screen model)
+- [x] All 9 theme-engine RPCs implemented + verified live (phase 2e: autosave/commit/publish/rollback/schedules/update/demo)
+- [x] Customize launcher exists (`openCustomize` → `/dashboard/builder`)
+- [ ] "Edit with Page Builder" action on the Pages table (no builder entry point found in content/pages UI)
 
 ### P2 — Polish
 - [ ] Theme screenshot/thumbnail pipeline (WP shows a screenshot per theme; marketplace cards show placeholder blocks today)
@@ -35,21 +38,7 @@
 ---
 ## 🚨 Active Critical Issues & Vulnerabilities (Identified Sept 11, 2026)
 
-### 0. 🏆 #1 Priority: WordPress-Grade CMS Transformation & Management Systems (Underway)
-- [ ] **Appearance › Themes Parity (Activate, Install, Customize, Delete)**:
-  - [ ] **Theme Activation**: Allow merchants to activate any installed theme with 1 click from `/dashboard/content/themes` or `/dashboard/marketplace`, instantaneously swapping the live storefront and synchronizing `store_themes` (`is_active = true`) with draft templates.
-  - [ ] **Theme Installation**: Provide 1-click "Install" on marketplace themes that transitions directly into "Activate" without page reloading.
-  - [ ] **Theme Deletion**: Allow merchants to delete/uninstall inactive themes from both the Theme Details modal and the marketplace installs view.
-  - [ ] **Active Theme Card**: Feature the active storefront theme prominently with a direct "Customize" button (navigating to the visual page builder), version, and author info.
-- [ ] **Plugins Lifecycle Management Parity**:
-  - [ ] **Installed Plugins View**: Tabular list of installed plugins with active/inactive status badges and toggles: `Activate`, `Deactivate`, `Settings`, and `Delete` (uninstall).
-  - [ ] **Add New Plugin Catalog**: Integrated marketplace view for discovering and installing plugins with 1-click install & activate.
-- [ ] **Visual Page Builder & Templates Bridge**:
-  - [ ] Direct launcher from "Appearance › Customize" into `/dashboard/builder`.
-  - [ ] Page-level action in Pages table ("Edit with Page Builder").
-- [ ] **WordPress-Style CMS Sidebar Navigation**:
-  - [ ] Refactor navigation taxonomy: Dashboard, Content (Pages, Posts, Media), Appearance (Themes, Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
-  - [ ] Add expandable accordion submenus and collapsed hover flyout menus matching WordPress admin navigation.
+### 0. 🏆 WordPress-Grade CMS Transformation — CONSOLIDATED into the 🔴 TOP PRIORITY block above (single source of truth; verified statuses there supersede this list)
 
 ### 1. Critical Vulnerabilities & Auth Flaws (Must Fix Immediately)
 - [ ] **Exposed Production Credentials:** Exposed raw SSH IPs, GitHub PATs, Supabase DB passwords, JWT Secrets, Kong API Keys, and SMTP passwords. **Action Required:** Immediate rotation of all credentials on the live server.

@@ -10269,7 +10269,7 @@ export type Database = {
       invoice_status: "open" | "paid" | "past_due" | "void"
       kyc_state: "pending" | "submitted" | "verified" | "rejected"
       kyc_status: "pending" | "verified" | "rejected"
-      market_install_status: "installed" | "trial" | "paused" | "rolled_back"
+      market_install_status: "installed" | "trial" | "paused" | "rolled_back" | "removed"
       market_kind: "theme" | "widget"
       market_listing_status:
         | "draft"
@@ -10577,7 +10577,7 @@ export const Constants = {
       invoice_status: ["open", "paid", "past_due", "void"],
       kyc_state: ["pending", "submitted", "verified", "rejected"],
       kyc_status: ["pending", "verified", "rejected"],
-      market_install_status: ["installed", "trial", "paused", "rolled_back"],
+      market_install_status: ["installed", "trial", "paused", "rolled_back", "removed"],
       market_kind: ["theme", "widget"],
       market_listing_status: [
         "draft",

@@ -9,9 +9,12 @@ import {
   marketInstallFn,
   marketInstallStatusFn,
   marketListingVersionsFn,
+  marketUninstallThemeFn,
 } from "@/lib/marketplace.functions";
+import { themeActivateFn, themeDeleteFn } from "@/lib/themes/appearance.functions";
 import { InstallConsent, type ConsentVersion } from "@/components/marketplace/InstallConsent";
 import { InstalledApps } from "@/components/marketplace/InstalledApps";
+import { ConfirmDialog } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
   loader: () => marketCatalogFn(),
@@ -32,8 +35,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
 type Catalog = Awaited<ReturnType<typeof marketCatalogFn>>;
 type Listing = Catalog["themes"][number] | Catalog["widgets"][number];
 
+/** Ledger rows in these states count as "installed" for badges and actions. */
+function isLiveInstall(status: string) {
+  return status === "installed" || status === "trial" || status === "paused";
+}
+
 const INSTALL_LABEL: Record<string, { en: string; bn: string }> = {
   installed: { en: "Installed", bn: "ইনস্টলড" },
+  removed: { en: "Removed", bn: "সরানো হয়েছে" },
   trial: { en: "Trial", bn: "ট্রায়াল" },
   paused: { en: "Paused", bn: "স্থগিত" },
   rolled_back: { en: "Rolled back", bn: "রোলব্যাক" },
@@ -56,7 +65,13 @@ function Marketplace() {
     { listing: Listing; trial: boolean; version: ConsentVersion | null } | null
   >(null);
 
+  const [pendingDelete, setPendingDelete] = useState<{ installId: string; name: string } | null>(null);
+
   const source = tab === "theme" ? data.themes : data.widgets;
+  const themeStateBySlug = useMemo(
+    () => new Map((data.themeStates ?? []).map((s) => [s.slug, s])),
+    [data.themeStates],
+  );
   const categories = useMemo(
     () => Array.from(new Set(source.map((l) => l.category))),
     [source],
@@ -143,6 +158,39 @@ function Marketplace() {
       await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Update failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** WordPress-style activation: flip the installed theme live. */
+  async function activateInstalledTheme(themeId: string) {
+    setBusy(true);
+    setMsg(null);
+    try {
+      await themeActivateFn({ data: { id: themeId } });
+      setMsg(tk("marketplace.theme_activated"));
+      setActive(null);
+      await router.invalidate();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Activation failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** WordPress-style uninstall: inactive themes only (server refuses active). */
+  async function deleteInstalledTheme() {
+    if (!pendingDelete) return;
+    setBusy(true);
+    try {
+      await marketUninstallThemeFn({ data: { installId: pendingDelete.installId } });
+      setMsg(tk("marketplace.theme_deleted"));
+      setPendingDelete(null);
+      setActive(null);
+      await router.invalidate();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Delete failed");
     } finally {
       setBusy(false);
     }
@@ -260,8 +308,18 @@ function Marketplace() {
             const isInstalled = data.installs.some(
               (i) =>
                 (l.builtin ? i.listing_slug === l.slug : i.theme_id === l.id || i.widget_id === l.id) &&
-                i.status !== "rolled_back",
+                isLiveInstall(i.status),
             );
+            const themeState =
+              l.kind === "theme" ? themeStateBySlug.get(l.slug) : undefined;
+            const liveInstall =
+              l.kind === "theme"
+                ? data.installs.find(
+                    (i) =>
+                      (l.builtin ? i.listing_slug === l.slug : i.theme_id === l.id) &&
+                      isLiveInstall(i.status),
+                  )
+                : undefined;
             return (
               <li key={l.id} className="flex flex-col rounded-fq-md border border-border bg-card p-4">
                 <div className="mb-2 h-24 rounded-fq-sm bg-muted" aria-hidden="true" />
@@ -291,13 +349,40 @@ function Marketplace() {
                     </span>
                   )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setActive(l)}
-                  className="mt-3 min-h-11 rounded-fq-md border border-border px-3 text-sm"
-                >
-                  {t("Details", "বিস্তারিত")}
-                </button>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActive(l)}
+                    className="min-h-11 rounded-fq-md border border-border px-3 text-sm"
+                  >
+                    {t("Details", "বিস্তারিত")}
+                  </button>
+                  {themeState && !themeState.isActive && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => activateInstalledTheme(themeState.themeId)}
+                      className="min-h-11 rounded-fq-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:opacity-60"
+                    >
+                      {t("Activate", "সক্রিয় করুন")}
+                    </button>
+                  )}
+                  {themeState?.isActive && (
+                    <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary/10 px-2 text-xs font-medium text-primary">
+                      {t("Active", "সক্রিয়")}
+                    </span>
+                  )}
+                  {liveInstall && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => setPendingDelete({ installId: liveInstall.id, name: l.name })}
+                      className="min-h-11 rounded-fq-md border border-destructive/40 px-3 text-sm text-destructive disabled:opacity-60"
+                    >
+                      {t("Delete", "মুছুন")}
+                    </button>
+                  )}
+                </div>
               </li>
             );
           })}
@@ -309,7 +394,7 @@ function Marketplace() {
             installed={data.installs.some(
               (i) =>
                 (active.builtin ? i.listing_slug === active.slug : i.theme_id === active.id || i.widget_id === active.id) &&
-                i.status !== "rolled_back",
+                isLiveInstall(i.status),
             )}
             busy={busy}
             onClose={() => setActive(null)}
@@ -327,6 +412,16 @@ function Marketplace() {
             onApprove={(v, s) => consent && install(consent.listing, consent.trial, v, s)}
           />
         )}
+
+        <ConfirmDialog
+          open={pendingDelete !== null}
+          title={t("Delete theme", "থিম মুছুন")}
+          description={tk("marketplace.confirm_delete_theme")}
+          confirmLabel={t("Delete", "মুছুন")}
+          destructive
+          onConfirm={() => deleteInstalledTheme()}
+          onCancel={() => setPendingDelete(null)}
+        />
 
         <section className="space-y-2">
           <h2 className="font-bangla-display text-lg font-semibold">{t("My installs", "আমার ইনস্টল")}</h2>
@@ -346,7 +441,7 @@ function Marketplace() {
                   </span>
                 </span>
                 <span className="flex gap-2">
-                  {i.status !== "rolled_back" && (
+                  {isLiveInstall(i.status) && (
                     <>
                       <button
                         type="button"
