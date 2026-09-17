@@ -68,6 +68,13 @@ function Marketplace() {
 
   /** Step 1 — never install blind: pull the pinned version and ask for consent. */
   async function requestInstall(listing: Listing, trial: boolean) {
+    // Official presets are free and scopeless: install directly, no versions
+    // lookup and no consent screen.
+    if (listing.builtin) {
+      setActive(null);
+      await install(listing, false, null, []);
+      return;
+    }
     setBusy(true);
     setMsg(null);
     setImpacted([]);
@@ -86,9 +93,12 @@ function Marketplace() {
   }
 
   /** Step 2 — install with exactly the scopes the merchant ticked. */
-  async function install(versionId: string | null, grantedScopes: string[]) {
-    if (!consent) return;
-    const { listing, trial } = consent;
+  async function install(
+    listing: Listing,
+    trial: boolean,
+    versionId: string | null,
+    grantedScopes: string[],
+  ) {
     setBusy(true);
     setMsg(null);
     try {
@@ -285,7 +295,7 @@ function Marketplace() {
             trial={consent.trial}
             busy={busy}
             onCancel={() => setConsent(null)}
-            onApprove={install}
+            onApprove={(v, s) => consent && install(consent.listing, consent.trial, v, s)}
           />
         )}
 

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { THEME_PRESETS } from "./theme-presets";
 
 type Client = SupabaseClient<Database>;
 
@@ -7,6 +8,9 @@ export const APP_VERSION = "1.4.0";
 export const APP_MAJOR = "1.x";
 export const TRIAL_DAYS = 14;
 export const SELLER_SHARE_BASIS_POINTS = 7000;
+
+/** Synthetic listing ids for official built-in presets (never touch the ledger). */
+export const BUILTIN_PREFIX = "preset:";
 
 export type Kind = "theme" | "widget";
 
@@ -41,13 +45,55 @@ export async function listCatalog(db: Client, merchantId: string) {
       compatible: isCompatible(r.compatible_versions),
       rating: r.rating_count ? r.rating_sum / r.rating_count : null,
       mine: r.seller_merchant_id === merchantId,
+      builtin: false as const,
     }));
 
   return {
-    themes: decorate(themes.data, "theme").filter((r) => r.status === "active" || r.mine),
+    // Official presets first: the marketplace is never an empty shelf even
+    // when no third-party creator has published yet.
+    themes: [
+      ...builtinThemes(),
+      ...decorate(themes.data, "theme").filter((r) => r.status === "active" || r.mine),
+    ],
     widgets: decorate(widgets.data, "widget").filter((r) => r.status === "active" || r.mine),
     installs: installs.data ?? [],
   };
+}
+
+/**
+ * Official built-in themes as synthetic catalog entries. They carry no DB
+ * row, no price and no trial — installing one applies the preset AST
+ * directly (see marketInstallFn) instead of going through the marketplace
+ * ledger, consent and payment flow.
+ */
+function builtinThemes() {
+  return THEME_PRESETS.map((p) => ({
+    id: `${BUILTIN_PREFIX}${p.key}`,
+    seller_merchant_id: null as string | null,
+    name: p.nameEn,
+    slug: p.key,
+    description: p.summaryEn,
+    vendor_name: "Framique",
+    thumbnail_url: null as string | null,
+    category: p.category,
+    version: p.version,
+    compatible_versions: [] as string[],
+    price_minor_int: 0,
+    currency_code: "BDT",
+    trial_allowed: false,
+    status: "active",
+    manifest: null,
+    version_history: [] as string[],
+    install_count: 0,
+    rating_sum: 0,
+    rating_count: 0,
+    created_at: new Date(0).toISOString(),
+    kind: "theme" as const,
+    compatible: true,
+    rating: null as number | null,
+    mine: false,
+    builtin: true as const,
+  }));
 }
 
 export async function listMine(db: Client, merchantId: string) {

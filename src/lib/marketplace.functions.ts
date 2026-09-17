@@ -25,7 +25,8 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     z
       .object({
         kind: kindSchema,
-        listingId: z.string().uuid(),
+        // UUIDs for marketplace rows, `preset:<key>` for official built-ins.
+        listingId: z.string().min(1).max(80),
         trial: z.boolean().default(false),
         idempotencyKey: z.string().min(8).max(80),
         versionId: z.string().uuid().nullable().default(null),
@@ -35,9 +36,24 @@ export const marketInstallFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { rateLimit } = await import("./rate-limit.server");
-    const { installListing } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.install", merchantId);
+    const { BUILTIN_PREFIX, APP_VERSION } = await import("./marketplace.server");
+    if (data.kind === "theme" && data.listingId.startsWith(BUILTIN_PREFIX)) {
+      if (data.trial) throw new Error("market_trial_not_allowed");
+      const key = data.listingId.slice(BUILTIN_PREFIX.length);
+      const { installRegistryTheme } = await import("./themes.server");
+      const { versionId } = await installRegistryTheme(context.supabase, merchantId, key);
+      return {
+        installId: versionId,
+        replayed: false,
+        impacted: [] as string[],
+        appVersion: APP_VERSION,
+        themeApplied: true,
+        themeNoticeKey: "marketplace.theme.applied",
+      };
+    }
+    const { installListing } = await import("./marketplace-install.server");
     return installListing(context.supabase, merchantId, { ...data, consentedBy: context.userId });
   });
 
