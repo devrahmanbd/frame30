@@ -2,6 +2,26 @@
 
 > Keep the repository in a clean, working state. All tests and type checks must pass before pushing changes.
 
+## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Sept 2026)
+
+Framique must feel like WordPress to a merchant: same user experience, same user journey, same theme/plugin/page-builder management, same sidebar system. Reference: WP admin (`/wp-admin/`) — Appearance › Themes (grid, Activate, Live Preview, Delete, Add New), Plugins › Installed Plugins (Activate, Deactivate, Delete, Add New), Pages/Posts lists, Settings, collapsible sidebar sections.
+
+**P0 — Marketplace theme lifecycle (the current gap):**
+- Marketplace Install MUST create a **new inactive** `store_themes` row — never mutate the active theme's draft. Record the `marketplace_installs` ledger row.
+- Every installed theme card needs **Activate** (switch `is_active`, keep published version coherent), **Live Preview**, and **Delete** (blocked while active; cascade versions/drafts; ledger row to terminal status).
+- "Installed" badge logic must follow the active/installed state, not just ledger presence.
+
+**P0 — Plugin lifecycle:**
+- Installed plugins need **Activate / Deactivate / Delete** (plugin_state.enabled toggle + row removal + ledger status), matching WP's Installed Plugins table. No dead buttons: every action must have a working server path.
+
+**P1 — Sidebar system:**
+- Audit `src/lib/console-nav.ts` + `AdminShell` against the WP menu model: top-level sections with icons, collapsible submenus, current-item highlighting, capability-gated entries. One nav source of truth.
+
+**P1 — Page builder management:**
+- Builder versions/drafts/publish/rollback/schedules already exist server-side — expose them consistently (no feature reachable only by RPC).
+
+**Rules for this program:** no action button without a working server path; no fabricated counts/ratings; every new server mutation gets deny + replay + audit coverage per the Testing section below.
+
 ## What Framique Is
 
 Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
