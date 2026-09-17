@@ -205,6 +205,12 @@ export async function setInstallStatus(
         ? await revertTheme(db, installId)
         : await applyTheme(db, installId);
     themeNoticeKey = result.noticeKey;
+  } else if (row.kind === "widget") {
+    await db
+      .from("plugin_state")
+      .update({ enabled: next === "installed" || next === "trial" })
+      .eq("merchant_id", merchantId)
+      .eq("install_id", installId);
   }
   return { ok: true, status: next, themeNoticeKey };
 }

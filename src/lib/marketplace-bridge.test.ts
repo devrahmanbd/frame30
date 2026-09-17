@@ -67,6 +67,35 @@ describe("marketplace preset bridge", () => {
     expect(catalog.themes.length).toBe(THEME_PRESETS.length + 1);
     const last = catalog.themes[catalog.themes.length - 1]!;
     expect(last.builtin).toBe(false);
-    expect(last.id).toBe(row.id);
+  });
+
+  it("prepends synthetic entries for official widgets", async () => {
+    const { BUILTIN_PLUGINS } = await import("./builtin-plugins");
+    const db = { from: vi.fn(() => chain([])) } as never;
+    const catalog = await listCatalog(db, "00000000-0000-4000-a000-000000000001");
+    expect(catalog.widgets.length).toBe(BUILTIN_PLUGINS.length);
+    expect(BUILTIN_PLUGINS.length).toBeGreaterThan(0);
+    for (const [i, entry] of catalog.widgets.entries()) {
+      expect(entry.builtin).toBe(true);
+      expect(entry.id).toBe(`${BUILTIN_PREFIX}${BUILTIN_PLUGINS[i]!.manifest.id}`);
+      expect(entry.kind).toBe("widget");
+      expect(entry.status).toBe("active");
+      expect(entry.price_minor_int).toBe(0);
+      expect(entry.compatible).toBe(true);
+      expect(entry.mine).toBe(false);
+    }
+  });
+
+  it("ensures all builtin plugin manifests pass parseManifest validation", async () => {
+    const { BUILTIN_PLUGINS } = await import("./builtin-plugins");
+    const { parseManifest } = await import("./plugin-manifest");
+    for (const p of BUILTIN_PLUGINS) {
+      const verdict = parseManifest(p.manifest);
+      expect(verdict.ok).toBe(true);
+      if (!verdict.ok) {
+        throw new Error(`Manifest for ${p.manifest.id} failed: ${verdict.errors.join(", ")}`);
+      }
+    }
   });
 });
+

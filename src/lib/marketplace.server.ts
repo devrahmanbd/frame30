@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { THEME_PRESETS } from "./theme-presets";
+import { builtinWidgets } from "./builtin-plugins";
 
 type Client = SupabaseClient<Database>;
 
@@ -55,7 +56,10 @@ export async function listCatalog(db: Client, merchantId: string) {
       ...builtinThemes(),
       ...decorate(themes.data, "theme").filter((r) => r.status === "active" || r.mine),
     ],
-    widgets: decorate(widgets.data, "widget").filter((r) => r.status === "active" || r.mine),
+    widgets: [
+      ...builtinWidgets(),
+      ...decorate(widgets.data, "widget").filter((r) => r.status === "active" || r.mine),
+    ],
     installs: installs.data ?? [],
   };
 }

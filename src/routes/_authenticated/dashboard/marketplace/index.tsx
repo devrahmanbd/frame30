@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import {
@@ -40,6 +42,7 @@ const INSTALL_LABEL: Record<string, { en: string; bn: string }> = {
 function Marketplace() {
   const data = Route.useLoaderData();
   const router = useRouter();
+  const qc = useQueryClient();
   const { t, tk } = useLang();
   const [tab, setTab] = useState<"theme" | "widget">("theme");
   const [query, setQuery] = useState("");
@@ -115,8 +118,14 @@ function Marketplace() {
       setImpacted(res.impacted ?? []);
       const base = trial ? tk("marketplace.trial_started") : tk("marketplace.install_complete");
       setMsg(res.themeNoticeKey ? `${base} ${tk(res.themeNoticeKey)}` : base);
+      toast.success(
+        listing.kind === "theme"
+          ? t("Theme installed successfully", "থিম সফলভাবে ইনস্টল হয়েছে")
+          : t("Plugin installed successfully", "প্লাগইন সফলভাবে ইনস্টল হয়েছে"),
+      );
       setConsent(null);
       await router.invalidate();
+      await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Install failed");
     } finally {
@@ -131,6 +140,7 @@ function Marketplace() {
       const base = status === "rolled_back" ? tk("marketplace.rolled_back") : tk("marketplace.status_updated");
       setMsg(res.themeNoticeKey ? `${base} ${tk(res.themeNoticeKey)}` : base);
       await router.invalidate();
+      await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Update failed");
     } finally {
@@ -246,42 +256,61 @@ function Marketplace() {
               {t("No extensions found.", "কোনো এক্সটেনশন পাওয়া যায়নি।")}
             </li>
           )}
-          {listings.map((l) => (
-            <li key={l.id} className="flex flex-col rounded-fq-md border border-border bg-card p-4">
-              <div className="mb-2 h-24 rounded-fq-sm bg-muted" aria-hidden="true" />
-              <p className="font-medium">{l.name}</p>
-              <p className="text-xs text-muted-foreground">{l.vendor_name || "Framique creator"}</p>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="tabular-nums font-medium">
-                  {l.price_minor_int === 0 ? "৳ 0.00" : fmtMinor(l.price_minor_int, l.currency_code)}
-                </span>
-                <span className="rounded-fq-sm border border-border px-2 py-0.5">v{l.version}</span>
-                <span className="tabular-nums text-muted-foreground">
-                  {l.install_count} {t("installs", "ইনস্টল")}
-                </span>
-                {l.rating != null && (
-                  <span className="tabular-nums text-muted-foreground">★ {l.rating.toFixed(1)}</span>
-                )}
-                {!l.compatible && (
-                  <span className="rounded-fq-sm bg-destructive/10 px-2 py-0.5 text-destructive">
-                    {t("Version mismatch", "সংস্করণ অমিল")}
+          {listings.map((l) => {
+            const isInstalled = data.installs.some(
+              (i) =>
+                (l.builtin ? i.listing_slug === l.slug : i.theme_id === l.id || i.widget_id === l.id) &&
+                i.status !== "rolled_back",
+            );
+            return (
+              <li key={l.id} className="flex flex-col rounded-fq-md border border-border bg-card p-4">
+                <div className="mb-2 h-24 rounded-fq-sm bg-muted" aria-hidden="true" />
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-medium">{l.name}</p>
+                  {isInstalled && (
+                    <span className="shrink-0 rounded-fq-sm bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      ✓ {t("Installed", "ইনস্টলড")}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">{l.vendor_name || "Framique creator"}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                  <span className="tabular-nums font-medium">
+                    {l.price_minor_int === 0 ? "৳ 0.00" : fmtMinor(l.price_minor_int, l.currency_code)}
                   </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setActive(l)}
-                className="mt-3 min-h-11 rounded-fq-md border border-border px-3 text-sm"
-              >
-                {t("Details", "বিস্তারিত")}
-              </button>
-            </li>
-          ))}
+                  <span className="rounded-fq-sm border border-border px-2 py-0.5">v{l.version}</span>
+                  <span className="tabular-nums text-muted-foreground">
+                    {l.install_count} {t("installs", "ইনস্টল")}
+                  </span>
+                  {l.rating != null && (
+                    <span className="tabular-nums text-muted-foreground">★ {l.rating.toFixed(1)}</span>
+                  )}
+                  {!l.compatible && (
+                    <span className="rounded-fq-sm bg-destructive/10 px-2 py-0.5 text-destructive">
+                      {t("Version mismatch", "সংস্করণ অমিল")}
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActive(l)}
+                  className="mt-3 min-h-11 rounded-fq-md border border-border px-3 text-sm"
+                >
+                  {t("Details", "বিস্তারিত")}
+                </button>
+              </li>
+            );
+          })}
         </ul>
 
         {active && (
           <DetailModal
             listing={active}
+            installed={data.installs.some(
+              (i) =>
+                (active.builtin ? i.listing_slug === active.slug : i.theme_id === active.id || i.widget_id === active.id) &&
+                i.status !== "rolled_back",
+            )}
             busy={busy}
             onClose={() => setActive(null)}
             onInstall={requestInstall}
@@ -352,11 +381,13 @@ function Marketplace() {
 
 function DetailModal({
   listing,
+  installed,
   busy,
   onClose,
   onInstall,
 }: {
   listing: Listing;
+  installed?: boolean;
   busy: boolean;
   onClose: () => void;
   onInstall: (l: Listing, trial: boolean) => void;
@@ -375,7 +406,14 @@ function DetailModal({
       <div className="max-h-[85vh] w-full max-w-2xl overflow-auto rounded-fq-lg border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="font-bangla-display text-lg font-semibold">{listing.name}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="font-bangla-display text-lg font-semibold">{listing.name}</h2>
+              {installed && (
+                <span className="rounded-fq-sm bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  ✓ {t("Installed", "ইনস্টলড")}
+                </span>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">
               {listing.category} · v{listing.version} · {listing.install_count} {t("installs", "ইনস্টল")}
             </p>
@@ -417,7 +455,9 @@ function DetailModal({
             onClick={() => onInstall(listing, false)}
             className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            {t("Install", "ইনস্টল করুন")}
+            {installed
+              ? t("Reinstall / Update", "পুনরায় ইনস্টল / আপডেট")
+              : t("Install", "ইনস্টল করুন")}
           </button>
           {listing.trial_allowed && listing.price_minor_int > 0 && (
             <button

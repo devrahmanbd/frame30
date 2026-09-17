@@ -43,14 +43,90 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       if (data.trial) throw new Error("market_trial_not_allowed");
       const key = data.listingId.slice(BUILTIN_PREFIX.length);
       const { installRegistryTheme } = await import("./themes.server");
+      const { THEME_PRESETS } = await import("./theme-presets");
+      const preset = THEME_PRESETS.find((p) => p.key === key);
       const { versionId } = await installRegistryTheme(context.supabase, merchantId, key);
+
+      // Record in marketplace_installs so My Installs and badges track it
+      const { data: installRecord } = await context.supabase
+        .from("marketplace_installs")
+        .insert({
+          merchant_id: merchantId,
+          kind: "theme",
+          theme_id: null,
+          widget_id: null,
+          listing_slug: key,
+          listing_name: preset?.nameEn ?? key,
+          version: preset?.version ?? "1.0.0",
+          version_id: versionId,
+          granted_scopes: [],
+          consented_at: new Date().toISOString(),
+          consented_by: context.userId,
+          price_minor_int: 0,
+          currency_code: "BDT",
+          is_trial: false,
+          status: "installed",
+          idempotency_key: data.idempotencyKey,
+        })
+        .select("id")
+        .maybeSingle();
+
       return {
-        installId: versionId,
+        installId: installRecord?.id ?? versionId,
         replayed: false,
         impacted: [] as string[],
         appVersion: APP_VERSION,
         themeApplied: true,
         themeNoticeKey: "marketplace.theme.applied",
+      };
+    }
+
+    if (data.kind === "widget" && data.listingId.startsWith(BUILTIN_PREFIX)) {
+      if (data.trial) throw new Error("market_trial_not_allowed");
+      const pluginId = data.listingId.slice(BUILTIN_PREFIX.length);
+      const { getBuiltinPlugin } = await import("./builtin-plugins");
+      const pluginDef = getBuiltinPlugin(pluginId);
+      if (!pluginDef) throw new Error("market_listing_not_found");
+
+      // Record in marketplace_installs
+      const { data: installRecord } = await context.supabase
+        .from("marketplace_installs")
+        .insert({
+          merchant_id: merchantId,
+          kind: "widget",
+          theme_id: null,
+          widget_id: null,
+          listing_slug: pluginId,
+          listing_name: pluginDef.manifest.name,
+          version: pluginDef.manifest.version,
+          version_id: null,
+          granted_scopes: pluginDef.manifest.permissions,
+          consented_at: new Date().toISOString(),
+          consented_by: context.userId,
+          price_minor_int: 0,
+          currency_code: "BDT",
+          is_trial: false,
+          status: "installed",
+          idempotency_key: data.idempotencyKey,
+        })
+        .select("id")
+        .maybeSingle();
+
+      // Activate into plugin_state for the storefront and builder
+      const { upsertPlugin } = await import("./plugins.server");
+      await upsertPlugin(context.supabase, merchantId, {
+        manifest: pluginDef.manifest,
+        grantedScopes: pluginDef.manifest.permissions,
+        installId: installRecord?.id ?? null,
+      });
+
+      return {
+        installId: installRecord?.id ?? pluginId,
+        replayed: false,
+        impacted: [] as string[],
+        appVersion: APP_VERSION,
+        themeApplied: null,
+        themeNoticeKey: null,
       };
     }
     const { installListing } = await import("./marketplace-install.server");
