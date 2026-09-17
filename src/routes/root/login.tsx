@@ -66,9 +66,7 @@ export function RootLoginPage() {
       // Enforce strict persona boundary: non-owners are ejected
       if (!isVerifiedOwner) {
         await supabase.auth.signOut();
-        setErrorMsg(
-          "Access denied: This terminal is strictly reserved for Framique Platform Owners. Merchants must log in at /auth.",
-        );
+        setErrorMsg("Invalid credentials.");
         return;
       }
 

@@ -24,7 +24,6 @@ export const Route = createFileRoute("/robots.txt")({
           ...MARKETING_ROUTES.filter((r) => !r.indexable).map((r) => `Disallow: ${r.path}`),
           "Disallow: /dashboard",
           "Disallow: /admin",
-          "Disallow: /root",
           "Disallow: /auth",
           "Disallow: /checkout",
           "Disallow: /api/",

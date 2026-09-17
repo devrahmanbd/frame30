@@ -117,7 +117,7 @@ function PeopleDesk() {
               </span>
             </h2>
             <p className="text-xs text-muted-foreground">
-              Root operators with full infrastructure access. Log in via /root/login only.
+              Root operators with full infrastructure clearance.
             </p>
           </div>
           <span className="text-xs text-muted-foreground font-mono">{platformAdmins.length} total</span>
@@ -181,7 +181,7 @@ function PeopleDesk() {
               </span>
             </h2>
             <p className="text-xs text-muted-foreground">
-              Merchants and store staff accounts across all active storefronts. Log in via /auth to /dashboard.
+              Merchants and store staff accounts across all active storefronts.
             </p>
           </div>
           <span className="text-xs text-muted-foreground font-mono">{storeUsers.length} on this page</span>

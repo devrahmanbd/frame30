@@ -50,20 +50,11 @@ export const Route = createFileRoute("/auth")({
 type Mode = "signin" | "signup" | "reset";
 type Stage = "credentials" | "mfa";
 
-const OWNER_EMAILS = [
-  "devrahmanbd@gmail.com",
-  "nahid52flame@gmail.com",
-  "flamedev7@gmail.com",
-  (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase(),
-].filter(Boolean);
-
 /**
  * Where a signed-in merchant belongs:
  * 1. Honors explicit merchant redirect target if provided.
  * 2. If merchant has an active store, lands on /dashboard.
  * 3. Fresh merchant signup without a store lands on /onboarding.
- *
- * /root is strictly decoupled from /auth — platform owners log in via /root/login only.
  */
 async function landingFor(
   userId: string,
@@ -152,31 +143,6 @@ function AuthPage() {
       return;
     }
 
-    // Platform owners must log in via /root/login only.
-    const normalizedEmail = session.user.email?.trim().toLowerCase() ?? "";
-    const isKnownOwnerEmail = OWNER_EMAILS.includes(normalizedEmail);
-    let isPlatformAdmin = isKnownOwnerEmail;
-    if (!isPlatformAdmin) {
-      const { data: adminRow } = await supabase
-        .from("platform_admins")
-        .select("user_id")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
-      if (adminRow) {
-        isPlatformAdmin = true;
-      }
-    }
-
-    if (isPlatformAdmin) {
-      await supabase.auth.signOut();
-      setNotice(
-        t(
-          "Platform owners must log in via /root/login only.",
-          "প্ল্যাটফর্ম ওনারদের শুধুমাত্র /root/login এর মাধ্যমে লগ ইন করতে হবে।",
-        ),
-      );
-      return;
-    }
 
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (!opts?.skipTwoStep && aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
