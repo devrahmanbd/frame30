@@ -75,9 +75,54 @@ export const EDGE_TTL_SECONDS = 60;
 /** Serve-stale window while the origin revalidates. */
 export const EDGE_STALE_SECONDS = 300;
 
-/** Storefront document paths — the only HTML we let a shared cache keep. */
+/** Storefront document paths — the only HTML we let a shared cache keep.
+ * Covers both path-based (/store/:slug) and custom domains / wildcard subdomains (/, /p/*, /c/*, /pages/*, /cart, /checkout).
+ */
 export function isStorefrontPath(pathname: string): boolean {
-  return /^\/store\/[^/]+(\/.*)?$/.test(pathname);
+  if (/^\/store\/[^/]+(\/.*)?$/.test(pathname)) return true;
+  if (
+    pathname === "/" ||
+    /^\/(p|products|c|collections|pages|blog|cart|checkout|order)\b/.test(pathname)
+  ) {
+    if (
+      pathname.startsWith("/dashboard") ||
+      pathname.startsWith("/root") ||
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/auth") ||
+      pathname.startsWith("/_")
+    ) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Storefront paths that render shopper-specific data (REPORT WF-09).
+ *
+ * These must NEVER carry shared-cache headers: cart, checkout, account, order
+ * and tracking pages embed names, phones, addresses and order tokens. Served
+ * `public, s-maxage=60` they leak one shopper's PII to the next visitor
+ * hitting the same edge URL — and the custom-domain branch of
+ * `isStorefrontPath` above explicitly marks `/cart`, `/checkout`, `/order`
+ * cacheable, so this guard must run FIRST in `withStorefrontCache`.
+ * Covers both shapes: `/store/:slug/<segment>` and custom-domain `/<segment>`.
+ * Mirrors `store.$slug.{cart,checkout,account,order.$orderId,track}.tsx`.
+ */
+const PERSONALIZED_SEGMENTS = new Set(["cart", "checkout", "account", "order", "track"]);
+
+export function isPersonalizedStorefrontPath(pathname: string): boolean {
+  const pathBased = /^\/store\/[^/]+\/([^/]+)(\/.*)?$/.exec(pathname);
+  if (pathBased) return PERSONALIZED_SEGMENTS.has(pathBased[1].toLowerCase());
+  const rootBased = /^\/([^/]+)(\/.*)?$/.exec(pathname);
+  if (rootBased) return PERSONALIZED_SEGMENTS.has(rootBased[1].toLowerCase());
+  return false;
+}
+
+/** Forced origin-only, never-stored delivery for PII pages. */
+export function personalizedNoStoreHeaders(): Record<string, string> {
+  return { "cache-control": "private, no-store" };
 }
 
 /**

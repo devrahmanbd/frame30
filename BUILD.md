@@ -44,39 +44,39 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 ### 0.1 Appearance › Themes lifecycle (`themes.php` & `theme-install.php` parity)
 - [x] Active storefront theme showcase card (`ThemesScreen.tsx`) with version, author, live badge, and primary `Customize` launcher
 - [x] Installed themes grid with instant `Activate` action (swapping `is_active` while preserving published AST and storefront coherence)
-- [ ] `Live Preview` action for installed inactive themes launching isolated preview customizer (`/dashboard/builder?preview_theme_id=:id`)
+- [x] `Live Preview` action for installed inactive themes launching isolated preview customizer (`/dashboard/builder?preview_theme_id=:id`) — `ThemeCard.tsx` hover overlay with Activate + Live preview buttons; `ThemesScreen.tsx` calls `previewInstalled(theme)` → `navigate` to builder with `preview_theme_id` search param
 - [x] `[A]` Direct `Delete` action on inactive themes with modal confirmation, cascading draft/version cleanup, and active-theme deletion refusal
 - [x] `[A]` Decoupled marketplace theme installation: creates **new inactive** `store_themes` row (never mutating active draft) + append-only `marketplace_installs` ledger row
 - [x] Dynamic button & badge state machine on marketplace cards (`Install` → `Activate` → `Activated / Customize`)
-- [ ] Theme screenshot pipeline: dynamic rendering of real storefront snapshot preview assets instead of placeholder color blocks
+- [x] Theme screenshot pipeline: `ThemeScreenshot.tsx` rewritten with dynamic storefront snapshot URL pipeline — renders real screenshot from `screenshotUrl` or falls back to seeded color gradient, dim-on-hover for overlay effects
 
 ### 0.2 Plugins lifecycle (`plugins.php` & `plugin-install.php` parity)
 - [x] Installed Plugins tabular management view (`InstalledApps.tsx`) with status filtering (`All`, `Active`, `Inactive`)
 - [x] Instant `Activate` and `Deactivate` toggles (`plugin_state.enabled` toggle with ledger status recording)
-- [ ] `Delete` / Uninstall plugin action with confirmation dialog, cascading configuration cleanup, and terminal ledger audit
-- [ ] Direct "Add New Plugin" route (`/dashboard/plugins/new` → `/dashboard/marketplace?tab=apps`) matching WP Plugins › Add New
+- [x] `Delete` / Uninstall plugin action with confirmation dialog, cascading configuration cleanup, and terminal ledger audit (`InstalledApps.tsx` + `pluginUninstallFn`)
+- [x] Direct "Add New Plugin" route (`/dashboard/plugins/new` → `/dashboard/marketplace?tab=widget`) matching WP Plugins › Add New (`src/routes/_authenticated/dashboard/plugins/new.tsx`)
 - [x] `[A]` Plugin scope security model + explicit capability consent gate (`marketplace-scopes.ts` + `marketplace-vault.server.ts`)
-- [ ] Bulk actions on installed plugins (`Activate`, `Deactivate`, `Delete` via table multi-selection)
+- [x] Bulk actions on installed plugins (`Activate`, `Deactivate`, `Delete` via table multi-selection) — `InstalledApps.tsx` bulk action bar with per-row checkboxes and apply button
 
 ### 0.3 Hierarchical CMS sidebar navigation (WP `#adminmenu` parity)
-- [ ] Nav model reorganization: elevating **Appearance** (Themes, Customize, Menus) and **Plugins** (Installed Plugins, Add New) to first-class top-level CMS groups
-- [ ] Expandable accordion submenus in open sidebar (`AdminShell.tsx`) matching WordPress collapsible submenus
-- [ ] Collapsed hover flyout submenus in rail mode matching WordPress `#adminmenu` flyouts
-- [ ] Capability-gated navigation entries with active-route highlighting and single navigation source of truth (`src/lib/console-nav.ts`)
+- [x] Nav model reorganization: **Appearance** (Themes, Customize, Menus) and **Plugins** (Installed Plugins, Add New) elevated to first-class top-level CMS groups (`src/lib/console-nav.ts`)
+- [x] Expandable accordion submenus in open sidebar (`AdminShell.tsx`) matching WordPress collapsible submenus — `SidebarNav` accordion with `expandedSections` state and chevron toggle
+- [x] Collapsed hover flyout submenus in rail mode matching WordPress `#adminmenu` flyouts — `hoveredGroup` flyout panel rendered in rail/collapsed mode
+- [x] Capability-gated navigation entries with active-route highlighting and single navigation source of truth (`src/lib/console-nav.ts` `filterNav()` + `consoleRoute()` staticData gate)
 
 ### 0.4 Visual page builder & template management
 - [x] Appearance › Customize direct bridge into visual drag-and-drop AST page builder (`openCustomize` → `/dashboard/builder`)
-- [ ] Content › Pages table row action "Edit with Page Builder" loaded with page AST
+- [x] Content › Pages table row action "Edit with Page Builder" loaded with page AST (`content-desk.ts` `rowActions()` returns `"edit-builder"`, `cells.tsx` links to builder with page id)
 - [x] Immutable builder version commits, live publish pipeline, autosave drafts, and instant rollback
 - [x] Template hierarchy support (index, product, collection, page, blog, cart, checkout)
 
 ### 0.5 Foundational SaaS cloud architecture & tenant isolation
-- [ ] `[A]` Wildcard subdomain isolation (`<slug>.framique.store`): elimination of platform apex path-based hosting (`framique.qubickle.com/clients_website` / `/store/$slug`) to isolate cookies, local storage, CSP, and prevent platform-wide domain blacklisting
-- [ ] Onboarding Custom Domain Connection Step (`src/routes/_authenticated/onboarding.tsx`): real-time CNAME/A DNS instructions with "Skip for now" fallback to `<slug>.framique.store`
-- [ ] `[A]` Edge request rewriting & custom domain edge cache parity: refactoring `isStorefrontPath` in `src/lib/storefront-cache.ts` to cache custom domains (`/`, `/p/*`, `/c/*`, `/pages/*`, `/cart`) preventing origin SSR overload
-- [ ] Streaming presigned media uploads: direct-to-storage presigned URLs replacing base64 JSON RPC strings to eliminate V8 memory exhaustion and Nitro 413s
-- [ ] `[A]` Tenant-aware CSRF validator handling custom domains, reverse proxies, and external payment gateway return redirects
-- [ ] `[A]` Plan-based custom domain quotas and SNI rate-limiting to protect Let's Encrypt platform quotas
+- [~] `[A]` Wildcard subdomain isolation (`<slug>.framique.store`): storefront serves correctly under wildcard subdomain; path-based `/store/$slug` is still the primary route — full elimination of path routing pending edge rewrite config
+- [x] Onboarding Custom Domain Connection Step (`src/routes/_authenticated/onboarding.tsx`): real-time CNAME/A DNS instructions with "Skip for now" fallback to `<slug>.framique.store`
+- [x] `[A]` Edge request rewriting & custom domain edge cache parity: `isStorefrontPath` in `src/lib/storefront-cache.ts` caches custom-domain root paths (`/`, `/p/*`, `/c/*`, `/pages/*`, `/blog`) — personal paths guarded by `isPersonalizedStorefrontPath`
+- [x] Streaming presigned media uploads: `createPresignedUploadUrl` in `media.server.ts` + `mediaPresignedUploadFn` in `media.functions.ts` — direct-to-storage presigned URLs replacing base64 JSON RPC
+- [~] `[A]` Tenant-aware CSRF validator handling custom domains, reverse proxies, and external payment gateway return redirects — CSRF in progress
+- [x] `[A]` Plan-based custom domain quotas (`PLAN_DOMAIN_QUOTA` in `domains.server.ts`) and SNI rate-limiting (`verify-sni.ts` state-machine guard + domain status check)
 
 ---
 
@@ -204,7 +204,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `owner_loop`, `currency_gate`, `fraud_loop`, `ai_support_loop` (all in `e2e:critical`)
 - [x] `[A]` RLS policy test suite (per-table allow/deny matrix + anon write probes, `src/lib/rls-matrix.test.ts`)
 - [x] Lighthouse-equivalent a11y >= 90 release gate (`bun run a11y:gate`, axe-core weighted score, strict on auth/checkout)
-- [~] `[A]` Dependency + secret scanning (`bun run scan:deps`, `bun run scan:secrets`, `bun run gates` — green locally; **no CI runner committed**, `.github/workflows/gates.yml` is missing so nothing enforces them per push)
+- [x] `[A]` Dependency + secret scanning (`bun run scan:deps`, `bun run scan:secrets`, `bun run gates` — green locally; enforced per push by `.github/workflows/gates.yml`: typecheck + unit/contract tests + secret scan + dep audit)
 - See `docs/15-e2e/engineering-gates.md` for the as-built record
 
 ---
@@ -306,11 +306,11 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 
 ### 2.9 Operations
 - [x] `[A]` Automated backup + verified restore drill — nightly via `/api/public/cron/ops`, ledgered, deny+replay+audit tests
-- [~] `[A]` Dead-letter queue console with replay across all providers — courier + gateway DLQ surfaces exist; no single cross-provider console
+- [x] `[A]` Dead-letter queue console with replay across all providers — unified triage desk merging `webhook_events` + `courier_webhook_events` (`ops.server.ts` `loadDeadLetters` → `root/ops.tsx`)
 - [~] Prometheus metrics + Grafana dashboards — 7 dashboards (platform, infrastructure, ad-fraud, commerce, marketing, developer platform, ecosystem/AI) + 54 alert rules; `observability-coverage.test.ts` pins the money/security metrics, long-tail counters still uncharted
 - [~] Sentry / GlitchTip error tracking with PII scrubbing — dual backends supported (GlitchTip + Sentry), PII sanitization and deterministic sampling verified via `scripts/error-tracking-verify.mjs`
 - [x] Status page + incident comms
-- [ ] `[A]` Secret rotation runbook (gateway secrets, API keys)
+- [x] `[A]` Secret rotation runbook (gateway secrets, API keys) — `docs/14-operations/secret-rotation-runbook.md` (routine + leak fast-path, dual-sign grace, audit rows)
 - [x] Log retention policy (raw analytics 90d, PII-minimal)
 
 
@@ -346,10 +346,10 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Community upload with versioning + reviews — `marketplace-vault.server.ts` + `marketplace-vault.test.ts` (forward-version deny, identical-bytes replay)
 - [x] `[A]` Plugin scope model + install consent screen — `marketplace-scopes.ts` + consent gate; `marketplace-vault.test.ts` covers scope-escalation deny, consent audit row and idempotent install replay
 - [ ] `[A]` Plugin sandbox runtime (worker sidecar host)
-- [ ] Widget API for third-party bundles
+- [x] Widget API for third-party bundles — `WIDGET_API` method registry + `authorizeWidgetCall` (`marketplace-scopes.ts`) enforced through the `WidgetSandbox` bridge (`WidgetSandbox.tsx`, gated in `PluginBlock.tsx`)
 - [x] `[A]` Content-addressed immutable source vault for submissions — sha256 content hash + replay short-circuit, proven by key-order-independent replay cases in `marketplace-vault.test.ts`
 - [x] Payouts to creators — `payoutOverview/accruePayout/settlePayout` + double-settle replay/deny cases; `framique_market_payout_total` charted on the ecosystem dashboard
-- [ ] App blocks embeddable into merchant themes
+- [x] App blocks embeddable into merchant themes — `marketplace_app_blocks` insert/listing/entitlement (`marketplace-vault.server.ts`), `marketplace.functions.ts` fn, sandboxed `PluginBlock.tsx` renderer
 
 ### 3.4 Analytics
 - [x] Merchant analytics surface

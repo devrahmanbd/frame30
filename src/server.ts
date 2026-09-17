@@ -2,7 +2,8 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { isStorefrontPath, storefrontCacheHeaders } from "./lib/storefront-cache";
+import { isPersonalizedStorefrontPath, isStorefrontPath, personalizedNoStoreHeaders, storefrontCacheHeaders } from "./lib/storefront-cache";
+import { isLocalHostname } from "./lib/edge-hosts";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
 
 type ServerEntry = {
@@ -122,6 +123,15 @@ function withStorefrontCache(request: Request, response: Response): Response {
   const type = response.headers.get("content-type") ?? "";
   if (!type.includes("text/html")) return response;
   const { pathname } = new URL(request.url);
+  // PII guard FIRST (REPORT WF-09): cart/checkout/account/order/track render
+  // shopper-specific data and must never sit in a shared cache — including on
+  // custom domains, where isStorefrontPath() marks /cart|/checkout|/order
+  // cacheable. Force origin-only delivery.
+  if (isPersonalizedStorefrontPath(pathname)) {
+    const headers = new Headers(response.headers);
+    for (const [key, value] of Object.entries(personalizedNoStoreHeaders())) headers.set(key, value);
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  }
   if (!isStorefrontPath(pathname)) return response;
   const headers = new Headers(response.headers);
   for (const [key, value] of Object.entries(storefrontCacheHeaders(null))) headers.set(key, value);
@@ -156,27 +166,46 @@ export default {
       
       // Global Security Middleware: Enforce HTTPS
       const proto = request.headers.get("x-forwarded-proto") || url.protocol.replace(':', '');
-      const isLocalhost = url.hostname.includes("localhost") || url.hostname.includes("127.0.0.1") || url.hostname.endsWith(".local") || url.hostname.endsWith("framique.test");
+      // Exact-match local check only (REPORT WF-10): a substring test would
+      // treat attacker hosts like `localhost.evil.com` as local and disable
+      // HTTPS + CSRF protection for them.
+      const isLocalhost = isLocalHostname(url.hostname);
       
       if (proto === "http" && !isLocalhost && !url.hostname.startsWith("preview.") && !url.hostname.startsWith("id-preview--")) {
         return Response.redirect(`https://${url.host}${url.pathname}${url.search}`, 301);
       }
 
-      // Global Security Middleware: Enforce CSRF Protection on Mutations
+      // Global Security Middleware: Tenant-aware CSRF Protection on Mutations [A]
+      // Uses `isTrustedCsrfOrigin` (csrf.server.ts) which handles:
+      //   - Same-host (platform, *.framique.store, custom domains via x-forwarded-host)
+      //   - Merchant custom domains — DB-backed allow-list with 30s TTL cache
+      //   - Payment gateway POST-back origins — only on /api/public/payments/* path
       if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method)) {
-        // Exclude generic API webhooks that rely on external callers
+        // Public webhook routes use their own HMAC signature verification
         if (!url.pathname.startsWith("/api/public") && !url.pathname.startsWith("/api/canary-alert")) {
           const origin = request.headers.get("origin");
           const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || url.host;
-          
+
           if (origin) {
+            let originHost: string;
             try {
-              const originHost = new URL(origin).host;
-              if (originHost !== host && !isLocalhost) {
-                return new Response("CSRF check failed (origin mismatch)", { status: 403 });
-              }
+              originHost = new URL(origin).host;
             } catch {
               return new Response("CSRF check failed (invalid origin)", { status: 403 });
+            }
+
+            if (!isLocalhost) {
+              const { isTrustedCsrfOrigin, lookupActiveMerchantDomain } =
+                await import("./lib/csrf.server");
+              const trusted = await isTrustedCsrfOrigin({
+                requestHost: host,
+                originHost,
+                pathname: url.pathname,
+                lookupCustomDomain: lookupActiveMerchantDomain,
+              });
+              if (!trusted) {
+                return new Response("CSRF check failed (untrusted origin)", { status: 403 });
+              }
             }
           } else {
             const referer = request.headers.get("referer");
@@ -190,9 +219,9 @@ export default {
                 return new Response("CSRF check failed (invalid referer)", { status: 403 });
               }
             }
-            // If neither Origin nor Referer is present, fail safely
+            // If neither Origin nor Referer is present, fail safely on non-API paths
             else if (!isLocalhost && !url.pathname.startsWith("/api/")) {
-               return new Response("CSRF check failed (missing origin/referer)", { status: 403 });
+              return new Response("CSRF check failed (missing origin/referer)", { status: 403 });
             }
           }
         }
