@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { THEME_PRESETS } from "./theme-presets";
-import { builtinWidgets } from "./builtin-plugins";
+import { BUILTIN_PREFIX, builtinWidgets } from "./builtin-plugins";
 
 type Client = SupabaseClient<Database>;
 
@@ -10,8 +10,7 @@ export const APP_MAJOR = "1.x";
 export const TRIAL_DAYS = 14;
 export const SELLER_SHARE_BASIS_POINTS = 7000;
 
-/** Synthetic listing ids for official built-in presets (never touch the ledger). */
-export const BUILTIN_PREFIX = "preset:";
+export { BUILTIN_PREFIX };
 
 export type Kind = "theme" | "widget";
 
@@ -34,7 +33,7 @@ export async function listCatalog(db: Client, merchantId: string) {
     db.from("marketplace_widgets").select(LISTING_COLUMNS).order("install_count", { ascending: false }),
     db
       .from("marketplace_installs")
-      .select("id, kind, theme_id, widget_id, listing_name, status, is_trial, price_minor_int, currency_code, started_at, expires_at")
+      .select("id, kind, theme_id, widget_id, listing_slug, listing_name, status, is_trial, price_minor_int, currency_code, started_at, expires_at")
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false }),
   ]);

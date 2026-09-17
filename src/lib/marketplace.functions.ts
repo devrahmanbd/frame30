@@ -39,9 +39,35 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.install", merchantId);
     const { BUILTIN_PREFIX, APP_VERSION } = await import("./marketplace.server");
-    if (data.kind === "theme" && data.listingId.startsWith(BUILTIN_PREFIX)) {
+    const builtinSlug = data.listingId.startsWith(BUILTIN_PREFIX)
+      ? data.listingId.slice(BUILTIN_PREFIX.length)
+      : null;
+    if (builtinSlug) {
       if (data.trial) throw new Error("market_trial_not_allowed");
-      const key = data.listingId.slice(BUILTIN_PREFIX.length);
+      // Re-clicks and retries replay the original install instead of
+      // stacking duplicate ledger rows (third-party installs get this
+      // from the idempotency_key check inside installListing).
+      const { data: existing } = await context.supabase
+        .from("marketplace_installs")
+        .select("id")
+        .eq("merchant_id", merchantId)
+        .eq("kind", data.kind)
+        .eq("listing_slug", builtinSlug)
+        .in("status", ["installed", "trial"])
+        .maybeSingle();
+      if (existing) {
+        return {
+          installId: existing.id,
+          replayed: true,
+          impacted: [] as string[],
+          appVersion: APP_VERSION,
+          themeApplied: data.kind === "theme" ? true : null,
+          themeNoticeKey: null,
+        };
+      }
+    }
+    if (data.kind === "theme" && builtinSlug) {
+      const key = builtinSlug;
       const { installRegistryTheme } = await import("./themes.server");
       const { THEME_PRESETS } = await import("./theme-presets");
       const preset = THEME_PRESETS.find((p) => p.key === key);
@@ -77,9 +103,8 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       };
     }
 
-    if (data.kind === "widget" && data.listingId.startsWith(BUILTIN_PREFIX)) {
-      if (data.trial) throw new Error("market_trial_not_allowed");
-      const pluginId = data.listingId.slice(BUILTIN_PREFIX.length);
+    if (data.kind === "widget" && builtinSlug) {
+      const pluginId = builtinSlug;
       const { getBuiltinPlugin } = await import("./builtin-plugins");
       const pluginDef = getBuiltinPlugin(pluginId);
       if (!pluginDef) throw new Error("market_listing_not_found");

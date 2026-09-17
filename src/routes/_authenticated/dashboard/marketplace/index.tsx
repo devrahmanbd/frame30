@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
 });
 
 type Catalog = Awaited<ReturnType<typeof marketCatalogFn>>;
-type Listing = Catalog["themes"][number];
+type Listing = Catalog["themes"][number] | Catalog["widgets"][number];
 
 const INSTALL_LABEL: Record<string, { en: string; bn: string }> = {
   installed: { en: "Installed", bn: "ইনস্টলড" },

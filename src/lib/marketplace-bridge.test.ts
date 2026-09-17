@@ -83,6 +83,9 @@ describe("marketplace preset bridge", () => {
       expect(entry.price_minor_int).toBe(0);
       expect(entry.compatible).toBe(true);
       expect(entry.mine).toBe(false);
+      // No fabricated social proof: fresh plugins show zero installs.
+      expect(entry.install_count).toBe(0);
+      expect(entry.rating).toBeNull();
     }
   });
 

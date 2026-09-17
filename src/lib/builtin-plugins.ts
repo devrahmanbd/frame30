@@ -6,7 +6,14 @@
  * WordPress without requiring manual DB seeding.
  */
 import type { PluginManifest } from "./plugin-manifest";
-import { BUILTIN_PREFIX, type Kind } from "./marketplace.server";
+import type { Kind } from "./marketplace.server";
+
+/**
+ * Synthetic listing ids for official built-ins (never touch the ledger).
+ * Lives here — not in marketplace.server — so the catalog import graph
+ * stays acyclic (marketplace.server imports this module for the mappers).
+ */
+export const BUILTIN_PREFIX = "preset:";
 
 export type BuiltinPluginDef = {
   manifest: PluginManifest;
@@ -14,8 +21,6 @@ export type BuiltinPluginDef = {
   summaryEn: string;
   summaryBn: string;
   author: string;
-  installCount: number;
-  rating: number;
 };
 
 export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
@@ -24,8 +29,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Direct WhatsApp chat bubble on your storefront for instant customer messaging and order inquiries.",
     summaryBn: "স্টোরফ্রন্টে সরাসরি হোয়াটসঅ্যাপ চ্যাট বাবল — তাৎক্ষণিক গ্রাহক যোগাযোগ ও অর্ডার তথ্যের জন্য।",
-    installCount: 1420,
-    rating: 4.9,
     manifest: {
       id: "whatsapp-chat",
       name: "WhatsApp Quick Chat",
@@ -86,8 +89,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Points, badges and rewards program to boost repeat purchases and customer retention.",
     summaryBn: "ক্রেতাদের পয়েন্ট ও রিওয়ার্ড প্রোগ্রাম — পুনরাবৃত্ত অর্ডার বৃদ্ধির জন্য।",
-    installCount: 980,
-    rating: 4.8,
     manifest: {
       id: "loyalty-lite",
       name: "Loyalty Lite",
@@ -143,8 +144,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Verified buyer reviews, customer photos and 5-star ratings displayed beautifully on product pages.",
     summaryBn: "যাচাইকৃত ক্রেতা রিভিউ, ছবি ও রেটিং প্রোডাক্ট পেজে সুন্দরভাবে প্রদর্শনের প্লাগইন।",
-    installCount: 2150,
-    rating: 4.9,
     manifest: {
       id: "product-reviews",
       name: "Verified Product Reviews",
@@ -202,8 +201,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Real-time delivery status checker for Steadfast, Pathao, RedX and Paperfly parcel deliveries.",
     summaryBn: "স্টেডফাস্ট, পাঠাও ও রেডএক্স পার্সেল ট্র্যাকিং উইজেট — ক্রেতা ফোন নম্বর দিয়ে স্ট্যাটাস দেখতে পারে।",
-    installCount: 1840,
-    rating: 4.7,
     manifest: {
       id: "order-tracker",
       name: "Live Courier & Order Tracker",
@@ -246,8 +243,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Real-time sales alerts and recent purchase popups to create urgency and social proof.",
     summaryBn: "সাম্প্রতিক অর্ডার নোটিফিকেশন — ক্রেতার আস্থার সাথে সেলস কনভার্সন বৃদ্ধির জন্য।",
-    installCount: 3100,
-    rating: 4.8,
     manifest: {
       id: "social-proof",
       name: "Social Proof Popups",
@@ -292,8 +287,6 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     author: "Framique",
     summaryEn: "Detect and block invalid bot clicks and scraper traffic from wasting your marketing ad spend.",
     summaryBn: "বিজ্ঞাপন বাজেট সুরক্ষা — বট ক্লিক ও স্ক্র্যাপার শনাক্ত করে নষ্ট হওয়া বাজেট রক্ষা করুন।",
-    installCount: 820,
-    rating: 4.9,
     manifest: {
       id: "ad-shield",
       name: "Ad Defense & Click Fraud Shield",
@@ -356,15 +349,19 @@ export function builtinWidgets() {
     currency_code: "BDT",
     trial_allowed: false,
     status: "active",
-    manifest: p.manifest as unknown,
+    // Null on the wire (TanStack server fns must return serializable
+    // data): the install path re-reads the manifest via getBuiltinPlugin.
+    manifest: null,
     version_history: [] as string[],
-    install_count: p.installCount,
-    rating_sum: p.rating * p.installCount,
-    rating_count: p.installCount,
+    // Honest zeros: these shipped today with no installs and no reviews.
+    // Counts and ratings accumulate from real marketplace_installs rows.
+    install_count: 0,
+    rating_sum: 0,
+    rating_count: 0,
     created_at: new Date(0).toISOString(),
     kind: "widget" as const,
     compatible: true,
-    rating: p.rating,
+    rating: null as number | null,
     mine: false,
     builtin: true as const,
   }));
