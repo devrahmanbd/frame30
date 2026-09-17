@@ -8,9 +8,12 @@
 ## ✅ FINAL PRIORITY LIST (Sept 18, 2026 — the single ordered backlog; detail lives in the sections below)
 
 ### P0 — Security first (blocks everything else)
-- [ ] **Rotate all exposed credentials** (GitHub PAT, Supabase passwords/JWT, Kong keys, SMTP) — open since Sept 11, unchanged.
-- [ ] **Verify B2C/B2B segregation** after the auth-isolation commits (`321ba98`, `3cfa268`, `c868af9`) — may be partially fixed; needs a prove-it test, not blind rework.
-- [ ] **RLS + SSR loader-guard audit** across public tables.
+- [x] **Contained exposure**: frame30 + frame29 flipped private (both carried live `.env`); redacted OpenRouter key confirmed placeholder-only.
+- [x] **Rotated Supabase JWT secret + anon/service keys** (Sept 18): new secret/keys in framebase + framique envs, stack recreated, app rebuilt (VITE keys), old keys 401, data intact (4 merchants/20 users), new `.env` committed.
+- [ ] **OWNER ACTION — rotate what no CLI can**: GitHub PAT `ghp_ESXI…Cv5P` (past​ed in chat + git remotes), Semrush key (TODO header + SEO docs), SMTP password (framebase env). Old Supabase keys are dead; these three are still live.
+- [x] **B2C/B2B segregation PROVEN working** (Sept 18 live-account tests): pure customer reads nothing cross-tenant (orders/members/customers/invoices empty), platform_admins empty, writes denied + data untouched, /dashboard leaks nothing, /root neutral. Self-serve seller signup via onboarding is legitimate, not a hole.
+- [x] **RLS Tier-1 lockdown live** (`20260918120000_p0_rls_lockdown.sql`): subscriptions/mfa_recovery_codes/oauth_tokens/integration_connections/payout_* /platform_snapshots/theme_favourites closed from `ALL TO public`. Verified: anon+customer read/write denied, member own-row reads intact, service paths bypass unaffected.
+- [ ] **RLS Tier-2 (content/telemetry, write-side only)**: 19 remaining `ALL TO public` policies (analytics_*, revisions, nav/terms, seo_not_found_log, web_vitals_sample, theme_assets, builder_template_seo, integration_probes, url_redirects) — reads are intentional, writes need member/service scoping.
 - [ ] **Custom-code XSS sandbox** (§2.4: CSP + sandbox merchant HTML/JS, keep checkout/payment surfaces clean).
 - [ ] **Tenant-aware CSRF validator** (§2.5: custom domains + gateway return redirects currently risk 403s).
 - [ ] **SNI/domain quotas + rate limits** (§2.6: per-plan domain caps, `domain.create` bucket, DNS backoff).
