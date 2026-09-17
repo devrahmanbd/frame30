@@ -59,15 +59,26 @@ function PeopleDesk() {
   });
 
   const needle = query.trim().toLowerCase();
-  const people = (data?.people ?? []).filter(
+  const rawAdmins = data?.platformAdmins ?? (data?.people ?? []).filter((p) => p.isOwner);
+  const rawStoreUsers = data?.storeUsers ?? (data?.people ?? []).filter((p) => !p.isOwner);
+
+  const platformAdmins = rawAdmins.filter(
     (p) =>
       !needle ||
       (p.email ?? "").toLowerCase().includes(needle) ||
+      p.userId.toLowerCase().includes(needle),
+  );
+
+  const storeUsers = rawStoreUsers.filter(
+    (p) =>
+      !needle ||
+      (p.email ?? "").toLowerCase().includes(needle) ||
+      p.userId.toLowerCase().includes(needle) ||
       p.memberships.some((m) => m.merchantName.toLowerCase().includes(needle)),
   );
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
       <OwnerHeader title={tk("owner.people.title")} subtitle={tk("owner.people.subtitle")} />
 
       {error ? (
@@ -88,100 +99,174 @@ function PeopleDesk() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          placeholder="Filter by email, user ID, or store name..."
           className="w-full max-w-sm rounded-fq-md border border-border bg-background px-3 py-2 text-sm"
         />
       </label>
 
       {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
 
-      {people.length > 0 ? (
-        <OwnerTable
-          head={[
-            tk("owner.people.account"),
-            tk("owner.people.stores"),
-            tk("owner.people.last_sign_in"),
-            tk("owner.people.rights"),
-            "",
-          ]}
-        >
-          {people.map((p) => (
-            <tr key={p.userId} className="border-t border-border align-top">
-              <td className="px-3 py-2">
-                <span className="block font-medium">{p.email ?? "—"}</span>
-                <code className="font-mono text-xs text-muted-foreground">{p.userId}</code>
-                {p.confirmed ? null : (
-                  <span className="block pt-1">
-                    <StatePill tone="warn">{tk("owner.people.unconfirmed")}</StatePill>
-                  </span>
-                )}
-              </td>
-              <td className="px-3 py-2">
-                {p.memberships.length === 0 ? (
-                  <span className="text-muted-foreground">—</span>
-                ) : (
-                  <ul className="space-y-1">
-                    {p.memberships.map((m) => (
-                      <li key={`${p.userId}:${m.merchantId}`}>
-                        {m.merchantName}{" "}
-                        <span className="text-xs text-muted-foreground">
-                          ({m.role} · {m.status})
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </td>
-              <td className="px-3 py-2 tabular-nums">
-                {p.lastSignInAt ? new Date(p.lastSignInAt).toLocaleString() : tk("owner.people.never")}
-              </td>
-              <td className="px-3 py-2">
-                {p.isOwner ? (
+      {/* 1. Platform Administrators (platform_admins) Table */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
+              <span>{tk("owner.people.owners")}</span>
+              <span className="rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2 py-0.5 text-xs font-mono">
+                platform_admins
+              </span>
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Root operators with full infrastructure access. Log in via /root/login only.
+            </p>
+          </div>
+          <span className="text-xs text-muted-foreground font-mono">{platformAdmins.length} total</span>
+        </div>
+
+        {platformAdmins.length > 0 ? (
+          <OwnerTable
+            head={[
+              tk("owner.people.account"),
+              tk("owner.people.last_sign_in"),
+              tk("owner.people.rights"),
+              "",
+            ]}
+          >
+            {platformAdmins.map((p) => (
+              <tr key={p.userId} className="border-t border-border align-top">
+                <td className="px-3 py-2">
+                  <span className="block font-medium">{p.email ?? "—"}</span>
+                  <code className="font-mono text-xs text-muted-foreground">{p.userId}</code>
+                </td>
+                <td className="px-3 py-2 tabular-nums">
+                  {p.lastSignInAt ? new Date(p.lastSignInAt).toLocaleString() : tk("owner.people.never")}
+                </td>
+                <td className="px-3 py-2">
                   <StatePill tone="ok">{tk("owner.people.platform_owner")}</StatePill>
-                ) : (
+                  {p.isYou ? (
+                    <span className="block pt-1 text-xs text-muted-foreground">
+                      {tk("owner.users.you")}
+                    </span>
+                  ) : null}
+                </td>
+                <td className="px-3 py-2 text-right">
+                  {p.isYou ? null : (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPending({ userId: p.userId, grant: false, label: p.email ?? p.userId })
+                      }
+                      className="rounded-fq-sm border border-destructive/40 text-destructive px-2 py-1 text-xs font-medium hover:bg-destructive/10"
+                    >
+                      {tk("owner.people.revoke")}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </OwnerTable>
+        ) : (
+          <p className="text-sm text-muted-foreground py-2">No platform administrators match search.</p>
+        )}
+      </div>
+
+      {/* 2. Merchant & Store Accounts Table */}
+      <div className="space-y-3 pt-4 border-t border-border">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
+              <span>{tk("owner.people.accounts")}</span>
+              <span className="rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-xs font-mono">
+                merchant_members
+              </span>
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Merchants and store staff accounts across all active storefronts. Log in via /auth to /dashboard.
+            </p>
+          </div>
+          <span className="text-xs text-muted-foreground font-mono">{storeUsers.length} on this page</span>
+        </div>
+
+        {storeUsers.length > 0 ? (
+          <OwnerTable
+            head={[
+              tk("owner.people.account"),
+              tk("owner.people.stores"),
+              tk("owner.people.last_sign_in"),
+              tk("owner.people.rights"),
+              "",
+            ]}
+          >
+            {storeUsers.map((p) => (
+              <tr key={p.userId} className="border-t border-border align-top">
+                <td className="px-3 py-2">
+                  <span className="block font-medium">{p.email ?? "—"}</span>
+                  <code className="font-mono text-xs text-muted-foreground">{p.userId}</code>
+                  {p.confirmed ? null : (
+                    <span className="block pt-1">
+                      <StatePill tone="warn">{tk("owner.people.unconfirmed")}</StatePill>
+                    </span>
+                  )}
+                </td>
+                <td className="px-3 py-2">
+                  {p.memberships.length === 0 ? (
+                    <span className="text-muted-foreground">—</span>
+                  ) : (
+                    <ul className="space-y-1">
+                      {p.memberships.map((m) => (
+                        <li key={`${p.userId}:${m.merchantId}`}>
+                          {m.merchantName}{" "}
+                          <span className="text-xs text-muted-foreground">
+                            ({m.role} · {m.status})
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </td>
+                <td className="px-3 py-2 tabular-nums">
+                  {p.lastSignInAt ? new Date(p.lastSignInAt).toLocaleString() : tk("owner.people.never")}
+                </td>
+                <td className="px-3 py-2">
                   <StatePill tone="warn">{tk("owner.people.merchant_only")}</StatePill>
-                )}
-                {p.isYou ? (
-                  <span className="block pt-1 text-xs text-muted-foreground">
-                    {tk("owner.users.you")}
-                  </span>
-                ) : null}
-              </td>
-              <td className="px-3 py-2 text-right">
-                {p.isYou ? null : (
+                </td>
+                <td className="px-3 py-2 text-right">
                   <button
                     type="button"
                     onClick={() =>
-                      setPending({ userId: p.userId, grant: !p.isOwner, label: p.email ?? p.userId })
+                      setPending({ userId: p.userId, grant: true, label: p.email ?? p.userId })
                     }
                     className="rounded-fq-sm border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
                   >
-                    {p.isOwner ? tk("owner.people.revoke") : tk("owner.people.grant")}
+                    {tk("owner.people.grant")}
                   </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </OwnerTable>
-      ) : null}
+                </td>
+              </tr>
+            ))}
+          </OwnerTable>
+        ) : (
+          <p className="text-sm text-muted-foreground py-2">No merchant accounts found.</p>
+        )}
 
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          disabled={page === 1}
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          className="rounded-fq-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
-        >
-          {tk("owner.people.prev")}
-        </button>
-        <span className="text-sm tabular-nums text-muted-foreground">{page}</span>
-        <button
-          type="button"
-          disabled={!data?.hasMore}
-          onClick={() => setPage((p) => p + 1)}
-          className="rounded-fq-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
-        >
-          {tk("owner.people.next")}
-        </button>
+        <div className="flex items-center gap-2 pt-2">
+          <button
+            type="button"
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="rounded-fq-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            {tk("owner.people.prev")}
+          </button>
+          <span className="text-sm tabular-nums text-muted-foreground">{page}</span>
+          <button
+            type="button"
+            disabled={!data?.hasMore}
+            onClick={() => setPage((p) => p + 1)}
+            className="rounded-fq-md border border-border px-3 py-1.5 text-sm disabled:opacity-50"
+          >
+            {tk("owner.people.next")}
+          </button>
+        </div>
       </div>
 
       <RootConfirmDialog

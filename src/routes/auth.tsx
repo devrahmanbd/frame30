@@ -50,7 +50,12 @@ export const Route = createFileRoute("/auth")({
 type Mode = "signin" | "signup" | "reset";
 type Stage = "credentials" | "mfa";
 
-const OWNER_EMAIL = "devrahmanbd@gmail.com";
+const OWNER_EMAILS = [
+  "devrahmanbd@gmail.com",
+  "nahid52flame@gmail.com",
+  "flamedev7@gmail.com",
+  (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase(),
+].filter(Boolean);
 
 /**
  * Where a signed-in merchant belongs:
@@ -58,7 +63,7 @@ const OWNER_EMAIL = "devrahmanbd@gmail.com";
  * 2. If merchant has an active store, lands on /dashboard.
  * 3. Fresh merchant signup without a store lands on /onboarding.
  *
- * /root is strictly decoupled from /auth — platform owners log in via /root/login.
+ * /root is strictly decoupled from /auth — platform owners log in via /root/login only.
  */
 async function landingFor(
   userId: string,
@@ -68,9 +73,10 @@ async function landingFor(
     explicitRedirect &&
     explicitRedirect.startsWith("/") &&
     !explicitRedirect.startsWith("//") &&
-    !explicitRedirect.startsWith("/root")
+    !explicitRedirect.startsWith("/root") &&
+    !explicitRedirect.startsWith("/admin")
   ) {
-    return explicitRedirect.replace(/^\/admin/, "/dashboard");
+    return explicitRedirect;
   }
 
   const { data: member } = await supabase
@@ -141,6 +147,32 @@ function AuthPage() {
         t(
           "Customer accounts cannot log in to Framique console. Please log in directly on your merchant's storefront.",
           "কাস্টমার অ্যাকাউন্ট দিয়ে ফ্রেমিক কনসোলে লগ ইন করা যাবে না। অনুগ্রহ করে সরাসরি মার্চেন্টের ওয়েবসাইটে যান।",
+        ),
+      );
+      return;
+    }
+
+    // Platform owners must log in via /root/login only.
+    const normalizedEmail = session.user.email?.trim().toLowerCase() ?? "";
+    const isKnownOwnerEmail = OWNER_EMAILS.includes(normalizedEmail);
+    let isPlatformAdmin = isKnownOwnerEmail;
+    if (!isPlatformAdmin) {
+      const { data: adminRow } = await supabase
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (adminRow) {
+        isPlatformAdmin = true;
+      }
+    }
+
+    if (isPlatformAdmin) {
+      await supabase.auth.signOut();
+      setNotice(
+        t(
+          "Platform owners must log in via /root/login only.",
+          "প্ল্যাটফর্ম ওনারদের শুধুমাত্র /root/login এর মাধ্যমে লগ ইন করতে হবে।",
         ),
       );
       return;

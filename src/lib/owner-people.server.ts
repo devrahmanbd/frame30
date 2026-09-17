@@ -78,13 +78,18 @@ export async function loadPeople(db: Client, userId: string, page = 1) {
         memberships: byUser.get(u.id as string) ?? [],
       }));
 
+      const platformAdmins = people.filter((p) => p.isOwner);
+      const storeUsers = people.filter((p) => !p.isOwner);
+
       return {
         people,
+        platformAdmins,
+        storeUsers,
         page,
         hasMore: users.length === perPage,
         totals: {
-          users: people.length,
-          owners: people.filter((p) => p.isOwner).length,
+          users: storeUsers.length,
+          owners: platformAdmins.length,
           unconfirmed: people.filter((p) => !p.confirmed).length,
           merchants: names.size,
         },
