@@ -742,7 +742,11 @@ export function PeopleDesk() {
                     </label>
                     <select
                       value={createRole}
-                      onChange={(e) => setCreateRole(e.target.value as any)}
+                      onChange={(e) =>
+                        setCreateRole(
+                          e.target.value as "owner" | "admin" | "staff",
+                        )
+                      }
                       className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                       <option value="owner">
@@ -895,7 +899,11 @@ export function PeopleDesk() {
                       </label>
                       <select
                         value={editRole}
-                        onChange={(e) => setEditRole(e.target.value as any)}
+                        onChange={(e) =>
+                          setEditRole(
+                            e.target.value as "owner" | "admin" | "staff",
+                          )
+                        }
                         className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                       >
                         <option value="owner">
