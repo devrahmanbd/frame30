@@ -5,6 +5,34 @@
 > **Target Standards**: `DESIGN.md`, Hallmark Skill Guidelines, OKLCH Comfort Contrast, Google Search Essentials, WCAG 2.1 AAA  
 
 ---
+## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Sept 2026)
+
+> Goal: same UX, same user journey, same theme/plugin/page-builder management, same sidebar system as WordPress (`/wp-admin/`). Reference WP dashboard credentials are held by the owner (never committed).
+
+### P0 — Marketplace theme lifecycle (user complaint: activation/install/delete missing)
+- [ ] Marketplace Install creates a **new inactive** `store_themes` row (installing into the active draft is Content>Themes behavior, not marketplace behavior)
+- [ ] **Activate** button per installed theme (is_active switch, published_version coherence, audit)
+- [ ] **Live Preview** per installed theme (read-only builder preview route)
+- [ ] **Delete** button per installed theme (blocked while active with clear message; cascade versions/drafts; ledger row to terminal status)
+- [ ] Installed/active badges driven by real state on both marketplace cards and Content>Themes grid
+
+### P0 — Plugin lifecycle (Installed Plugins table parity)
+- [ ] **Activate / Deactivate** per installed plugin (plugin_state.enabled + ledger status sync)
+- [ ] **Delete** per installed plugin (remove plugin_state row, ledger to terminal status, confirm dialog)
+- [ ] Add New flow routes to marketplace widgets tab (WP parity: Plugins › Add New)
+
+### P1 — Sidebar system (WP admin menu parity)
+- [ ] Audit `src/lib/console-nav.ts` + `AdminShell` vs WP menu model (sections, icons, collapsible submenus, current highlight, capability gating)
+- [ ] Single nav source of truth; no route reachable only by URL
+
+### P1 — Page builder management parity
+- [ ] Expose versions/drafts/publish/rollback/schedules uniformly (all exist server-side; close any UI gaps vs WP revision/screen model)
+
+### P2 — Polish
+- [ ] Theme screenshot/thumbnail pipeline (WP shows a screenshot per theme; marketplace cards show placeholder blocks today)
+- [ ] Bulk actions on Plugins screen (WP parity: bulk activate/deactivate/delete)
+
+---
 ## 🚨 Active Critical Issues & Vulnerabilities (Identified Sept 11, 2026)
 
 ### 0. 🏆 #1 Priority: WordPress-Grade CMS Transformation & Management Systems (Underway)
