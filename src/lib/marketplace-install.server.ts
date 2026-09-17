@@ -92,10 +92,6 @@ export async function installListing(
       listing_slug: listing.slug,
       listing_name: listing.name,
       version: pinned?.version ?? listing.version,
-      version_id: pinned?.id ?? null,
-      granted_scopes: pinned ? pinned.scopes : granted,
-      consented_at: pinned || granted.length ? new Date().toISOString() : null,
-      consented_by: input.consentedBy ?? null,
       price_minor_int: charge,
       currency_code: listing.currency_code,
       is_trial: input.trial,
@@ -183,7 +179,7 @@ export async function setInstallStatus(
 ) {
   const { data: row } = await db
     .from("marketplace_installs")
-    .select("id, status, is_trial, kind")
+    .select("id, status, is_trial, kind, listing_slug")
     .eq("merchant_id", merchantId)
     .eq("id", installId)
     .maybeSingle();
@@ -208,9 +204,9 @@ export async function setInstallStatus(
   } else if (row.kind === "widget") {
     await db
       .from("plugin_state")
-      .update({ enabled: next === "installed" || next === "trial" })
+      .update({ enabled: next === "installed" || next === "trial", updated_at: new Date().toISOString() })
       .eq("merchant_id", merchantId)
-      .eq("install_id", installId);
+      .eq("plugin_id", row.listing_slug);
   }
   return { ok: true, status: next, themeNoticeKey };
 }

@@ -19,13 +19,13 @@ import {
 
 type Client = SupabaseClient<Database>;
 
-const COLUMNS = "id, plugin_id, install_id, manifest, granted_scopes, settings, enabled";
+const COLUMNS = "id, plugin_id, manifest, scopes, settings, enabled";
 
-export async function killSwitchOn(db: Client, merchantId: string) {
+export async function killSwitchOn(db: Client, pluginId: string) {
   const { data } = await db
     .from("plugin_kill_switch")
     .select("disabled")
-    .eq("merchant_id", merchantId)
+    .eq("plugin_id", pluginId)
     .maybeSingle();
   return data?.disabled === true;
 }
@@ -35,19 +35,22 @@ export async function listInstalledPlugins(
   db: Client,
   merchantId: string,
 ): Promise<InstalledPlugin[]> {
-  const [{ data }, killed] = await Promise.all([
-    db.from("plugin_state").select(COLUMNS).eq("merchant_id", merchantId),
-    killSwitchOn(db, merchantId),
-  ]);
+  const { data, error } = await db
+    .from("plugin_state")
+    .select(COLUMNS)
+    .eq("merchant_id", merchantId);
+
+  if (error || !data) return [];
   const out: InstalledPlugin[] = [];
-  for (const row of data ?? []) {
+  for (const row of (data as any[]) ?? []) {
     const verdict = parseManifest(row.manifest);
     if (!verdict.ok) continue;
+    const killed = await killSwitchOn(db, row.plugin_id);
     const schema = verdict.manifest.settings;
     out.push({
-      installId: row.install_id ?? row.id,
+      installId: row.id,
       manifest: verdict.manifest,
-      grantedScopes: row.granted_scopes ?? [],
+      grantedScopes: row.scopes ?? [],
       settings: validateSettings(schema, row.settings ?? defaultSettings(schema)).values,
       enabled: !killed && row.enabled !== false,
     });
@@ -81,25 +84,28 @@ export async function upsertPlugin(db: Client, merchantId: string, input: Upsert
     .eq("plugin_id", manifest.id)
     .maybeSingle();
 
-  const diff = permissionDiff(existing?.granted_scopes ?? [], manifest.permissions);
+  const diff = permissionDiff((existing as any)?.scopes ?? [], manifest.permissions);
   const settings = existing
-    ? validateSettings(manifest.settings, existing.settings ?? {}).values
+    ? validateSettings(manifest.settings, (existing as any).settings ?? {}).values
     : defaultSettings(manifest.settings);
 
   const payload = {
     merchant_id: merchantId,
     plugin_id: manifest.id,
-    install_id: input.installId ?? existing?.install_id ?? null,
     manifest: manifest as unknown as Json,
-    granted_scopes: manifest.permissions,
+    scopes: manifest.permissions,
     settings: settings as unknown as Json,
-    enabled: existing?.enabled ?? true,
+    enabled: (existing as any)?.enabled ?? true,
+    updated_at: new Date().toISOString(),
   };
 
   const { error } = await db
     .from("plugin_state")
     .upsert(payload, { onConflict: "merchant_id,plugin_id" });
-  if (error) throw new Error("plugin_save_failed");
+  if (error) {
+    console.error("plugin_save_failed db error:", error);
+    throw new Error(`plugin_save_failed: ${error.message}`);
+  }
 
   return { ok: true, pluginId: manifest.id, permissionDiff: diff, warnings: verdict.warnings };
 }
