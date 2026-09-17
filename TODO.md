@@ -5,6 +5,32 @@
 > **Target Standards**: `DESIGN.md`, Hallmark Skill Guidelines, OKLCH Comfort Contrast, Google Search Essentials, WCAG 2.1 AAA  
 
 ---
+## ✅ FINAL PRIORITY LIST (Sept 18, 2026 — the single ordered backlog; detail lives in the sections below)
+
+### P0 — Security first (blocks everything else)
+- [ ] **Rotate all exposed credentials** (GitHub PAT, Supabase passwords/JWT, Kong keys, SMTP) — open since Sept 11, unchanged.
+- [ ] **Verify B2C/B2B segregation** after the auth-isolation commits (`321ba98`, `3cfa268`, `c868af9`) — may be partially fixed; needs a prove-it test, not blind rework.
+- [ ] **RLS + SSR loader-guard audit** across public tables.
+- [ ] **Custom-code XSS sandbox** (§2.4: CSP + sandbox merchant HTML/JS, keep checkout/payment surfaces clean).
+- [ ] **Tenant-aware CSRF validator** (§2.5: custom domains + gateway return redirects currently risk 403s).
+- [ ] **SNI/domain quotas + rate limits** (§2.6: per-plan domain caps, `domain.create` bucket, DNS backoff).
+
+### P1 — Merchant journey must work end-to-end (onboarding → dashboard → marketplace)
+- [x] DONE (Sept 17–18): step-up `plan.write` block, `create_store`/`store_slug_status`, `vat_resolve`/`collection_resolve`, 9 theme-engine RPCs, `cms_entitlements` rewrite, marketplace preset+plugin bridge with replay guard, install-as-new-inactive + Activate/Delete, schema-drift repairs (phases 2b–2g).
+- [ ] **WP-parity P0 remainder**: Live Preview wiring, Add Theme tile, Details-modal parity, plugin **Delete**, Add-New routing, bulk actions (see 🔴 block below).
+- [ ] **Subdomain architecture** (§2.1: wildcard `*.framique.store`, onboarding custom-domain step, edge tenant rewrite) — sub-path hosting is a security + SEO liability.
+- [ ] **Edge-cache tenant awareness** (§2.2: `isStorefrontPath` bypasses cache on custom domains — origin-crash risk under load).
+- [ ] **Presigned media uploads** (§2.3: base64 RPC uploads risk V8 heap blowups + Nitro 413s).
+
+### P2 — Console parity + growth
+- [ ] **WP P1**: sidebar collapse/flyout/keyboard parity, Pages-table "Edit with Page Builder".
+- [ ] **WP P2**: theme screenshot pipeline.
+- [ ] **Design §1.4 leftovers + SEO programmatic pages** (§3 matrix is reference, execute per quarter).
+
+### Reference (not backlog — do not action directly)
+- §1 design audit (fixes applied), §2 skills stack, §3 SEO matrix, §4 page specs, §5 done phases.
+
+---
 ## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Audited Sept 18, 2026)
 
 > **Reference Target**: Live WordPress 6.8+ Dashboard (`http://maxwilliam.shop/wp-admin`, audited with credentials `maxw`).  
