@@ -180,7 +180,7 @@ function CustomersPage() {
             </a>
             <Link
               to="/auth"
-              search={{ mode: "signup", accountType: "merchant" }}
+              search={{ mode: "signup" }}
               className="w-full sm:w-auto min-h-[44px] rounded-fq-md border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground flex items-center justify-center hover:bg-muted/30 transition-all"
             >
               {t(HERO.ctaSecondary, "বিনামূল্যে শুরু করুন")}
@@ -409,7 +409,7 @@ function CustomersPage() {
         secondary={
           <Link
             to="/auth"
-            search={{ mode: "signup", accountType: "merchant" }}
+            search={{ mode: "signup" }}
             className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-fq-md border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30 transition-all"
           >
             {t(SUBMIT_STORY.ctaSecondary, "বিনামূল্যে শুরু করুন")}
@@ -442,7 +442,7 @@ function CustomersPage() {
         primary={
           <Link
             to="/auth"
-            search={{ mode: "signup", accountType: "merchant" }}
+            search={{ mode: "signup" }}
             className="w-full sm:w-auto min-h-[44px] rounded-fq-md bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold flex items-center justify-center shadow-sm hover:bg-primary/90 transition-all"
           >
             {t(FINAL_CTA.primary, "বিনামূল্যে শুরু করুন")}

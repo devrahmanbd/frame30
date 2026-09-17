@@ -22,6 +22,7 @@ export const Route = createFileRoute("/robots.txt")({
           // Non-indexable marketing routes (live status) stay out of the index
           // and out of the crawl budget; the head also carries noindex.
           ...MARKETING_ROUTES.filter((r) => !r.indexable).map((r) => `Disallow: ${r.path}`),
+          "Disallow: /dashboard",
           "Disallow: /admin",
           "Disallow: /root",
           "Disallow: /auth",

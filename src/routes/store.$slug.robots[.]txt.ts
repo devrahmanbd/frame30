@@ -40,6 +40,7 @@ export const Route = createFileRoute("/store/$slug/robots.txt")({
             `Disallow: ${base}/account`,
             `Disallow: ${base}/order`,
             `Disallow: ${base}/track`,
+            "Disallow: /dashboard",
             "Disallow: /admin",
             "Disallow: /root",
             "Disallow: /auth",

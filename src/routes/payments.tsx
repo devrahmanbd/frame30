@@ -781,7 +781,7 @@ function PaymentsPage() {
         primary={
           <Link
             to="/auth"
-            search={{ mode: "signup", accountType: "merchant" }}
+            search={{ mode: "signup" }}
             className="w-full sm:w-auto min-h-[44px] rounded-fq-md bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold flex items-center justify-center shadow-sm hover:bg-primary/90 transition-all"
           >
             {t(FINAL_CTA.primaryCta.en)}

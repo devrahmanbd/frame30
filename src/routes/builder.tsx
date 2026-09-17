@@ -165,7 +165,7 @@ function BuilderPage() {
           <>
             <Link
               to="/auth"
-              search={{ mode: "signup", accountType: "merchant" }}
+              search={{ mode: "signup" }}
               className="w-full sm:w-auto min-h-[44px] rounded-fq-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground flex items-center justify-center shadow-sm hover:bg-primary/90 transition-all"
             >
               {hero.primaryCta}
@@ -433,7 +433,7 @@ function BuilderPage() {
         primary={
           <Link
             to="/auth"
-            search={{ mode: "signup", accountType: "merchant" }}
+            search={{ mode: "signup" }}
             className="w-full sm:w-auto min-h-[44px] rounded-fq-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground flex items-center justify-center shadow-sm hover:bg-primary/90 transition-all"
           >
             {cta.primaryCta}

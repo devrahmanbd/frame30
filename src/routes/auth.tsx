@@ -15,7 +15,7 @@ import {
 export const Route = createFileRoute("/auth")({
   validateSearch: (
     search: Record<string, unknown>,
-  ): { redirect?: string; mode?: "signin" | "signup" | "reset"; accountType?: "merchant" | "customer" } => ({
+  ): { redirect?: string; mode?: "signin" | "signup" | "reset" } => ({
     redirect:
       typeof search.redirect === "string" &&
       search.redirect.startsWith("/") &&
@@ -26,23 +26,19 @@ export const Route = createFileRoute("/auth")({
       search.mode === "signup" || search.mode === "signin" || search.mode === "reset"
         ? search.mode
         : undefined,
-    accountType:
-      search.accountType === "customer" || search.accountType === "merchant"
-        ? search.accountType
-        : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Sign in — Framique merchant admin" },
+      { title: "Sign in — Framique Merchant Console" },
       {
         name: "description",
         content:
           "Sign in to Framique with email, Google or a two-factor code to manage your Bangladeshi storefront, catalog, orders and payouts.",
       },
-      { property: "og:title", content: "Sign in to Framique" },
+      { property: "og:title", content: "Sign in — Framique Merchant Console" },
       {
         property: "og:description",
-        content: "Merchant login for the Framique commerce admin. Two-factor ready.",
+        content: "Merchant login for the Framique console. Two-factor ready.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -137,6 +133,19 @@ function AuthPage() {
     const { data } = await supabase.auth.getSession();
     const session = data.session;
     if (!session) return;
+
+    // Reject customer accounts — Framique console is strictly for Merchants.
+    if (session.user.user_metadata?.account_type === "customer") {
+      await supabase.auth.signOut();
+      setNotice(
+        t(
+          "Customer accounts cannot log in to Framique console. Please log in directly on your merchant's storefront.",
+          "কাস্টমার অ্যাকাউন্ট দিয়ে ফ্রেমিক কনসোলে লগ ইন করা যাবে না। অনুগ্রহ করে সরাসরি মার্চেন্টের ওয়েবসাইটে যান।",
+        ),
+      );
+      return;
+    }
+
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (!opts?.skipTwoStep && aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
       const factors = await supabase.auth.mfa.listFactors();
@@ -297,7 +306,9 @@ function AuthPage() {
     <main className="grid min-h-screen place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-fq-lg border border-border bg-card p-6 shadow-sm">
         <h1 className="font-bangla-display text-xl font-semibold text-foreground">{heading}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Framique merchant admin</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t("Framique Merchant Console", "ফ্রেমিক মার্চেন্ট কনসোল")}
+        </p>
 
         {notice && (
           <p

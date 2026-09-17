@@ -18,6 +18,11 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
     if (!user) {
       throw redirect({ to: "/auth" });
     }
+    // Customers cannot access the merchant console
+    if (user.user_metadata?.account_type === "customer") {
+      await supabase.auth.signOut();
+      throw redirect({ to: "/auth" });
+    }
   },
   head: () => ({
     meta: [

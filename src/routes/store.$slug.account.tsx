@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -100,27 +100,7 @@ function AccountPage() {
   }, [data?.consents]);
 
   if (!signedIn) {
-    return (
-      <div className="min-h-screen bg-background">
-        <StoreHeader slug={slug} name={slug} />
-        <main className="mx-auto max-w-md px-4 py-16 text-center">
-          <h1 className="font-bangla-display text-2xl font-bold">{t("Your account", "আপনার অ্যাকাউন্ট")}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t(
-              "Sign in to see your orders, addresses and wishlist for this store.",
-              "এই দোকানের অর্ডার, ঠিকানা ও উইশলিস্ট দেখতে সাইন ইন করুন।",
-            )}
-          </p>
-          <Link
-            to="/auth"
-            search={{ redirect: `/store/${slug}/account` }}
-            className="mt-6 inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground"
-          >
-            {t("Sign in", "সাইন ইন")}
-          </Link>
-        </main>
-      </div>
-    );
+    return <ShopperOrderLookup slug={slug} />;
   }
 
   return (
@@ -490,3 +470,57 @@ function ProfileForm({
     </form>
   );
 }
+
+function ShopperOrderLookup({ slug }: { slug: string }) {
+  const { t } = useLang();
+  const navigate = useNavigate();
+  const [orderId, setOrderId] = useState("");
+
+  const handleLookup = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!orderId.trim()) return;
+    void navigate({
+      to: "/store/$slug/order/$orderId",
+      params: { slug, orderId: orderId.trim() },
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <StoreHeader slug={slug} name={slug} />
+      <main className="mx-auto max-w-md px-4 py-16 text-center">
+        <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Package className="size-6" />
+        </div>
+        <h1 className="font-bangla-display text-2xl font-bold">{t("Track Your Order", "আপনার অর্ডার খুঁজুন")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {t(
+            "Enter your Order ID from your confirmation message or receipt to check its status.",
+            "আপনার অর্ডার আইডি দিয়ে অর্ডারের বর্তমান অবস্থা এবং বিস্তারিত তথ্য দেখুন।",
+          )}
+        </p>
+        <form onSubmit={handleLookup} className="mt-6 flex flex-col gap-3 text-left">
+          <label htmlFor="order-lookup-input" className="text-xs font-medium text-muted-foreground">
+            {t("Order ID", "অর্ডার আইডি")}
+          </label>
+          <input
+            id="order-lookup-input"
+            type="text"
+            value={orderId}
+            onChange={(e) => setOrderId(e.target.value)}
+            placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
+            required
+            className="min-h-11 rounded-fq-md border border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="mt-2 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            {t("View Order Status", "অর্ডার স্ট্যাটাস দেখুন")}
+          </button>
+        </form>
+      </main>
+    </div>
+  );
+}
+
