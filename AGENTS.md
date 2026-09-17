@@ -6,6 +6,22 @@
 
 Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
 
+## WordPress-Grade CMS Architecture & UX (Priority #1)
+
+Framique must deliver the exact user experience, user journey, and management systems of a full-scale CMS (modeled after WordPress):
+1. **Appearance › Themes Management**:
+   - **Active Theme**: The current storefront theme must be prominently featured with a "Customize" button (opening the page builder/customizer), version, and author details.
+   - **Installed Themes Grid**: Every installed theme must have an instant **Activate** action (swapping the live storefront theme), **Live Preview**, and **Delete** (uninstalling inactive themes).
+   - **Theme Directory / Marketplace ("Add New Theme")**: Integrated directory where merchants can browse, filter, search, and 1-click install themes, with the install button immediately changing to **Activate**.
+2. **Plugins Management**:
+   - **Installed Plugins**: Tabular list view showing active and inactive plugins with toggles: **Activate**, **Deactivate**, **Settings**, and **Delete**.
+   - **Plugin Catalog / Marketplace ("Add New Plugin")**: Searchable extension store with 1-click install and instant activation.
+3. **Visual Page Builder & Templates**:
+   - Visual drag-and-drop page builder seamlessly integrated into Appearance › Customize and Pages table ("Edit with Page Builder").
+4. **Hierarchical CMS Sidebar Navigation**:
+   - CMS-first sidebar hierarchy: Dashboard, Content (Pages, Posts, Media), Appearance (Themes, Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
+   - Submenus must support expandable accordion toggles and collapsed hover flyouts matching WordPress admin navigation.
+
 ## Stack
 
 - **Runtime**: Bun (ESM, `"type": "module"`)

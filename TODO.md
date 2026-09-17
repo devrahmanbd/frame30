@@ -7,6 +7,22 @@
 ---
 ## 🚨 Active Critical Issues & Vulnerabilities (Identified Sept 11, 2026)
 
+### 0. 🏆 #1 Priority: WordPress-Grade CMS Transformation & Management Systems (Underway)
+- [ ] **Appearance › Themes Parity (Activate, Install, Customize, Delete)**:
+  - [ ] **Theme Activation**: Allow merchants to activate any installed theme with 1 click from `/dashboard/content/themes` or `/dashboard/marketplace`, instantaneously swapping the live storefront and synchronizing `store_themes` (`is_active = true`) with draft templates.
+  - [ ] **Theme Installation**: Provide 1-click "Install" on marketplace themes that transitions directly into "Activate" without page reloading.
+  - [ ] **Theme Deletion**: Allow merchants to delete/uninstall inactive themes from both the Theme Details modal and the marketplace installs view.
+  - [ ] **Active Theme Card**: Feature the active storefront theme prominently with a direct "Customize" button (navigating to the visual page builder), version, and author info.
+- [ ] **Plugins Lifecycle Management Parity**:
+  - [ ] **Installed Plugins View**: Tabular list of installed plugins with active/inactive status badges and toggles: `Activate`, `Deactivate`, `Settings`, and `Delete` (uninstall).
+  - [ ] **Add New Plugin Catalog**: Integrated marketplace view for discovering and installing plugins with 1-click install & activate.
+- [ ] **Visual Page Builder & Templates Bridge**:
+  - [ ] Direct launcher from "Appearance › Customize" into `/dashboard/builder`.
+  - [ ] Page-level action in Pages table ("Edit with Page Builder").
+- [ ] **WordPress-Style CMS Sidebar Navigation**:
+  - [ ] Refactor navigation taxonomy: Dashboard, Content (Pages, Posts, Media), Appearance (Themes, Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
+  - [ ] Add expandable accordion submenus and collapsed hover flyout menus matching WordPress admin navigation.
+
 ### 1. Critical Vulnerabilities & Auth Flaws (Must Fix Immediately)
 - [ ] **Exposed Production Credentials:** Exposed raw SSH IPs, GitHub PATs, Supabase DB passwords, JWT Secrets, Kong API Keys, and SMTP passwords. **Action Required:** Immediate rotation of all credentials on the live server.
 - [ ] **Cross-Pollination of Auth (B2C vs B2B):** A user signing up at `/auth?mode=signup` is intended to be a customer (B2C) for a store. However, because they are just a Supabase Auth User, they can navigate to `/admin`, pass the initial auth check, and trigger the `/onboarding` flow to instantly become a Merchant (B2B). There is currently no strict segregation of "Customer" vs "Merchant" at the registration level.
