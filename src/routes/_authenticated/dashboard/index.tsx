@@ -74,7 +74,7 @@ function Dashboard() {
           </p>
         </div>
         <Link
-          to="/admin/analytics"
+          to="/dashboard/analytics"
           className="inline-flex min-h-9 items-center fq-shine rounded-fq-md bg-primary px-3 text-[13px] font-medium text-primary-foreground hover:opacity-90"
         >
           {t("Full analytics", "বিস্তারিত অ্যানালিটিক্স")}

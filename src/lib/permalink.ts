@@ -17,7 +17,7 @@
  *  - Patterns are validated, not trusted. A merchant can type anything into a
  *    text box; `parsePattern` is the boundary that turns a string into a shape
  *    the rest of the system can rely on.
- *  - Reserved prefixes are refused up front. A blog base of `/admin` would
+ *  - Reserved prefixes are refused up front. A blog base of `/dashboard` would
  *    shadow the dashboard; a base of `/api` would shadow webhooks.
  *  - Build and parse are inverses. `parsePath(build(entity))` must return the
  *    same slug for every supported pattern, or the router cannot resolve what

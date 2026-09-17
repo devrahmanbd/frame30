@@ -66,7 +66,7 @@ export function UsagePanel() {
             )}
           </p>
         </div>
-        <Link to="/admin/plans" className="text-xs underline">
+        <Link to="/dashboard/plans" className="text-xs underline">
           {t("Compare plans", "প্ল্যান তুলনা")}
         </Link>
       </header>
@@ -103,7 +103,7 @@ export function UsagePanel() {
                   {r.upgradeTo && (
                     <>
                       {" "}
-                      <Link to="/admin/plans" className="underline">
+                      <Link to="/dashboard/plans" className="underline">
                         {t(`Upgrade to ${r.upgradeTo}`, `${r.upgradeTo}-এ আপগ্রেড`)}
                       </Link>
                     </>

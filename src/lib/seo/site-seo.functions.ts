@@ -1,5 +1,5 @@
 /**
- * Phase 13 — typed RPC surface for `/admin/settings/seo`.
+ * Phase 13 — typed RPC surface for `/dashboard/settings/seo`.
  *
  * Reads need `settings.read`; every write needs `settings.update`. The server
  * layer re-parses each payload, so validation cannot be skipped from a client.

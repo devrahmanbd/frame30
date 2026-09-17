@@ -1,5 +1,5 @@
 /**
- * Phase 13 — site-level SEO settings (`/admin/settings/seo`).
+ * Phase 13 — site-level SEO settings (`/dashboard/settings/seo`).
  *
  * Stored as one JSON document on `merchant_settings.seo_settings` so a new
  * knob never needs a migration. Pure parse/serialise: the panel and the server

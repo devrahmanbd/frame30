@@ -35,7 +35,6 @@ import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -52,9 +51,11 @@ import { Route as RootIndexRouteImport } from './routes/root/index'
 import { Route as RootAccessRouteImport } from './routes/root/access'
 import { Route as RootAiRouteImport } from './routes/root/ai'
 import { Route as RootAuditRouteImport } from './routes/root/audit'
+import { Route as RootAuthRouteImport } from './routes/root/auth'
 import { Route as RootCouponsRouteImport } from './routes/root/coupons'
 import { Route as RootFraudRouteImport } from './routes/root/fraud'
 import { Route as RootGatewayRouteImport } from './routes/root/gateway'
+import { Route as RootLoginRouteImport } from './routes/root/login'
 import { Route as RootMarketingRouteImport } from './routes/root/marketing'
 import { Route as RootMoneyRouteImport } from './routes/root/money'
 import { Route as RootObservabilityRouteImport } from './routes/root/observability'
@@ -70,43 +71,38 @@ import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
-import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
-import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin/activity'
-import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
-import { Route as AuthenticatedAdminApprovalsRouteImport } from './routes/_authenticated/admin/approvals'
-import { Route as AuthenticatedAdminBrandsRouteImport } from './routes/_authenticated/admin/brands'
-import { Route as AuthenticatedAdminBuilderRouteImport } from './routes/_authenticated/admin/builder'
-import { Route as AuthenticatedAdminBulkEditorRouteImport } from './routes/_authenticated/admin/bulk-editor'
-import { Route as AuthenticatedAdminBundlesRouteImport } from './routes/_authenticated/admin/bundles'
-import { Route as AuthenticatedAdminCartsRouteImport } from './routes/_authenticated/admin/carts'
-import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authenticated/admin/catalog'
-import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin/categories'
-import { Route as AuthenticatedAdminCollectionsRouteImport } from './routes/_authenticated/admin/collections'
-import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
-import { Route as AuthenticatedAdminDevelopersRouteImport } from './routes/_authenticated/admin/developers'
-import { Route as AuthenticatedAdminDraftOrdersRouteImport } from './routes/_authenticated/admin/draft-orders'
-import { Route as AuthenticatedAdminExperimentsRouteImport } from './routes/_authenticated/admin/experiments'
-import { Route as AuthenticatedAdminExportsRouteImport } from './routes/_authenticated/admin/exports'
-import { Route as AuthenticatedAdminGiftCardsRouteImport } from './routes/_authenticated/admin/gift-cards'
-import { Route as AuthenticatedAdminInventoryRouteImport } from './routes/_authenticated/admin/inventory'
-import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin/pages'
-import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
-import { Route as AuthenticatedAdminPlansRouteImport } from './routes/_authenticated/admin/plans'
-import { Route as AuthenticatedAdminPosRouteImport } from './routes/_authenticated/admin/pos'
-import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin/pricing'
-import { Route as AuthenticatedAdminPurchasingRouteImport } from './routes/_authenticated/admin/purchasing'
-import { Route as AuthenticatedAdminReturnsRouteImport } from './routes/_authenticated/admin/returns'
-import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin/reviews'
-import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
-import { Route as AuthenticatedAdminShippingRouteImport } from './routes/_authenticated/admin/shipping'
-import { Route as AuthenticatedAdminStaffRouteImport } from './routes/_authenticated/admin/staff'
-import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
-import { Route as AuthenticatedAdminSupportRouteImport } from './routes/_authenticated/admin/support'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
-import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated/dashboard/orders'
-import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated/dashboard/profile'
-import { Route as AuthenticatedDashboardTrackRouteImport } from './routes/_authenticated/dashboard/track'
-import { Route as AuthenticatedDashboardWishlistRouteImport } from './routes/_authenticated/dashboard/wishlist'
+import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
+import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard/analytics'
+import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard/approvals'
+import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard/brands'
+import { Route as AuthenticatedDashboardBuilderRouteImport } from './routes/_authenticated/dashboard/builder'
+import { Route as AuthenticatedDashboardBulkEditorRouteImport } from './routes/_authenticated/dashboard/bulk-editor'
+import { Route as AuthenticatedDashboardBundlesRouteImport } from './routes/_authenticated/dashboard/bundles'
+import { Route as AuthenticatedDashboardCartsRouteImport } from './routes/_authenticated/dashboard/carts'
+import { Route as AuthenticatedDashboardCatalogRouteImport } from './routes/_authenticated/dashboard/catalog'
+import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard/categories'
+import { Route as AuthenticatedDashboardCollectionsRouteImport } from './routes/_authenticated/dashboard/collections'
+import { Route as AuthenticatedDashboardCustomersRouteImport } from './routes/_authenticated/dashboard/customers'
+import { Route as AuthenticatedDashboardDevelopersRouteImport } from './routes/_authenticated/dashboard/developers'
+import { Route as AuthenticatedDashboardDraftOrdersRouteImport } from './routes/_authenticated/dashboard/draft-orders'
+import { Route as AuthenticatedDashboardExperimentsRouteImport } from './routes/_authenticated/dashboard/experiments'
+import { Route as AuthenticatedDashboardExportsRouteImport } from './routes/_authenticated/dashboard/exports'
+import { Route as AuthenticatedDashboardGiftCardsRouteImport } from './routes/_authenticated/dashboard/gift-cards'
+import { Route as AuthenticatedDashboardInventoryRouteImport } from './routes/_authenticated/dashboard/inventory'
+import { Route as AuthenticatedDashboardPagesRouteImport } from './routes/_authenticated/dashboard/pages'
+import { Route as AuthenticatedDashboardPaymentsRouteImport } from './routes/_authenticated/dashboard/payments'
+import { Route as AuthenticatedDashboardPlansRouteImport } from './routes/_authenticated/dashboard/plans'
+import { Route as AuthenticatedDashboardPosRouteImport } from './routes/_authenticated/dashboard/pos'
+import { Route as AuthenticatedDashboardPricingRouteImport } from './routes/_authenticated/dashboard/pricing'
+import { Route as AuthenticatedDashboardPurchasingRouteImport } from './routes/_authenticated/dashboard/purchasing'
+import { Route as AuthenticatedDashboardReturnsRouteImport } from './routes/_authenticated/dashboard/returns'
+import { Route as AuthenticatedDashboardReviewsRouteImport } from './routes/_authenticated/dashboard/reviews'
+import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard/settings'
+import { Route as AuthenticatedDashboardShippingRouteImport } from './routes/_authenticated/dashboard/shipping'
+import { Route as AuthenticatedDashboardStaffRouteImport } from './routes/_authenticated/dashboard/staff'
+import { Route as AuthenticatedDashboardSubscriptionsRouteImport } from './routes/_authenticated/dashboard/subscriptions'
+import { Route as AuthenticatedDashboardSupportRouteImport } from './routes/_authenticated/dashboard/support'
 import { Route as AuthenticatedOauthAuthorizeRouteImport } from './routes/_authenticated/oauth/authorize'
 import { Route as ApiPublicErrorAlertRouteImport } from './routes/api/public/error-alert'
 import { Route as ApiPublicErrorsRouteImport } from './routes/api/public/errors'
@@ -126,47 +122,47 @@ import { Route as StoreSlugRobotsDottxtRouteImport } from './routes/store.$slug.
 import { Route as StoreSlugSearchRouteImport } from './routes/store.$slug.search'
 import { Route as StoreSlugSitemapDotxmlRouteImport } from './routes/store.$slug.sitemap[.]xml'
 import { Route as StoreSlugTrackRouteImport } from './routes/store.$slug.track'
-import { Route as AuthenticatedAdminAiAssistantRouteImport } from './routes/_authenticated/admin/ai/assistant'
-import { Route as AuthenticatedAdminAiSettingsRouteImport } from './routes/_authenticated/admin/ai/settings'
-import { Route as AuthenticatedAdminAnalyticsInsightsRouteImport } from './routes/_authenticated/admin/analytics_.insights'
-import { Route as AuthenticatedAdminAnalyticsReportsRouteImport } from './routes/_authenticated/admin/analytics_.reports'
-import { Route as AuthenticatedAdminBillingIndexRouteImport } from './routes/_authenticated/admin/billing/index'
-import { Route as AuthenticatedAdminBillingInvoicesRouteImport } from './routes/_authenticated/admin/billing/invoices'
-import { Route as AuthenticatedAdminContentIndexRouteImport } from './routes/_authenticated/admin/content/index'
-import { Route as AuthenticatedAdminContentEditorRouteImport } from './routes/_authenticated/admin/content/editor'
-import { Route as AuthenticatedAdminContentMediaRouteImport } from './routes/_authenticated/admin/content/media'
-import { Route as AuthenticatedAdminContentMenusRouteImport } from './routes/_authenticated/admin/content/menus'
-import { Route as AuthenticatedAdminContentPagesRouteImport } from './routes/_authenticated/admin/content/pages'
-import { Route as AuthenticatedAdminContentPostsRouteImport } from './routes/_authenticated/admin/content/posts'
-import { Route as AuthenticatedAdminContentThemesRouteImport } from './routes/_authenticated/admin/content/themes'
-import { Route as AuthenticatedAdminFraudIndexRouteImport } from './routes/_authenticated/admin/fraud/index'
-import { Route as AuthenticatedAdminFraudAdDefenseRouteImport } from './routes/_authenticated/admin/fraud/ad-defense'
-import { Route as AuthenticatedAdminFraudAuditRouteImport } from './routes/_authenticated/admin/fraud/audit'
-import { Route as AuthenticatedAdminMarketingIndexRouteImport } from './routes/_authenticated/admin/marketing/index'
-import { Route as AuthenticatedAdminMarketingArticlesRouteImport } from './routes/_authenticated/admin/marketing/articles'
-import { Route as AuthenticatedAdminMarketingCampaignsRouteImport } from './routes/_authenticated/admin/marketing/campaigns'
-import { Route as AuthenticatedAdminMarketingCodesRouteImport } from './routes/_authenticated/admin/marketing/codes'
-import { Route as AuthenticatedAdminMarketingCouponsRouteImport } from './routes/_authenticated/admin/marketing/coupons'
-import { Route as AuthenticatedAdminMarketingFormsRouteImport } from './routes/_authenticated/admin/marketing/forms'
-import { Route as AuthenticatedAdminMarketingMediaRouteImport } from './routes/_authenticated/admin/marketing/media'
-import { Route as AuthenticatedAdminMarketingSeoRouteImport } from './routes/_authenticated/admin/marketing/seo'
-import { Route as AuthenticatedAdminMarketingSubscribersRouteImport } from './routes/_authenticated/admin/marketing/subscribers'
-import { Route as AuthenticatedAdminMarketplaceIndexRouteImport } from './routes/_authenticated/admin/marketplace/index'
-import { Route as AuthenticatedAdminMarketplaceCreatorRouteImport } from './routes/_authenticated/admin/marketplace/creator'
-import { Route as AuthenticatedAdminMarketplaceModerationRouteImport } from './routes/_authenticated/admin/marketplace/moderation'
-import { Route as AuthenticatedAdminMarketplaceVersionsRouteImport } from './routes/_authenticated/admin/marketplace/versions'
-import { Route as AuthenticatedAdminMoneyPaymentsRouteImport } from './routes/_authenticated/admin/money/payments'
-import { Route as AuthenticatedAdminOrdersIndexRouteImport } from './routes/_authenticated/admin/orders/index'
-import { Route as AuthenticatedAdminOrdersOrderIdRouteImport } from './routes/_authenticated/admin/orders/$orderId'
-import { Route as AuthenticatedAdminProductsIndexRouteImport } from './routes/_authenticated/admin/products/index'
-import { Route as AuthenticatedAdminProductsProductIdRouteImport } from './routes/_authenticated/admin/products/$productId'
-import { Route as AuthenticatedAdminProductsNewRouteImport } from './routes/_authenticated/admin/products/new'
-import { Route as AuthenticatedAdminSettingsApiRouteImport } from './routes/_authenticated/admin/settings_.api'
-import { Route as AuthenticatedAdminSettingsDomainsRouteImport } from './routes/_authenticated/admin/settings_.domains'
-import { Route as AuthenticatedAdminSettingsInfrastructureRouteImport } from './routes/_authenticated/admin/settings_.infrastructure'
-import { Route as AuthenticatedAdminSettingsProvidersRouteImport } from './routes/_authenticated/admin/settings_.providers'
-import { Route as AuthenticatedAdminSettingsSecurityRouteImport } from './routes/_authenticated/admin/settings_.security'
-import { Route as AuthenticatedAdminSettingsSeoRouteImport } from './routes/_authenticated/admin/settings_.seo'
+import { Route as AuthenticatedDashboardAiAssistantRouteImport } from './routes/_authenticated/dashboard/ai/assistant'
+import { Route as AuthenticatedDashboardAiSettingsRouteImport } from './routes/_authenticated/dashboard/ai/settings'
+import { Route as AuthenticatedDashboardAnalyticsInsightsRouteImport } from './routes/_authenticated/dashboard/analytics_.insights'
+import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from './routes/_authenticated/dashboard/analytics_.reports'
+import { Route as AuthenticatedDashboardBillingIndexRouteImport } from './routes/_authenticated/dashboard/billing/index'
+import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from './routes/_authenticated/dashboard/billing/invoices'
+import { Route as AuthenticatedDashboardContentIndexRouteImport } from './routes/_authenticated/dashboard/content/index'
+import { Route as AuthenticatedDashboardContentEditorRouteImport } from './routes/_authenticated/dashboard/content/editor'
+import { Route as AuthenticatedDashboardContentMediaRouteImport } from './routes/_authenticated/dashboard/content/media'
+import { Route as AuthenticatedDashboardContentMenusRouteImport } from './routes/_authenticated/dashboard/content/menus'
+import { Route as AuthenticatedDashboardContentPagesRouteImport } from './routes/_authenticated/dashboard/content/pages'
+import { Route as AuthenticatedDashboardContentPostsRouteImport } from './routes/_authenticated/dashboard/content/posts'
+import { Route as AuthenticatedDashboardContentThemesRouteImport } from './routes/_authenticated/dashboard/content/themes'
+import { Route as AuthenticatedDashboardFraudIndexRouteImport } from './routes/_authenticated/dashboard/fraud/index'
+import { Route as AuthenticatedDashboardFraudAdDefenseRouteImport } from './routes/_authenticated/dashboard/fraud/ad-defense'
+import { Route as AuthenticatedDashboardFraudAuditRouteImport } from './routes/_authenticated/dashboard/fraud/audit'
+import { Route as AuthenticatedDashboardMarketingIndexRouteImport } from './routes/_authenticated/dashboard/marketing/index'
+import { Route as AuthenticatedDashboardMarketingArticlesRouteImport } from './routes/_authenticated/dashboard/marketing/articles'
+import { Route as AuthenticatedDashboardMarketingCampaignsRouteImport } from './routes/_authenticated/dashboard/marketing/campaigns'
+import { Route as AuthenticatedDashboardMarketingCodesRouteImport } from './routes/_authenticated/dashboard/marketing/codes'
+import { Route as AuthenticatedDashboardMarketingCouponsRouteImport } from './routes/_authenticated/dashboard/marketing/coupons'
+import { Route as AuthenticatedDashboardMarketingFormsRouteImport } from './routes/_authenticated/dashboard/marketing/forms'
+import { Route as AuthenticatedDashboardMarketingMediaRouteImport } from './routes/_authenticated/dashboard/marketing/media'
+import { Route as AuthenticatedDashboardMarketingSeoRouteImport } from './routes/_authenticated/dashboard/marketing/seo'
+import { Route as AuthenticatedDashboardMarketingSubscribersRouteImport } from './routes/_authenticated/dashboard/marketing/subscribers'
+import { Route as AuthenticatedDashboardMarketplaceIndexRouteImport } from './routes/_authenticated/dashboard/marketplace/index'
+import { Route as AuthenticatedDashboardMarketplaceCreatorRouteImport } from './routes/_authenticated/dashboard/marketplace/creator'
+import { Route as AuthenticatedDashboardMarketplaceModerationRouteImport } from './routes/_authenticated/dashboard/marketplace/moderation'
+import { Route as AuthenticatedDashboardMarketplaceVersionsRouteImport } from './routes/_authenticated/dashboard/marketplace/versions'
+import { Route as AuthenticatedDashboardMoneyPaymentsRouteImport } from './routes/_authenticated/dashboard/money/payments'
+import { Route as AuthenticatedDashboardOrdersIndexRouteImport } from './routes/_authenticated/dashboard/orders/index'
+import { Route as AuthenticatedDashboardOrdersOrderIdRouteImport } from './routes/_authenticated/dashboard/orders/$orderId'
+import { Route as AuthenticatedDashboardProductsIndexRouteImport } from './routes/_authenticated/dashboard/products/index'
+import { Route as AuthenticatedDashboardProductsProductIdRouteImport } from './routes/_authenticated/dashboard/products/$productId'
+import { Route as AuthenticatedDashboardProductsNewRouteImport } from './routes/_authenticated/dashboard/products/new'
+import { Route as AuthenticatedDashboardSettingsApiRouteImport } from './routes/_authenticated/dashboard/settings_.api'
+import { Route as AuthenticatedDashboardSettingsDomainsRouteImport } from './routes/_authenticated/dashboard/settings_.domains'
+import { Route as AuthenticatedDashboardSettingsInfrastructureRouteImport } from './routes/_authenticated/dashboard/settings_.infrastructure'
+import { Route as AuthenticatedDashboardSettingsProvidersRouteImport } from './routes/_authenticated/dashboard/settings_.providers'
+import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard/settings_.security'
+import { Route as AuthenticatedDashboardSettingsSeoRouteImport } from './routes/_authenticated/dashboard/settings_.seo'
 import { Route as ApiPublicAdsClickRouteImport } from './routes/api/public/ads/click'
 import { Route as ApiPublicAnalyticsBeaconRouteImport } from './routes/api/public/analytics/beacon'
 import { Route as ApiPublicChannelsChannelRouteImport } from './routes/api/public/channels/$channel'
@@ -203,7 +199,7 @@ import { Route as StoreSlugOrderOrderIdRouteImport } from './routes/store.$slug.
 import { Route as StoreSlugPProductSlugRouteImport } from './routes/store.$slug.p.$productSlug'
 import { Route as StoreSlugPagesPageSlugRouteImport } from './routes/store.$slug.pages.$pageSlug'
 import { Route as StoreSlugSitemapsKindRouteImport } from './routes/store.$slug.sitemaps.$kind'
-import { Route as AuthenticatedAdminOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/admin/orders/$orderId_.invoice'
+import { Route as AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/dashboard/orders/$orderId_.invoice'
 import { Route as ApiPublicPaymentsLiveProviderRouteImport } from './routes/api/public/payments/live/$provider'
 import { Route as ApiPublicPaymentsMockProviderRouteImport } from './routes/api/public/payments/mock/$provider'
 import { Route as ApiPublicPaymentsPlatformProviderRouteImport } from './routes/api/public/payments/platform/$provider'
@@ -338,11 +334,6 @@ const UnsubscribeRoute = UnsubscribeRouteImport.update({
   path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -423,6 +414,11 @@ const RootAuditRoute = RootAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => RootRoute,
 } as any)
+const RootAuthRoute = RootAuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => RootRoute,
+} as any)
 const RootCouponsRoute = RootCouponsRouteImport.update({
   id: '/coupons',
   path: '/coupons',
@@ -436,6 +432,11 @@ const RootFraudRoute = RootFraudRouteImport.update({
 const RootGatewayRoute = RootGatewayRouteImport.update({
   id: '/gateway',
   path: '/gateway',
+  getParentRoute: () => RootRoute,
+} as any)
+const RootLoginRoute = RootLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => RootRoute,
 } as any)
 const RootMarketingRoute = RootMarketingRouteImport.update({
@@ -514,220 +515,196 @@ const DotwellKnownAcmeChallengeTokenRoute =
     path: '/.well-known/acme-challenge/$token',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminActivityRoute =
-  AuthenticatedAdminActivityRouteImport.update({
-    id: '/activity',
-    path: '/activity',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminAnalyticsRoute =
-  AuthenticatedAdminAnalyticsRouteImport.update({
-    id: '/analytics',
-    path: '/analytics',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminApprovalsRoute =
-  AuthenticatedAdminApprovalsRouteImport.update({
-    id: '/approvals',
-    path: '/approvals',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminBrandsRoute =
-  AuthenticatedAdminBrandsRouteImport.update({
-    id: '/brands',
-    path: '/brands',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminBuilderRoute =
-  AuthenticatedAdminBuilderRouteImport.update({
-    id: '/builder',
-    path: '/builder',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminBulkEditorRoute =
-  AuthenticatedAdminBulkEditorRouteImport.update({
-    id: '/bulk-editor',
-    path: '/bulk-editor',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminBundlesRoute =
-  AuthenticatedAdminBundlesRouteImport.update({
-    id: '/bundles',
-    path: '/bundles',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminCartsRoute = AuthenticatedAdminCartsRouteImport.update({
-  id: '/carts',
-  path: '/carts',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminCatalogRoute =
-  AuthenticatedAdminCatalogRouteImport.update({
-    id: '/catalog',
-    path: '/catalog',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminCategoriesRoute =
-  AuthenticatedAdminCategoriesRouteImport.update({
-    id: '/categories',
-    path: '/categories',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminCollectionsRoute =
-  AuthenticatedAdminCollectionsRouteImport.update({
-    id: '/collections',
-    path: '/collections',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminCustomersRoute =
-  AuthenticatedAdminCustomersRouteImport.update({
-    id: '/customers',
-    path: '/customers',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminDevelopersRoute =
-  AuthenticatedAdminDevelopersRouteImport.update({
-    id: '/developers',
-    path: '/developers',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminDraftOrdersRoute =
-  AuthenticatedAdminDraftOrdersRouteImport.update({
-    id: '/draft-orders',
-    path: '/draft-orders',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminExperimentsRoute =
-  AuthenticatedAdminExperimentsRouteImport.update({
-    id: '/experiments',
-    path: '/experiments',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminExportsRoute =
-  AuthenticatedAdminExportsRouteImport.update({
-    id: '/exports',
-    path: '/exports',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminGiftCardsRoute =
-  AuthenticatedAdminGiftCardsRouteImport.update({
-    id: '/gift-cards',
-    path: '/gift-cards',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminInventoryRoute =
-  AuthenticatedAdminInventoryRouteImport.update({
-    id: '/inventory',
-    path: '/inventory',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
-  id: '/pages',
-  path: '/pages',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminPaymentsRoute =
-  AuthenticatedAdminPaymentsRouteImport.update({
-    id: '/payments',
-    path: '/payments',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminPlansRoute = AuthenticatedAdminPlansRouteImport.update({
-  id: '/plans',
-  path: '/plans',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminPosRoute = AuthenticatedAdminPosRouteImport.update({
-  id: '/pos',
-  path: '/pos',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminPricingRoute =
-  AuthenticatedAdminPricingRouteImport.update({
-    id: '/pricing',
-    path: '/pricing',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminPurchasingRoute =
-  AuthenticatedAdminPurchasingRouteImport.update({
-    id: '/purchasing',
-    path: '/purchasing',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminReturnsRoute =
-  AuthenticatedAdminReturnsRouteImport.update({
-    id: '/returns',
-    path: '/returns',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminReviewsRoute =
-  AuthenticatedAdminReviewsRouteImport.update({
-    id: '/reviews',
-    path: '/reviews',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminSettingsRoute =
-  AuthenticatedAdminSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminShippingRoute =
-  AuthenticatedAdminShippingRouteImport.update({
-    id: '/shipping',
-    path: '/shipping',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminStaffRoute = AuthenticatedAdminStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminSubscriptionsRoute =
-  AuthenticatedAdminSubscriptionsRouteImport.update({
-    id: '/subscriptions',
-    path: '/subscriptions',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminSupportRoute =
-  AuthenticatedAdminSupportRouteImport.update({
-    id: '/support',
-    path: '/support',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardOrdersRoute =
-  AuthenticatedDashboardOrdersRouteImport.update({
-    id: '/orders',
-    path: '/orders',
+const AuthenticatedDashboardActivityRoute =
+  AuthenticatedDashboardActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardProfileRoute =
-  AuthenticatedDashboardProfileRouteImport.update({
-    id: '/profile',
-    path: '/profile',
+const AuthenticatedDashboardAnalyticsRoute =
+  AuthenticatedDashboardAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardTrackRoute =
-  AuthenticatedDashboardTrackRouteImport.update({
-    id: '/track',
-    path: '/track',
+const AuthenticatedDashboardApprovalsRoute =
+  AuthenticatedDashboardApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardWishlistRoute =
-  AuthenticatedDashboardWishlistRouteImport.update({
-    id: '/wishlist',
-    path: '/wishlist',
+const AuthenticatedDashboardBrandsRoute =
+  AuthenticatedDashboardBrandsRouteImport.update({
+    id: '/brands',
+    path: '/brands',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderRoute =
+  AuthenticatedDashboardBuilderRouteImport.update({
+    id: '/builder',
+    path: '/builder',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBulkEditorRoute =
+  AuthenticatedDashboardBulkEditorRouteImport.update({
+    id: '/bulk-editor',
+    path: '/bulk-editor',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBundlesRoute =
+  AuthenticatedDashboardBundlesRouteImport.update({
+    id: '/bundles',
+    path: '/bundles',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCartsRoute =
+  AuthenticatedDashboardCartsRouteImport.update({
+    id: '/carts',
+    path: '/carts',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCatalogRoute =
+  AuthenticatedDashboardCatalogRouteImport.update({
+    id: '/catalog',
+    path: '/catalog',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCategoriesRoute =
+  AuthenticatedDashboardCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCollectionsRoute =
+  AuthenticatedDashboardCollectionsRouteImport.update({
+    id: '/collections',
+    path: '/collections',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCustomersRoute =
+  AuthenticatedDashboardCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardDevelopersRoute =
+  AuthenticatedDashboardDevelopersRouteImport.update({
+    id: '/developers',
+    path: '/developers',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardDraftOrdersRoute =
+  AuthenticatedDashboardDraftOrdersRouteImport.update({
+    id: '/draft-orders',
+    path: '/draft-orders',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardExperimentsRoute =
+  AuthenticatedDashboardExperimentsRouteImport.update({
+    id: '/experiments',
+    path: '/experiments',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardExportsRoute =
+  AuthenticatedDashboardExportsRouteImport.update({
+    id: '/exports',
+    path: '/exports',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardGiftCardsRoute =
+  AuthenticatedDashboardGiftCardsRouteImport.update({
+    id: '/gift-cards',
+    path: '/gift-cards',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardInventoryRoute =
+  AuthenticatedDashboardInventoryRouteImport.update({
+    id: '/inventory',
+    path: '/inventory',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPagesRoute =
+  AuthenticatedDashboardPagesRouteImport.update({
+    id: '/pages',
+    path: '/pages',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPaymentsRoute =
+  AuthenticatedDashboardPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPlansRoute =
+  AuthenticatedDashboardPlansRouteImport.update({
+    id: '/plans',
+    path: '/plans',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPosRoute =
+  AuthenticatedDashboardPosRouteImport.update({
+    id: '/pos',
+    path: '/pos',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPricingRoute =
+  AuthenticatedDashboardPricingRouteImport.update({
+    id: '/pricing',
+    path: '/pricing',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPurchasingRoute =
+  AuthenticatedDashboardPurchasingRouteImport.update({
+    id: '/purchasing',
+    path: '/purchasing',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardReturnsRoute =
+  AuthenticatedDashboardReturnsRouteImport.update({
+    id: '/returns',
+    path: '/returns',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardReviewsRoute =
+  AuthenticatedDashboardReviewsRouteImport.update({
+    id: '/reviews',
+    path: '/reviews',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSettingsRoute =
+  AuthenticatedDashboardSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardShippingRoute =
+  AuthenticatedDashboardShippingRouteImport.update({
+    id: '/shipping',
+    path: '/shipping',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardStaffRoute =
+  AuthenticatedDashboardStaffRouteImport.update({
+    id: '/staff',
+    path: '/staff',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSubscriptionsRoute =
+  AuthenticatedDashboardSubscriptionsRouteImport.update({
+    id: '/subscriptions',
+    path: '/subscriptions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSupportRoute =
+  AuthenticatedDashboardSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedOauthAuthorizeRoute =
@@ -827,251 +804,251 @@ const StoreSlugTrackRoute = StoreSlugTrackRouteImport.update({
   path: '/store/$slug/track',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminAiAssistantRoute =
-  AuthenticatedAdminAiAssistantRouteImport.update({
+const AuthenticatedDashboardAiAssistantRoute =
+  AuthenticatedDashboardAiAssistantRouteImport.update({
     id: '/ai/assistant',
     path: '/ai/assistant',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminAiSettingsRoute =
-  AuthenticatedAdminAiSettingsRouteImport.update({
+const AuthenticatedDashboardAiSettingsRoute =
+  AuthenticatedDashboardAiSettingsRouteImport.update({
     id: '/ai/settings',
     path: '/ai/settings',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminAnalyticsInsightsRoute =
-  AuthenticatedAdminAnalyticsInsightsRouteImport.update({
+const AuthenticatedDashboardAnalyticsInsightsRoute =
+  AuthenticatedDashboardAnalyticsInsightsRouteImport.update({
     id: '/analytics_/insights',
     path: '/analytics/insights',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminAnalyticsReportsRoute =
-  AuthenticatedAdminAnalyticsReportsRouteImport.update({
+const AuthenticatedDashboardAnalyticsReportsRoute =
+  AuthenticatedDashboardAnalyticsReportsRouteImport.update({
     id: '/analytics_/reports',
     path: '/analytics/reports',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminBillingIndexRoute =
-  AuthenticatedAdminBillingIndexRouteImport.update({
+const AuthenticatedDashboardBillingIndexRoute =
+  AuthenticatedDashboardBillingIndexRouteImport.update({
     id: '/billing/',
     path: '/billing/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminBillingInvoicesRoute =
-  AuthenticatedAdminBillingInvoicesRouteImport.update({
+const AuthenticatedDashboardBillingInvoicesRoute =
+  AuthenticatedDashboardBillingInvoicesRouteImport.update({
     id: '/billing/invoices',
     path: '/billing/invoices',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentIndexRoute =
-  AuthenticatedAdminContentIndexRouteImport.update({
+const AuthenticatedDashboardContentIndexRoute =
+  AuthenticatedDashboardContentIndexRouteImport.update({
     id: '/content/',
     path: '/content/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentEditorRoute =
-  AuthenticatedAdminContentEditorRouteImport.update({
+const AuthenticatedDashboardContentEditorRoute =
+  AuthenticatedDashboardContentEditorRouteImport.update({
     id: '/content/editor',
     path: '/content/editor',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentMediaRoute =
-  AuthenticatedAdminContentMediaRouteImport.update({
+const AuthenticatedDashboardContentMediaRoute =
+  AuthenticatedDashboardContentMediaRouteImport.update({
     id: '/content/media',
     path: '/content/media',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentMenusRoute =
-  AuthenticatedAdminContentMenusRouteImport.update({
+const AuthenticatedDashboardContentMenusRoute =
+  AuthenticatedDashboardContentMenusRouteImport.update({
     id: '/content/menus',
     path: '/content/menus',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentPagesRoute =
-  AuthenticatedAdminContentPagesRouteImport.update({
+const AuthenticatedDashboardContentPagesRoute =
+  AuthenticatedDashboardContentPagesRouteImport.update({
     id: '/content/pages',
     path: '/content/pages',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentPostsRoute =
-  AuthenticatedAdminContentPostsRouteImport.update({
+const AuthenticatedDashboardContentPostsRoute =
+  AuthenticatedDashboardContentPostsRouteImport.update({
     id: '/content/posts',
     path: '/content/posts',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminContentThemesRoute =
-  AuthenticatedAdminContentThemesRouteImport.update({
+const AuthenticatedDashboardContentThemesRoute =
+  AuthenticatedDashboardContentThemesRouteImport.update({
     id: '/content/themes',
     path: '/content/themes',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminFraudIndexRoute =
-  AuthenticatedAdminFraudIndexRouteImport.update({
+const AuthenticatedDashboardFraudIndexRoute =
+  AuthenticatedDashboardFraudIndexRouteImport.update({
     id: '/fraud/',
     path: '/fraud/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminFraudAdDefenseRoute =
-  AuthenticatedAdminFraudAdDefenseRouteImport.update({
+const AuthenticatedDashboardFraudAdDefenseRoute =
+  AuthenticatedDashboardFraudAdDefenseRouteImport.update({
     id: '/fraud/ad-defense',
     path: '/fraud/ad-defense',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminFraudAuditRoute =
-  AuthenticatedAdminFraudAuditRouteImport.update({
+const AuthenticatedDashboardFraudAuditRoute =
+  AuthenticatedDashboardFraudAuditRouteImport.update({
     id: '/fraud/audit',
     path: '/fraud/audit',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingIndexRoute =
-  AuthenticatedAdminMarketingIndexRouteImport.update({
+const AuthenticatedDashboardMarketingIndexRoute =
+  AuthenticatedDashboardMarketingIndexRouteImport.update({
     id: '/marketing/',
     path: '/marketing/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingArticlesRoute =
-  AuthenticatedAdminMarketingArticlesRouteImport.update({
+const AuthenticatedDashboardMarketingArticlesRoute =
+  AuthenticatedDashboardMarketingArticlesRouteImport.update({
     id: '/marketing/articles',
     path: '/marketing/articles',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingCampaignsRoute =
-  AuthenticatedAdminMarketingCampaignsRouteImport.update({
+const AuthenticatedDashboardMarketingCampaignsRoute =
+  AuthenticatedDashboardMarketingCampaignsRouteImport.update({
     id: '/marketing/campaigns',
     path: '/marketing/campaigns',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingCodesRoute =
-  AuthenticatedAdminMarketingCodesRouteImport.update({
+const AuthenticatedDashboardMarketingCodesRoute =
+  AuthenticatedDashboardMarketingCodesRouteImport.update({
     id: '/marketing/codes',
     path: '/marketing/codes',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingCouponsRoute =
-  AuthenticatedAdminMarketingCouponsRouteImport.update({
+const AuthenticatedDashboardMarketingCouponsRoute =
+  AuthenticatedDashboardMarketingCouponsRouteImport.update({
     id: '/marketing/coupons',
     path: '/marketing/coupons',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingFormsRoute =
-  AuthenticatedAdminMarketingFormsRouteImport.update({
+const AuthenticatedDashboardMarketingFormsRoute =
+  AuthenticatedDashboardMarketingFormsRouteImport.update({
     id: '/marketing/forms',
     path: '/marketing/forms',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingMediaRoute =
-  AuthenticatedAdminMarketingMediaRouteImport.update({
+const AuthenticatedDashboardMarketingMediaRoute =
+  AuthenticatedDashboardMarketingMediaRouteImport.update({
     id: '/marketing/media',
     path: '/marketing/media',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingSeoRoute =
-  AuthenticatedAdminMarketingSeoRouteImport.update({
+const AuthenticatedDashboardMarketingSeoRoute =
+  AuthenticatedDashboardMarketingSeoRouteImport.update({
     id: '/marketing/seo',
     path: '/marketing/seo',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketingSubscribersRoute =
-  AuthenticatedAdminMarketingSubscribersRouteImport.update({
+const AuthenticatedDashboardMarketingSubscribersRoute =
+  AuthenticatedDashboardMarketingSubscribersRouteImport.update({
     id: '/marketing/subscribers',
     path: '/marketing/subscribers',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketplaceIndexRoute =
-  AuthenticatedAdminMarketplaceIndexRouteImport.update({
+const AuthenticatedDashboardMarketplaceIndexRoute =
+  AuthenticatedDashboardMarketplaceIndexRouteImport.update({
     id: '/marketplace/',
     path: '/marketplace/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketplaceCreatorRoute =
-  AuthenticatedAdminMarketplaceCreatorRouteImport.update({
+const AuthenticatedDashboardMarketplaceCreatorRoute =
+  AuthenticatedDashboardMarketplaceCreatorRouteImport.update({
     id: '/marketplace/creator',
     path: '/marketplace/creator',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketplaceModerationRoute =
-  AuthenticatedAdminMarketplaceModerationRouteImport.update({
+const AuthenticatedDashboardMarketplaceModerationRoute =
+  AuthenticatedDashboardMarketplaceModerationRouteImport.update({
     id: '/marketplace/moderation',
     path: '/marketplace/moderation',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMarketplaceVersionsRoute =
-  AuthenticatedAdminMarketplaceVersionsRouteImport.update({
+const AuthenticatedDashboardMarketplaceVersionsRoute =
+  AuthenticatedDashboardMarketplaceVersionsRouteImport.update({
     id: '/marketplace/versions',
     path: '/marketplace/versions',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminMoneyPaymentsRoute =
-  AuthenticatedAdminMoneyPaymentsRouteImport.update({
+const AuthenticatedDashboardMoneyPaymentsRoute =
+  AuthenticatedDashboardMoneyPaymentsRouteImport.update({
     id: '/money/payments',
     path: '/money/payments',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminOrdersIndexRoute =
-  AuthenticatedAdminOrdersIndexRouteImport.update({
+const AuthenticatedDashboardOrdersIndexRoute =
+  AuthenticatedDashboardOrdersIndexRouteImport.update({
     id: '/orders/',
     path: '/orders/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminOrdersOrderIdRoute =
-  AuthenticatedAdminOrdersOrderIdRouteImport.update({
+const AuthenticatedDashboardOrdersOrderIdRoute =
+  AuthenticatedDashboardOrdersOrderIdRouteImport.update({
     id: '/orders/$orderId',
     path: '/orders/$orderId',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminProductsIndexRoute =
-  AuthenticatedAdminProductsIndexRouteImport.update({
+const AuthenticatedDashboardProductsIndexRoute =
+  AuthenticatedDashboardProductsIndexRouteImport.update({
     id: '/products/',
     path: '/products/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminProductsProductIdRoute =
-  AuthenticatedAdminProductsProductIdRouteImport.update({
+const AuthenticatedDashboardProductsProductIdRoute =
+  AuthenticatedDashboardProductsProductIdRouteImport.update({
     id: '/products/$productId',
     path: '/products/$productId',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminProductsNewRoute =
-  AuthenticatedAdminProductsNewRouteImport.update({
+const AuthenticatedDashboardProductsNewRoute =
+  AuthenticatedDashboardProductsNewRouteImport.update({
     id: '/products/new',
     path: '/products/new',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsApiRoute =
-  AuthenticatedAdminSettingsApiRouteImport.update({
+const AuthenticatedDashboardSettingsApiRoute =
+  AuthenticatedDashboardSettingsApiRouteImport.update({
     id: '/settings_/api',
     path: '/settings/api',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsDomainsRoute =
-  AuthenticatedAdminSettingsDomainsRouteImport.update({
+const AuthenticatedDashboardSettingsDomainsRoute =
+  AuthenticatedDashboardSettingsDomainsRouteImport.update({
     id: '/settings_/domains',
     path: '/settings/domains',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsInfrastructureRoute =
-  AuthenticatedAdminSettingsInfrastructureRouteImport.update({
+const AuthenticatedDashboardSettingsInfrastructureRoute =
+  AuthenticatedDashboardSettingsInfrastructureRouteImport.update({
     id: '/settings_/infrastructure',
     path: '/settings/infrastructure',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsProvidersRoute =
-  AuthenticatedAdminSettingsProvidersRouteImport.update({
+const AuthenticatedDashboardSettingsProvidersRoute =
+  AuthenticatedDashboardSettingsProvidersRouteImport.update({
     id: '/settings_/providers',
     path: '/settings/providers',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsSecurityRoute =
-  AuthenticatedAdminSettingsSecurityRouteImport.update({
+const AuthenticatedDashboardSettingsSecurityRoute =
+  AuthenticatedDashboardSettingsSecurityRouteImport.update({
     id: '/settings_/security',
     path: '/settings/security',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminSettingsSeoRoute =
-  AuthenticatedAdminSettingsSeoRouteImport.update({
+const AuthenticatedDashboardSettingsSeoRoute =
+  AuthenticatedDashboardSettingsSeoRouteImport.update({
     id: '/settings_/seo',
     path: '/settings/seo',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const ApiPublicAdsClickRoute = ApiPublicAdsClickRouteImport.update({
   id: '/api/public/ads/click',
@@ -1264,11 +1241,11 @@ const StoreSlugSitemapsKindRoute = StoreSlugSitemapsKindRouteImport.update({
   path: '/store/$slug/sitemaps/$kind',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminOrdersOrderIdInvoiceRoute =
-  AuthenticatedAdminOrdersOrderIdInvoiceRouteImport.update({
+const AuthenticatedDashboardOrdersOrderIdInvoiceRoute =
+  AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport.update({
     id: '/orders/$orderId_/invoice',
     path: '/orders/$orderId/invoice',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const ApiPublicPaymentsLiveProviderRoute =
   ApiPublicPaymentsLiveProviderRouteImport.update({
@@ -1321,7 +1298,6 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
   '/unsubscribe': typeof UnsubscribeRoute
-  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -1334,9 +1310,11 @@ export interface FileRoutesByFullPath {
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
   '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
   '/root/coupons': typeof RootCouponsRoute
   '/root/fraud': typeof RootFraudRoute
   '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
   '/root/marketing': typeof RootMarketingRoute
   '/root/money': typeof RootMoneyRoute
   '/root/observability': typeof RootObservabilityRoute
@@ -1356,41 +1334,37 @@ export interface FileRoutesByFullPath {
   '/legal/': typeof LegalIndexRoute
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
-  '/admin/activity': typeof AuthenticatedAdminActivityRoute
-  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
-  '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
-  '/admin/brands': typeof AuthenticatedAdminBrandsRoute
-  '/admin/builder': typeof AuthenticatedAdminBuilderRoute
-  '/admin/bulk-editor': typeof AuthenticatedAdminBulkEditorRoute
-  '/admin/bundles': typeof AuthenticatedAdminBundlesRoute
-  '/admin/carts': typeof AuthenticatedAdminCartsRoute
-  '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
-  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
-  '/admin/collections': typeof AuthenticatedAdminCollectionsRoute
-  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
-  '/admin/developers': typeof AuthenticatedAdminDevelopersRoute
-  '/admin/draft-orders': typeof AuthenticatedAdminDraftOrdersRoute
-  '/admin/experiments': typeof AuthenticatedAdminExperimentsRoute
-  '/admin/exports': typeof AuthenticatedAdminExportsRoute
-  '/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
-  '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
-  '/admin/pages': typeof AuthenticatedAdminPagesRoute
-  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
-  '/admin/plans': typeof AuthenticatedAdminPlansRoute
-  '/admin/pos': typeof AuthenticatedAdminPosRoute
-  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
-  '/admin/purchasing': typeof AuthenticatedAdminPurchasingRoute
-  '/admin/returns': typeof AuthenticatedAdminReturnsRoute
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/shipping': typeof AuthenticatedAdminShippingRoute
-  '/admin/staff': typeof AuthenticatedAdminStaffRoute
-  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
-  '/admin/support': typeof AuthenticatedAdminSupportRoute
-  '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
-  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
-  '/dashboard/track': typeof AuthenticatedDashboardTrackRoute
-  '/dashboard/wishlist': typeof AuthenticatedDashboardWishlistRoute
+  '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
   '/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
   '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
   '/api/public/errors': typeof ApiPublicErrorsRoute
@@ -1409,43 +1383,42 @@ export interface FileRoutesByFullPath {
   '/store/$slug/search': typeof StoreSlugSearchRoute
   '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
   '/store/$slug/track': typeof StoreSlugTrackRoute
-  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/store/$slug/': typeof StoreSlugIndexRoute
-  '/admin/ai/assistant': typeof AuthenticatedAdminAiAssistantRoute
-  '/admin/ai/settings': typeof AuthenticatedAdminAiSettingsRoute
-  '/admin/analytics/insights': typeof AuthenticatedAdminAnalyticsInsightsRoute
-  '/admin/analytics/reports': typeof AuthenticatedAdminAnalyticsReportsRoute
-  '/admin/billing/invoices': typeof AuthenticatedAdminBillingInvoicesRoute
-  '/admin/content/editor': typeof AuthenticatedAdminContentEditorRoute
-  '/admin/content/media': typeof AuthenticatedAdminContentMediaRoute
-  '/admin/content/menus': typeof AuthenticatedAdminContentMenusRoute
-  '/admin/content/pages': typeof AuthenticatedAdminContentPagesRoute
-  '/admin/content/posts': typeof AuthenticatedAdminContentPostsRoute
-  '/admin/content/themes': typeof AuthenticatedAdminContentThemesRoute
-  '/admin/fraud/ad-defense': typeof AuthenticatedAdminFraudAdDefenseRoute
-  '/admin/fraud/audit': typeof AuthenticatedAdminFraudAuditRoute
-  '/admin/marketing/articles': typeof AuthenticatedAdminMarketingArticlesRoute
-  '/admin/marketing/campaigns': typeof AuthenticatedAdminMarketingCampaignsRoute
-  '/admin/marketing/codes': typeof AuthenticatedAdminMarketingCodesRoute
-  '/admin/marketing/coupons': typeof AuthenticatedAdminMarketingCouponsRoute
-  '/admin/marketing/forms': typeof AuthenticatedAdminMarketingFormsRoute
-  '/admin/marketing/media': typeof AuthenticatedAdminMarketingMediaRoute
-  '/admin/marketing/seo': typeof AuthenticatedAdminMarketingSeoRoute
-  '/admin/marketing/subscribers': typeof AuthenticatedAdminMarketingSubscribersRoute
-  '/admin/marketplace/creator': typeof AuthenticatedAdminMarketplaceCreatorRoute
-  '/admin/marketplace/moderation': typeof AuthenticatedAdminMarketplaceModerationRoute
-  '/admin/marketplace/versions': typeof AuthenticatedAdminMarketplaceVersionsRoute
-  '/admin/money/payments': typeof AuthenticatedAdminMoneyPaymentsRoute
-  '/admin/orders/$orderId': typeof AuthenticatedAdminOrdersOrderIdRoute
-  '/admin/products/$productId': typeof AuthenticatedAdminProductsProductIdRoute
-  '/admin/products/new': typeof AuthenticatedAdminProductsNewRoute
-  '/admin/settings/api': typeof AuthenticatedAdminSettingsApiRoute
-  '/admin/settings/domains': typeof AuthenticatedAdminSettingsDomainsRoute
-  '/admin/settings/infrastructure': typeof AuthenticatedAdminSettingsInfrastructureRoute
-  '/admin/settings/providers': typeof AuthenticatedAdminSettingsProvidersRoute
-  '/admin/settings/security': typeof AuthenticatedAdminSettingsSecurityRoute
-  '/admin/settings/seo': typeof AuthenticatedAdminSettingsSeoRoute
+  '/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
   '/api/public/ads/click': typeof ApiPublicAdsClickRoute
   '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
   '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
@@ -1482,14 +1455,14 @@ export interface FileRoutesByFullPath {
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
   '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
   '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
-  '/admin/billing/': typeof AuthenticatedAdminBillingIndexRoute
-  '/admin/content/': typeof AuthenticatedAdminContentIndexRoute
-  '/admin/fraud/': typeof AuthenticatedAdminFraudIndexRoute
-  '/admin/marketing/': typeof AuthenticatedAdminMarketingIndexRoute
-  '/admin/marketplace/': typeof AuthenticatedAdminMarketplaceIndexRoute
-  '/admin/orders/': typeof AuthenticatedAdminOrdersIndexRoute
-  '/admin/products/': typeof AuthenticatedAdminProductsIndexRoute
-  '/admin/orders/$orderId/invoice': typeof AuthenticatedAdminOrdersOrderIdInvoiceRoute
+  '/dashboard/billing/': typeof AuthenticatedDashboardBillingIndexRoute
+  '/dashboard/content/': typeof AuthenticatedDashboardContentIndexRoute
+  '/dashboard/fraud/': typeof AuthenticatedDashboardFraudIndexRoute
+  '/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
@@ -1531,9 +1504,11 @@ export interface FileRoutesByTo {
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
   '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
   '/root/coupons': typeof RootCouponsRoute
   '/root/fraud': typeof RootFraudRoute
   '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
   '/root/marketing': typeof RootMarketingRoute
   '/root/money': typeof RootMoneyRoute
   '/root/observability': typeof RootObservabilityRoute
@@ -1553,41 +1528,37 @@ export interface FileRoutesByTo {
   '/legal': typeof LegalIndexRoute
   '/root': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
-  '/admin/activity': typeof AuthenticatedAdminActivityRoute
-  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
-  '/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
-  '/admin/brands': typeof AuthenticatedAdminBrandsRoute
-  '/admin/builder': typeof AuthenticatedAdminBuilderRoute
-  '/admin/bulk-editor': typeof AuthenticatedAdminBulkEditorRoute
-  '/admin/bundles': typeof AuthenticatedAdminBundlesRoute
-  '/admin/carts': typeof AuthenticatedAdminCartsRoute
-  '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
-  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
-  '/admin/collections': typeof AuthenticatedAdminCollectionsRoute
-  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
-  '/admin/developers': typeof AuthenticatedAdminDevelopersRoute
-  '/admin/draft-orders': typeof AuthenticatedAdminDraftOrdersRoute
-  '/admin/experiments': typeof AuthenticatedAdminExperimentsRoute
-  '/admin/exports': typeof AuthenticatedAdminExportsRoute
-  '/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
-  '/admin/inventory': typeof AuthenticatedAdminInventoryRoute
-  '/admin/pages': typeof AuthenticatedAdminPagesRoute
-  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
-  '/admin/plans': typeof AuthenticatedAdminPlansRoute
-  '/admin/pos': typeof AuthenticatedAdminPosRoute
-  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
-  '/admin/purchasing': typeof AuthenticatedAdminPurchasingRoute
-  '/admin/returns': typeof AuthenticatedAdminReturnsRoute
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/shipping': typeof AuthenticatedAdminShippingRoute
-  '/admin/staff': typeof AuthenticatedAdminStaffRoute
-  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
-  '/admin/support': typeof AuthenticatedAdminSupportRoute
-  '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
-  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
-  '/dashboard/track': typeof AuthenticatedDashboardTrackRoute
-  '/dashboard/wishlist': typeof AuthenticatedDashboardWishlistRoute
+  '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
   '/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
   '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
   '/api/public/errors': typeof ApiPublicErrorsRoute
@@ -1606,43 +1577,42 @@ export interface FileRoutesByTo {
   '/store/$slug/search': typeof StoreSlugSearchRoute
   '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
   '/store/$slug/track': typeof StoreSlugTrackRoute
-  '/admin': typeof AuthenticatedAdminIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/store/$slug': typeof StoreSlugIndexRoute
-  '/admin/ai/assistant': typeof AuthenticatedAdminAiAssistantRoute
-  '/admin/ai/settings': typeof AuthenticatedAdminAiSettingsRoute
-  '/admin/analytics/insights': typeof AuthenticatedAdminAnalyticsInsightsRoute
-  '/admin/analytics/reports': typeof AuthenticatedAdminAnalyticsReportsRoute
-  '/admin/billing/invoices': typeof AuthenticatedAdminBillingInvoicesRoute
-  '/admin/content/editor': typeof AuthenticatedAdminContentEditorRoute
-  '/admin/content/media': typeof AuthenticatedAdminContentMediaRoute
-  '/admin/content/menus': typeof AuthenticatedAdminContentMenusRoute
-  '/admin/content/pages': typeof AuthenticatedAdminContentPagesRoute
-  '/admin/content/posts': typeof AuthenticatedAdminContentPostsRoute
-  '/admin/content/themes': typeof AuthenticatedAdminContentThemesRoute
-  '/admin/fraud/ad-defense': typeof AuthenticatedAdminFraudAdDefenseRoute
-  '/admin/fraud/audit': typeof AuthenticatedAdminFraudAuditRoute
-  '/admin/marketing/articles': typeof AuthenticatedAdminMarketingArticlesRoute
-  '/admin/marketing/campaigns': typeof AuthenticatedAdminMarketingCampaignsRoute
-  '/admin/marketing/codes': typeof AuthenticatedAdminMarketingCodesRoute
-  '/admin/marketing/coupons': typeof AuthenticatedAdminMarketingCouponsRoute
-  '/admin/marketing/forms': typeof AuthenticatedAdminMarketingFormsRoute
-  '/admin/marketing/media': typeof AuthenticatedAdminMarketingMediaRoute
-  '/admin/marketing/seo': typeof AuthenticatedAdminMarketingSeoRoute
-  '/admin/marketing/subscribers': typeof AuthenticatedAdminMarketingSubscribersRoute
-  '/admin/marketplace/creator': typeof AuthenticatedAdminMarketplaceCreatorRoute
-  '/admin/marketplace/moderation': typeof AuthenticatedAdminMarketplaceModerationRoute
-  '/admin/marketplace/versions': typeof AuthenticatedAdminMarketplaceVersionsRoute
-  '/admin/money/payments': typeof AuthenticatedAdminMoneyPaymentsRoute
-  '/admin/orders/$orderId': typeof AuthenticatedAdminOrdersOrderIdRoute
-  '/admin/products/$productId': typeof AuthenticatedAdminProductsProductIdRoute
-  '/admin/products/new': typeof AuthenticatedAdminProductsNewRoute
-  '/admin/settings/api': typeof AuthenticatedAdminSettingsApiRoute
-  '/admin/settings/domains': typeof AuthenticatedAdminSettingsDomainsRoute
-  '/admin/settings/infrastructure': typeof AuthenticatedAdminSettingsInfrastructureRoute
-  '/admin/settings/providers': typeof AuthenticatedAdminSettingsProvidersRoute
-  '/admin/settings/security': typeof AuthenticatedAdminSettingsSecurityRoute
-  '/admin/settings/seo': typeof AuthenticatedAdminSettingsSeoRoute
+  '/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
   '/api/public/ads/click': typeof ApiPublicAdsClickRoute
   '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
   '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
@@ -1679,14 +1649,14 @@ export interface FileRoutesByTo {
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
   '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
   '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
-  '/admin/billing': typeof AuthenticatedAdminBillingIndexRoute
-  '/admin/content': typeof AuthenticatedAdminContentIndexRoute
-  '/admin/fraud': typeof AuthenticatedAdminFraudIndexRoute
-  '/admin/marketing': typeof AuthenticatedAdminMarketingIndexRoute
-  '/admin/marketplace': typeof AuthenticatedAdminMarketplaceIndexRoute
-  '/admin/orders': typeof AuthenticatedAdminOrdersIndexRoute
-  '/admin/products': typeof AuthenticatedAdminProductsIndexRoute
-  '/admin/orders/$orderId/invoice': typeof AuthenticatedAdminOrdersOrderIdInvoiceRoute
+  '/dashboard/billing': typeof AuthenticatedDashboardBillingIndexRoute
+  '/dashboard/content': typeof AuthenticatedDashboardContentIndexRoute
+  '/dashboard/fraud': typeof AuthenticatedDashboardFraudIndexRoute
+  '/dashboard/marketing': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/dashboard/marketplace': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/dashboard/orders': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/products': typeof AuthenticatedDashboardProductsIndexRoute
+  '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
@@ -1720,7 +1690,6 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
   '/unsubscribe': typeof UnsubscribeRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -1733,9 +1702,11 @@ export interface FileRoutesById {
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
   '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
   '/root/coupons': typeof RootCouponsRoute
   '/root/fraud': typeof RootFraudRoute
   '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
   '/root/marketing': typeof RootMarketingRoute
   '/root/money': typeof RootMoneyRoute
   '/root/observability': typeof RootObservabilityRoute
@@ -1755,41 +1726,37 @@ export interface FileRoutesById {
   '/legal/': typeof LegalIndexRoute
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
-  '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
-  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
-  '/_authenticated/admin/approvals': typeof AuthenticatedAdminApprovalsRoute
-  '/_authenticated/admin/brands': typeof AuthenticatedAdminBrandsRoute
-  '/_authenticated/admin/builder': typeof AuthenticatedAdminBuilderRoute
-  '/_authenticated/admin/bulk-editor': typeof AuthenticatedAdminBulkEditorRoute
-  '/_authenticated/admin/bundles': typeof AuthenticatedAdminBundlesRoute
-  '/_authenticated/admin/carts': typeof AuthenticatedAdminCartsRoute
-  '/_authenticated/admin/catalog': typeof AuthenticatedAdminCatalogRoute
-  '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
-  '/_authenticated/admin/collections': typeof AuthenticatedAdminCollectionsRoute
-  '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
-  '/_authenticated/admin/developers': typeof AuthenticatedAdminDevelopersRoute
-  '/_authenticated/admin/draft-orders': typeof AuthenticatedAdminDraftOrdersRoute
-  '/_authenticated/admin/experiments': typeof AuthenticatedAdminExperimentsRoute
-  '/_authenticated/admin/exports': typeof AuthenticatedAdminExportsRoute
-  '/_authenticated/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
-  '/_authenticated/admin/inventory': typeof AuthenticatedAdminInventoryRoute
-  '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
-  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
-  '/_authenticated/admin/plans': typeof AuthenticatedAdminPlansRoute
-  '/_authenticated/admin/pos': typeof AuthenticatedAdminPosRoute
-  '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
-  '/_authenticated/admin/purchasing': typeof AuthenticatedAdminPurchasingRoute
-  '/_authenticated/admin/returns': typeof AuthenticatedAdminReturnsRoute
-  '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/_authenticated/admin/shipping': typeof AuthenticatedAdminShippingRoute
-  '/_authenticated/admin/staff': typeof AuthenticatedAdminStaffRoute
-  '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
-  '/_authenticated/admin/support': typeof AuthenticatedAdminSupportRoute
-  '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
-  '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
-  '/_authenticated/dashboard/track': typeof AuthenticatedDashboardTrackRoute
-  '/_authenticated/dashboard/wishlist': typeof AuthenticatedDashboardWishlistRoute
+  '/_authenticated/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/_authenticated/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/_authenticated/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/_authenticated/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/_authenticated/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/_authenticated/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/_authenticated/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/_authenticated/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/_authenticated/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/_authenticated/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/_authenticated/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/_authenticated/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/_authenticated/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/_authenticated/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/_authenticated/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/_authenticated/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/_authenticated/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/_authenticated/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/_authenticated/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/_authenticated/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/_authenticated/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/_authenticated/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/_authenticated/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/_authenticated/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/_authenticated/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/_authenticated/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/_authenticated/dashboard/support': typeof AuthenticatedDashboardSupportRoute
   '/_authenticated/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
   '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
   '/api/public/errors': typeof ApiPublicErrorsRoute
@@ -1808,43 +1775,42 @@ export interface FileRoutesById {
   '/store/$slug/search': typeof StoreSlugSearchRoute
   '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
   '/store/$slug/track': typeof StoreSlugTrackRoute
-  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/store/$slug/': typeof StoreSlugIndexRoute
-  '/_authenticated/admin/ai/assistant': typeof AuthenticatedAdminAiAssistantRoute
-  '/_authenticated/admin/ai/settings': typeof AuthenticatedAdminAiSettingsRoute
-  '/_authenticated/admin/analytics_/insights': typeof AuthenticatedAdminAnalyticsInsightsRoute
-  '/_authenticated/admin/analytics_/reports': typeof AuthenticatedAdminAnalyticsReportsRoute
-  '/_authenticated/admin/billing/invoices': typeof AuthenticatedAdminBillingInvoicesRoute
-  '/_authenticated/admin/content/editor': typeof AuthenticatedAdminContentEditorRoute
-  '/_authenticated/admin/content/media': typeof AuthenticatedAdminContentMediaRoute
-  '/_authenticated/admin/content/menus': typeof AuthenticatedAdminContentMenusRoute
-  '/_authenticated/admin/content/pages': typeof AuthenticatedAdminContentPagesRoute
-  '/_authenticated/admin/content/posts': typeof AuthenticatedAdminContentPostsRoute
-  '/_authenticated/admin/content/themes': typeof AuthenticatedAdminContentThemesRoute
-  '/_authenticated/admin/fraud/ad-defense': typeof AuthenticatedAdminFraudAdDefenseRoute
-  '/_authenticated/admin/fraud/audit': typeof AuthenticatedAdminFraudAuditRoute
-  '/_authenticated/admin/marketing/articles': typeof AuthenticatedAdminMarketingArticlesRoute
-  '/_authenticated/admin/marketing/campaigns': typeof AuthenticatedAdminMarketingCampaignsRoute
-  '/_authenticated/admin/marketing/codes': typeof AuthenticatedAdminMarketingCodesRoute
-  '/_authenticated/admin/marketing/coupons': typeof AuthenticatedAdminMarketingCouponsRoute
-  '/_authenticated/admin/marketing/forms': typeof AuthenticatedAdminMarketingFormsRoute
-  '/_authenticated/admin/marketing/media': typeof AuthenticatedAdminMarketingMediaRoute
-  '/_authenticated/admin/marketing/seo': typeof AuthenticatedAdminMarketingSeoRoute
-  '/_authenticated/admin/marketing/subscribers': typeof AuthenticatedAdminMarketingSubscribersRoute
-  '/_authenticated/admin/marketplace/creator': typeof AuthenticatedAdminMarketplaceCreatorRoute
-  '/_authenticated/admin/marketplace/moderation': typeof AuthenticatedAdminMarketplaceModerationRoute
-  '/_authenticated/admin/marketplace/versions': typeof AuthenticatedAdminMarketplaceVersionsRoute
-  '/_authenticated/admin/money/payments': typeof AuthenticatedAdminMoneyPaymentsRoute
-  '/_authenticated/admin/orders/$orderId': typeof AuthenticatedAdminOrdersOrderIdRoute
-  '/_authenticated/admin/products/$productId': typeof AuthenticatedAdminProductsProductIdRoute
-  '/_authenticated/admin/products/new': typeof AuthenticatedAdminProductsNewRoute
-  '/_authenticated/admin/settings_/api': typeof AuthenticatedAdminSettingsApiRoute
-  '/_authenticated/admin/settings_/domains': typeof AuthenticatedAdminSettingsDomainsRoute
-  '/_authenticated/admin/settings_/infrastructure': typeof AuthenticatedAdminSettingsInfrastructureRoute
-  '/_authenticated/admin/settings_/providers': typeof AuthenticatedAdminSettingsProvidersRoute
-  '/_authenticated/admin/settings_/security': typeof AuthenticatedAdminSettingsSecurityRoute
-  '/_authenticated/admin/settings_/seo': typeof AuthenticatedAdminSettingsSeoRoute
+  '/_authenticated/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/_authenticated/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/_authenticated/dashboard/analytics_/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/_authenticated/dashboard/analytics_/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/_authenticated/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/_authenticated/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/_authenticated/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/_authenticated/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/_authenticated/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/_authenticated/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/_authenticated/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/_authenticated/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/_authenticated/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/_authenticated/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/_authenticated/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/_authenticated/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/_authenticated/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/_authenticated/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/_authenticated/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/_authenticated/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/_authenticated/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/_authenticated/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/_authenticated/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/_authenticated/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/_authenticated/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/_authenticated/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/_authenticated/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/_authenticated/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/_authenticated/dashboard/settings_/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/_authenticated/dashboard/settings_/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/_authenticated/dashboard/settings_/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/_authenticated/dashboard/settings_/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/_authenticated/dashboard/settings_/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/_authenticated/dashboard/settings_/seo': typeof AuthenticatedDashboardSettingsSeoRoute
   '/api/public/ads/click': typeof ApiPublicAdsClickRoute
   '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
   '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
@@ -1881,14 +1847,14 @@ export interface FileRoutesById {
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
   '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
   '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
-  '/_authenticated/admin/billing/': typeof AuthenticatedAdminBillingIndexRoute
-  '/_authenticated/admin/content/': typeof AuthenticatedAdminContentIndexRoute
-  '/_authenticated/admin/fraud/': typeof AuthenticatedAdminFraudIndexRoute
-  '/_authenticated/admin/marketing/': typeof AuthenticatedAdminMarketingIndexRoute
-  '/_authenticated/admin/marketplace/': typeof AuthenticatedAdminMarketplaceIndexRoute
-  '/_authenticated/admin/orders/': typeof AuthenticatedAdminOrdersIndexRoute
-  '/_authenticated/admin/products/': typeof AuthenticatedAdminProductsIndexRoute
-  '/_authenticated/admin/orders/$orderId_/invoice': typeof AuthenticatedAdminOrdersOrderIdInvoiceRoute
+  '/_authenticated/dashboard/billing/': typeof AuthenticatedDashboardBillingIndexRoute
+  '/_authenticated/dashboard/content/': typeof AuthenticatedDashboardContentIndexRoute
+  '/_authenticated/dashboard/fraud/': typeof AuthenticatedDashboardFraudIndexRoute
+  '/_authenticated/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/_authenticated/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/_authenticated/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/_authenticated/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/_authenticated/dashboard/orders/$orderId_/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
@@ -1922,7 +1888,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/status'
     | '/unsubscribe'
-    | '/admin'
     | '/dashboard'
     | '/onboarding'
     | '/blog/$slug'
@@ -1935,9 +1900,11 @@ export interface FileRouteTypes {
     | '/root/access'
     | '/root/ai'
     | '/root/audit'
+    | '/root/auth'
     | '/root/coupons'
     | '/root/fraud'
     | '/root/gateway'
+    | '/root/login'
     | '/root/marketing'
     | '/root/money'
     | '/root/observability'
@@ -1957,41 +1924,37 @@ export interface FileRouteTypes {
     | '/legal/'
     | '/root/'
     | '/.well-known/acme-challenge/$token'
-    | '/admin/activity'
-    | '/admin/analytics'
-    | '/admin/approvals'
-    | '/admin/brands'
-    | '/admin/builder'
-    | '/admin/bulk-editor'
-    | '/admin/bundles'
-    | '/admin/carts'
-    | '/admin/catalog'
-    | '/admin/categories'
-    | '/admin/collections'
-    | '/admin/customers'
-    | '/admin/developers'
-    | '/admin/draft-orders'
-    | '/admin/experiments'
-    | '/admin/exports'
-    | '/admin/gift-cards'
-    | '/admin/inventory'
-    | '/admin/pages'
-    | '/admin/payments'
-    | '/admin/plans'
-    | '/admin/pos'
-    | '/admin/pricing'
-    | '/admin/purchasing'
-    | '/admin/returns'
-    | '/admin/reviews'
-    | '/admin/settings'
-    | '/admin/shipping'
-    | '/admin/staff'
-    | '/admin/subscriptions'
-    | '/admin/support'
-    | '/dashboard/orders'
-    | '/dashboard/profile'
-    | '/dashboard/track'
-    | '/dashboard/wishlist'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/approvals'
+    | '/dashboard/brands'
+    | '/dashboard/builder'
+    | '/dashboard/bulk-editor'
+    | '/dashboard/bundles'
+    | '/dashboard/carts'
+    | '/dashboard/catalog'
+    | '/dashboard/categories'
+    | '/dashboard/collections'
+    | '/dashboard/customers'
+    | '/dashboard/developers'
+    | '/dashboard/draft-orders'
+    | '/dashboard/experiments'
+    | '/dashboard/exports'
+    | '/dashboard/gift-cards'
+    | '/dashboard/inventory'
+    | '/dashboard/pages'
+    | '/dashboard/payments'
+    | '/dashboard/plans'
+    | '/dashboard/pos'
+    | '/dashboard/pricing'
+    | '/dashboard/purchasing'
+    | '/dashboard/returns'
+    | '/dashboard/reviews'
+    | '/dashboard/settings'
+    | '/dashboard/shipping'
+    | '/dashboard/staff'
+    | '/dashboard/subscriptions'
+    | '/dashboard/support'
     | '/oauth/authorize'
     | '/api/public/error-alert'
     | '/api/public/errors'
@@ -2010,43 +1973,42 @@ export interface FileRouteTypes {
     | '/store/$slug/search'
     | '/store/$slug/sitemap.xml'
     | '/store/$slug/track'
-    | '/admin/'
     | '/dashboard/'
     | '/store/$slug/'
-    | '/admin/ai/assistant'
-    | '/admin/ai/settings'
-    | '/admin/analytics/insights'
-    | '/admin/analytics/reports'
-    | '/admin/billing/invoices'
-    | '/admin/content/editor'
-    | '/admin/content/media'
-    | '/admin/content/menus'
-    | '/admin/content/pages'
-    | '/admin/content/posts'
-    | '/admin/content/themes'
-    | '/admin/fraud/ad-defense'
-    | '/admin/fraud/audit'
-    | '/admin/marketing/articles'
-    | '/admin/marketing/campaigns'
-    | '/admin/marketing/codes'
-    | '/admin/marketing/coupons'
-    | '/admin/marketing/forms'
-    | '/admin/marketing/media'
-    | '/admin/marketing/seo'
-    | '/admin/marketing/subscribers'
-    | '/admin/marketplace/creator'
-    | '/admin/marketplace/moderation'
-    | '/admin/marketplace/versions'
-    | '/admin/money/payments'
-    | '/admin/orders/$orderId'
-    | '/admin/products/$productId'
-    | '/admin/products/new'
-    | '/admin/settings/api'
-    | '/admin/settings/domains'
-    | '/admin/settings/infrastructure'
-    | '/admin/settings/providers'
-    | '/admin/settings/security'
-    | '/admin/settings/seo'
+    | '/dashboard/ai/assistant'
+    | '/dashboard/ai/settings'
+    | '/dashboard/analytics/insights'
+    | '/dashboard/analytics/reports'
+    | '/dashboard/billing/invoices'
+    | '/dashboard/content/editor'
+    | '/dashboard/content/media'
+    | '/dashboard/content/menus'
+    | '/dashboard/content/pages'
+    | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
+    | '/dashboard/fraud/ad-defense'
+    | '/dashboard/fraud/audit'
+    | '/dashboard/marketing/articles'
+    | '/dashboard/marketing/campaigns'
+    | '/dashboard/marketing/codes'
+    | '/dashboard/marketing/coupons'
+    | '/dashboard/marketing/forms'
+    | '/dashboard/marketing/media'
+    | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketplace/creator'
+    | '/dashboard/marketplace/moderation'
+    | '/dashboard/marketplace/versions'
+    | '/dashboard/money/payments'
+    | '/dashboard/orders/$orderId'
+    | '/dashboard/products/$productId'
+    | '/dashboard/products/new'
+    | '/dashboard/settings/api'
+    | '/dashboard/settings/domains'
+    | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/providers'
+    | '/dashboard/settings/security'
+    | '/dashboard/settings/seo'
     | '/api/public/ads/click'
     | '/api/public/analytics/beacon'
     | '/api/public/channels/$channel'
@@ -2083,14 +2045,14 @@ export interface FileRouteTypes {
     | '/store/$slug/p/$productSlug'
     | '/store/$slug/pages/$pageSlug'
     | '/store/$slug/sitemaps/$kind'
-    | '/admin/billing/'
-    | '/admin/content/'
-    | '/admin/fraud/'
-    | '/admin/marketing/'
-    | '/admin/marketplace/'
-    | '/admin/orders/'
-    | '/admin/products/'
-    | '/admin/orders/$orderId/invoice'
+    | '/dashboard/billing/'
+    | '/dashboard/content/'
+    | '/dashboard/fraud/'
+    | '/dashboard/marketing/'
+    | '/dashboard/marketplace/'
+    | '/dashboard/orders/'
+    | '/dashboard/products/'
+    | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
@@ -2132,9 +2094,11 @@ export interface FileRouteTypes {
     | '/root/access'
     | '/root/ai'
     | '/root/audit'
+    | '/root/auth'
     | '/root/coupons'
     | '/root/fraud'
     | '/root/gateway'
+    | '/root/login'
     | '/root/marketing'
     | '/root/money'
     | '/root/observability'
@@ -2154,41 +2118,37 @@ export interface FileRouteTypes {
     | '/legal'
     | '/root'
     | '/.well-known/acme-challenge/$token'
-    | '/admin/activity'
-    | '/admin/analytics'
-    | '/admin/approvals'
-    | '/admin/brands'
-    | '/admin/builder'
-    | '/admin/bulk-editor'
-    | '/admin/bundles'
-    | '/admin/carts'
-    | '/admin/catalog'
-    | '/admin/categories'
-    | '/admin/collections'
-    | '/admin/customers'
-    | '/admin/developers'
-    | '/admin/draft-orders'
-    | '/admin/experiments'
-    | '/admin/exports'
-    | '/admin/gift-cards'
-    | '/admin/inventory'
-    | '/admin/pages'
-    | '/admin/payments'
-    | '/admin/plans'
-    | '/admin/pos'
-    | '/admin/pricing'
-    | '/admin/purchasing'
-    | '/admin/returns'
-    | '/admin/reviews'
-    | '/admin/settings'
-    | '/admin/shipping'
-    | '/admin/staff'
-    | '/admin/subscriptions'
-    | '/admin/support'
-    | '/dashboard/orders'
-    | '/dashboard/profile'
-    | '/dashboard/track'
-    | '/dashboard/wishlist'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/approvals'
+    | '/dashboard/brands'
+    | '/dashboard/builder'
+    | '/dashboard/bulk-editor'
+    | '/dashboard/bundles'
+    | '/dashboard/carts'
+    | '/dashboard/catalog'
+    | '/dashboard/categories'
+    | '/dashboard/collections'
+    | '/dashboard/customers'
+    | '/dashboard/developers'
+    | '/dashboard/draft-orders'
+    | '/dashboard/experiments'
+    | '/dashboard/exports'
+    | '/dashboard/gift-cards'
+    | '/dashboard/inventory'
+    | '/dashboard/pages'
+    | '/dashboard/payments'
+    | '/dashboard/plans'
+    | '/dashboard/pos'
+    | '/dashboard/pricing'
+    | '/dashboard/purchasing'
+    | '/dashboard/returns'
+    | '/dashboard/reviews'
+    | '/dashboard/settings'
+    | '/dashboard/shipping'
+    | '/dashboard/staff'
+    | '/dashboard/subscriptions'
+    | '/dashboard/support'
     | '/oauth/authorize'
     | '/api/public/error-alert'
     | '/api/public/errors'
@@ -2207,43 +2167,42 @@ export interface FileRouteTypes {
     | '/store/$slug/search'
     | '/store/$slug/sitemap.xml'
     | '/store/$slug/track'
-    | '/admin'
     | '/dashboard'
     | '/store/$slug'
-    | '/admin/ai/assistant'
-    | '/admin/ai/settings'
-    | '/admin/analytics/insights'
-    | '/admin/analytics/reports'
-    | '/admin/billing/invoices'
-    | '/admin/content/editor'
-    | '/admin/content/media'
-    | '/admin/content/menus'
-    | '/admin/content/pages'
-    | '/admin/content/posts'
-    | '/admin/content/themes'
-    | '/admin/fraud/ad-defense'
-    | '/admin/fraud/audit'
-    | '/admin/marketing/articles'
-    | '/admin/marketing/campaigns'
-    | '/admin/marketing/codes'
-    | '/admin/marketing/coupons'
-    | '/admin/marketing/forms'
-    | '/admin/marketing/media'
-    | '/admin/marketing/seo'
-    | '/admin/marketing/subscribers'
-    | '/admin/marketplace/creator'
-    | '/admin/marketplace/moderation'
-    | '/admin/marketplace/versions'
-    | '/admin/money/payments'
-    | '/admin/orders/$orderId'
-    | '/admin/products/$productId'
-    | '/admin/products/new'
-    | '/admin/settings/api'
-    | '/admin/settings/domains'
-    | '/admin/settings/infrastructure'
-    | '/admin/settings/providers'
-    | '/admin/settings/security'
-    | '/admin/settings/seo'
+    | '/dashboard/ai/assistant'
+    | '/dashboard/ai/settings'
+    | '/dashboard/analytics/insights'
+    | '/dashboard/analytics/reports'
+    | '/dashboard/billing/invoices'
+    | '/dashboard/content/editor'
+    | '/dashboard/content/media'
+    | '/dashboard/content/menus'
+    | '/dashboard/content/pages'
+    | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
+    | '/dashboard/fraud/ad-defense'
+    | '/dashboard/fraud/audit'
+    | '/dashboard/marketing/articles'
+    | '/dashboard/marketing/campaigns'
+    | '/dashboard/marketing/codes'
+    | '/dashboard/marketing/coupons'
+    | '/dashboard/marketing/forms'
+    | '/dashboard/marketing/media'
+    | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketplace/creator'
+    | '/dashboard/marketplace/moderation'
+    | '/dashboard/marketplace/versions'
+    | '/dashboard/money/payments'
+    | '/dashboard/orders/$orderId'
+    | '/dashboard/products/$productId'
+    | '/dashboard/products/new'
+    | '/dashboard/settings/api'
+    | '/dashboard/settings/domains'
+    | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/providers'
+    | '/dashboard/settings/security'
+    | '/dashboard/settings/seo'
     | '/api/public/ads/click'
     | '/api/public/analytics/beacon'
     | '/api/public/channels/$channel'
@@ -2280,14 +2239,14 @@ export interface FileRouteTypes {
     | '/store/$slug/p/$productSlug'
     | '/store/$slug/pages/$pageSlug'
     | '/store/$slug/sitemaps/$kind'
-    | '/admin/billing'
-    | '/admin/content'
-    | '/admin/fraud'
-    | '/admin/marketing'
-    | '/admin/marketplace'
-    | '/admin/orders'
-    | '/admin/products'
-    | '/admin/orders/$orderId/invoice'
+    | '/dashboard/billing'
+    | '/dashboard/content'
+    | '/dashboard/fraud'
+    | '/dashboard/marketing'
+    | '/dashboard/marketplace'
+    | '/dashboard/orders'
+    | '/dashboard/products'
+    | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
@@ -2320,7 +2279,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/status'
     | '/unsubscribe'
-    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
     | '/blog/$slug'
@@ -2333,9 +2291,11 @@ export interface FileRouteTypes {
     | '/root/access'
     | '/root/ai'
     | '/root/audit'
+    | '/root/auth'
     | '/root/coupons'
     | '/root/fraud'
     | '/root/gateway'
+    | '/root/login'
     | '/root/marketing'
     | '/root/money'
     | '/root/observability'
@@ -2355,41 +2315,37 @@ export interface FileRouteTypes {
     | '/legal/'
     | '/root/'
     | '/.well-known/acme-challenge/$token'
-    | '/_authenticated/admin/activity'
-    | '/_authenticated/admin/analytics'
-    | '/_authenticated/admin/approvals'
-    | '/_authenticated/admin/brands'
-    | '/_authenticated/admin/builder'
-    | '/_authenticated/admin/bulk-editor'
-    | '/_authenticated/admin/bundles'
-    | '/_authenticated/admin/carts'
-    | '/_authenticated/admin/catalog'
-    | '/_authenticated/admin/categories'
-    | '/_authenticated/admin/collections'
-    | '/_authenticated/admin/customers'
-    | '/_authenticated/admin/developers'
-    | '/_authenticated/admin/draft-orders'
-    | '/_authenticated/admin/experiments'
-    | '/_authenticated/admin/exports'
-    | '/_authenticated/admin/gift-cards'
-    | '/_authenticated/admin/inventory'
-    | '/_authenticated/admin/pages'
-    | '/_authenticated/admin/payments'
-    | '/_authenticated/admin/plans'
-    | '/_authenticated/admin/pos'
-    | '/_authenticated/admin/pricing'
-    | '/_authenticated/admin/purchasing'
-    | '/_authenticated/admin/returns'
-    | '/_authenticated/admin/reviews'
-    | '/_authenticated/admin/settings'
-    | '/_authenticated/admin/shipping'
-    | '/_authenticated/admin/staff'
-    | '/_authenticated/admin/subscriptions'
-    | '/_authenticated/admin/support'
-    | '/_authenticated/dashboard/orders'
-    | '/_authenticated/dashboard/profile'
-    | '/_authenticated/dashboard/track'
-    | '/_authenticated/dashboard/wishlist'
+    | '/_authenticated/dashboard/activity'
+    | '/_authenticated/dashboard/analytics'
+    | '/_authenticated/dashboard/approvals'
+    | '/_authenticated/dashboard/brands'
+    | '/_authenticated/dashboard/builder'
+    | '/_authenticated/dashboard/bulk-editor'
+    | '/_authenticated/dashboard/bundles'
+    | '/_authenticated/dashboard/carts'
+    | '/_authenticated/dashboard/catalog'
+    | '/_authenticated/dashboard/categories'
+    | '/_authenticated/dashboard/collections'
+    | '/_authenticated/dashboard/customers'
+    | '/_authenticated/dashboard/developers'
+    | '/_authenticated/dashboard/draft-orders'
+    | '/_authenticated/dashboard/experiments'
+    | '/_authenticated/dashboard/exports'
+    | '/_authenticated/dashboard/gift-cards'
+    | '/_authenticated/dashboard/inventory'
+    | '/_authenticated/dashboard/pages'
+    | '/_authenticated/dashboard/payments'
+    | '/_authenticated/dashboard/plans'
+    | '/_authenticated/dashboard/pos'
+    | '/_authenticated/dashboard/pricing'
+    | '/_authenticated/dashboard/purchasing'
+    | '/_authenticated/dashboard/returns'
+    | '/_authenticated/dashboard/reviews'
+    | '/_authenticated/dashboard/settings'
+    | '/_authenticated/dashboard/shipping'
+    | '/_authenticated/dashboard/staff'
+    | '/_authenticated/dashboard/subscriptions'
+    | '/_authenticated/dashboard/support'
     | '/_authenticated/oauth/authorize'
     | '/api/public/error-alert'
     | '/api/public/errors'
@@ -2408,43 +2364,42 @@ export interface FileRouteTypes {
     | '/store/$slug/search'
     | '/store/$slug/sitemap.xml'
     | '/store/$slug/track'
-    | '/_authenticated/admin/'
     | '/_authenticated/dashboard/'
     | '/store/$slug/'
-    | '/_authenticated/admin/ai/assistant'
-    | '/_authenticated/admin/ai/settings'
-    | '/_authenticated/admin/analytics_/insights'
-    | '/_authenticated/admin/analytics_/reports'
-    | '/_authenticated/admin/billing/invoices'
-    | '/_authenticated/admin/content/editor'
-    | '/_authenticated/admin/content/media'
-    | '/_authenticated/admin/content/menus'
-    | '/_authenticated/admin/content/pages'
-    | '/_authenticated/admin/content/posts'
-    | '/_authenticated/admin/content/themes'
-    | '/_authenticated/admin/fraud/ad-defense'
-    | '/_authenticated/admin/fraud/audit'
-    | '/_authenticated/admin/marketing/articles'
-    | '/_authenticated/admin/marketing/campaigns'
-    | '/_authenticated/admin/marketing/codes'
-    | '/_authenticated/admin/marketing/coupons'
-    | '/_authenticated/admin/marketing/forms'
-    | '/_authenticated/admin/marketing/media'
-    | '/_authenticated/admin/marketing/seo'
-    | '/_authenticated/admin/marketing/subscribers'
-    | '/_authenticated/admin/marketplace/creator'
-    | '/_authenticated/admin/marketplace/moderation'
-    | '/_authenticated/admin/marketplace/versions'
-    | '/_authenticated/admin/money/payments'
-    | '/_authenticated/admin/orders/$orderId'
-    | '/_authenticated/admin/products/$productId'
-    | '/_authenticated/admin/products/new'
-    | '/_authenticated/admin/settings_/api'
-    | '/_authenticated/admin/settings_/domains'
-    | '/_authenticated/admin/settings_/infrastructure'
-    | '/_authenticated/admin/settings_/providers'
-    | '/_authenticated/admin/settings_/security'
-    | '/_authenticated/admin/settings_/seo'
+    | '/_authenticated/dashboard/ai/assistant'
+    | '/_authenticated/dashboard/ai/settings'
+    | '/_authenticated/dashboard/analytics_/insights'
+    | '/_authenticated/dashboard/analytics_/reports'
+    | '/_authenticated/dashboard/billing/invoices'
+    | '/_authenticated/dashboard/content/editor'
+    | '/_authenticated/dashboard/content/media'
+    | '/_authenticated/dashboard/content/menus'
+    | '/_authenticated/dashboard/content/pages'
+    | '/_authenticated/dashboard/content/posts'
+    | '/_authenticated/dashboard/content/themes'
+    | '/_authenticated/dashboard/fraud/ad-defense'
+    | '/_authenticated/dashboard/fraud/audit'
+    | '/_authenticated/dashboard/marketing/articles'
+    | '/_authenticated/dashboard/marketing/campaigns'
+    | '/_authenticated/dashboard/marketing/codes'
+    | '/_authenticated/dashboard/marketing/coupons'
+    | '/_authenticated/dashboard/marketing/forms'
+    | '/_authenticated/dashboard/marketing/media'
+    | '/_authenticated/dashboard/marketing/seo'
+    | '/_authenticated/dashboard/marketing/subscribers'
+    | '/_authenticated/dashboard/marketplace/creator'
+    | '/_authenticated/dashboard/marketplace/moderation'
+    | '/_authenticated/dashboard/marketplace/versions'
+    | '/_authenticated/dashboard/money/payments'
+    | '/_authenticated/dashboard/orders/$orderId'
+    | '/_authenticated/dashboard/products/$productId'
+    | '/_authenticated/dashboard/products/new'
+    | '/_authenticated/dashboard/settings_/api'
+    | '/_authenticated/dashboard/settings_/domains'
+    | '/_authenticated/dashboard/settings_/infrastructure'
+    | '/_authenticated/dashboard/settings_/providers'
+    | '/_authenticated/dashboard/settings_/security'
+    | '/_authenticated/dashboard/settings_/seo'
     | '/api/public/ads/click'
     | '/api/public/analytics/beacon'
     | '/api/public/channels/$channel'
@@ -2481,14 +2436,14 @@ export interface FileRouteTypes {
     | '/store/$slug/p/$productSlug'
     | '/store/$slug/pages/$pageSlug'
     | '/store/$slug/sitemaps/$kind'
-    | '/_authenticated/admin/billing/'
-    | '/_authenticated/admin/content/'
-    | '/_authenticated/admin/fraud/'
-    | '/_authenticated/admin/marketing/'
-    | '/_authenticated/admin/marketplace/'
-    | '/_authenticated/admin/orders/'
-    | '/_authenticated/admin/products/'
-    | '/_authenticated/admin/orders/$orderId_/invoice'
+    | '/_authenticated/dashboard/billing/'
+    | '/_authenticated/dashboard/content/'
+    | '/_authenticated/dashboard/fraud/'
+    | '/_authenticated/dashboard/marketing/'
+    | '/_authenticated/dashboard/marketplace/'
+    | '/_authenticated/dashboard/orders/'
+    | '/_authenticated/dashboard/products/'
+    | '/_authenticated/dashboard/orders/$orderId_/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
@@ -2777,13 +2732,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -2896,6 +2844,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootAuditRouteImport
       parentRoute: typeof RootRoute
     }
+    '/root/auth': {
+      id: '/root/auth'
+      path: '/auth'
+      fullPath: '/root/auth'
+      preLoaderRoute: typeof RootAuthRouteImport
+      parentRoute: typeof RootRoute
+    }
     '/root/coupons': {
       id: '/root/coupons'
       path: '/coupons'
@@ -2915,6 +2870,13 @@ declare module '@tanstack/react-router' {
       path: '/gateway'
       fullPath: '/root/gateway'
       preLoaderRoute: typeof RootGatewayRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/login': {
+      id: '/root/login'
+      path: '/login'
+      fullPath: '/root/login'
+      preLoaderRoute: typeof RootLoginRouteImport
       parentRoute: typeof RootRoute
     }
     '/root/marketing': {
@@ -3022,230 +2984,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotwellKnownAcmeChallengeTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/': {
-      id: '/_authenticated/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/activity': {
-      id: '/_authenticated/admin/activity'
-      path: '/activity'
-      fullPath: '/admin/activity'
-      preLoaderRoute: typeof AuthenticatedAdminActivityRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/analytics': {
-      id: '/_authenticated/admin/analytics'
-      path: '/analytics'
-      fullPath: '/admin/analytics'
-      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/approvals': {
-      id: '/_authenticated/admin/approvals'
-      path: '/approvals'
-      fullPath: '/admin/approvals'
-      preLoaderRoute: typeof AuthenticatedAdminApprovalsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/brands': {
-      id: '/_authenticated/admin/brands'
-      path: '/brands'
-      fullPath: '/admin/brands'
-      preLoaderRoute: typeof AuthenticatedAdminBrandsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/builder': {
-      id: '/_authenticated/admin/builder'
-      path: '/builder'
-      fullPath: '/admin/builder'
-      preLoaderRoute: typeof AuthenticatedAdminBuilderRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/bulk-editor': {
-      id: '/_authenticated/admin/bulk-editor'
-      path: '/bulk-editor'
-      fullPath: '/admin/bulk-editor'
-      preLoaderRoute: typeof AuthenticatedAdminBulkEditorRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/bundles': {
-      id: '/_authenticated/admin/bundles'
-      path: '/bundles'
-      fullPath: '/admin/bundles'
-      preLoaderRoute: typeof AuthenticatedAdminBundlesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/carts': {
-      id: '/_authenticated/admin/carts'
-      path: '/carts'
-      fullPath: '/admin/carts'
-      preLoaderRoute: typeof AuthenticatedAdminCartsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/catalog': {
-      id: '/_authenticated/admin/catalog'
-      path: '/catalog'
-      fullPath: '/admin/catalog'
-      preLoaderRoute: typeof AuthenticatedAdminCatalogRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/categories': {
-      id: '/_authenticated/admin/categories'
-      path: '/categories'
-      fullPath: '/admin/categories'
-      preLoaderRoute: typeof AuthenticatedAdminCategoriesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/collections': {
-      id: '/_authenticated/admin/collections'
-      path: '/collections'
-      fullPath: '/admin/collections'
-      preLoaderRoute: typeof AuthenticatedAdminCollectionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/customers': {
-      id: '/_authenticated/admin/customers'
-      path: '/customers'
-      fullPath: '/admin/customers'
-      preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/developers': {
-      id: '/_authenticated/admin/developers'
-      path: '/developers'
-      fullPath: '/admin/developers'
-      preLoaderRoute: typeof AuthenticatedAdminDevelopersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/draft-orders': {
-      id: '/_authenticated/admin/draft-orders'
-      path: '/draft-orders'
-      fullPath: '/admin/draft-orders'
-      preLoaderRoute: typeof AuthenticatedAdminDraftOrdersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/experiments': {
-      id: '/_authenticated/admin/experiments'
-      path: '/experiments'
-      fullPath: '/admin/experiments'
-      preLoaderRoute: typeof AuthenticatedAdminExperimentsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/exports': {
-      id: '/_authenticated/admin/exports'
-      path: '/exports'
-      fullPath: '/admin/exports'
-      preLoaderRoute: typeof AuthenticatedAdminExportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/gift-cards': {
-      id: '/_authenticated/admin/gift-cards'
-      path: '/gift-cards'
-      fullPath: '/admin/gift-cards'
-      preLoaderRoute: typeof AuthenticatedAdminGiftCardsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/inventory': {
-      id: '/_authenticated/admin/inventory'
-      path: '/inventory'
-      fullPath: '/admin/inventory'
-      preLoaderRoute: typeof AuthenticatedAdminInventoryRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/pages': {
-      id: '/_authenticated/admin/pages'
-      path: '/pages'
-      fullPath: '/admin/pages'
-      preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/payments': {
-      id: '/_authenticated/admin/payments'
-      path: '/payments'
-      fullPath: '/admin/payments'
-      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/plans': {
-      id: '/_authenticated/admin/plans'
-      path: '/plans'
-      fullPath: '/admin/plans'
-      preLoaderRoute: typeof AuthenticatedAdminPlansRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/pos': {
-      id: '/_authenticated/admin/pos'
-      path: '/pos'
-      fullPath: '/admin/pos'
-      preLoaderRoute: typeof AuthenticatedAdminPosRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/pricing': {
-      id: '/_authenticated/admin/pricing'
-      path: '/pricing'
-      fullPath: '/admin/pricing'
-      preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/purchasing': {
-      id: '/_authenticated/admin/purchasing'
-      path: '/purchasing'
-      fullPath: '/admin/purchasing'
-      preLoaderRoute: typeof AuthenticatedAdminPurchasingRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/returns': {
-      id: '/_authenticated/admin/returns'
-      path: '/returns'
-      fullPath: '/admin/returns'
-      preLoaderRoute: typeof AuthenticatedAdminReturnsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/reviews': {
-      id: '/_authenticated/admin/reviews'
-      path: '/reviews'
-      fullPath: '/admin/reviews'
-      preLoaderRoute: typeof AuthenticatedAdminReviewsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/settings': {
-      id: '/_authenticated/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/shipping': {
-      id: '/_authenticated/admin/shipping'
-      path: '/shipping'
-      fullPath: '/admin/shipping'
-      preLoaderRoute: typeof AuthenticatedAdminShippingRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/staff': {
-      id: '/_authenticated/admin/staff'
-      path: '/staff'
-      fullPath: '/admin/staff'
-      preLoaderRoute: typeof AuthenticatedAdminStaffRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/subscriptions': {
-      id: '/_authenticated/admin/subscriptions'
-      path: '/subscriptions'
-      fullPath: '/admin/subscriptions'
-      preLoaderRoute: typeof AuthenticatedAdminSubscriptionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/support': {
-      id: '/_authenticated/admin/support'
-      path: '/support'
-      fullPath: '/admin/support'
-      preLoaderRoute: typeof AuthenticatedAdminSupportRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
@@ -3253,32 +2991,221 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/orders': {
-      id: '/_authenticated/dashboard/orders'
-      path: '/orders'
-      fullPath: '/dashboard/orders'
-      preLoaderRoute: typeof AuthenticatedDashboardOrdersRouteImport
+    '/_authenticated/dashboard/activity': {
+      id: '/_authenticated/dashboard/activity'
+      path: '/activity'
+      fullPath: '/dashboard/activity'
+      preLoaderRoute: typeof AuthenticatedDashboardActivityRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/profile': {
-      id: '/_authenticated/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof AuthenticatedDashboardProfileRouteImport
+    '/_authenticated/dashboard/analytics': {
+      id: '/_authenticated/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/track': {
-      id: '/_authenticated/dashboard/track'
-      path: '/track'
-      fullPath: '/dashboard/track'
-      preLoaderRoute: typeof AuthenticatedDashboardTrackRouteImport
+    '/_authenticated/dashboard/approvals': {
+      id: '/_authenticated/dashboard/approvals'
+      path: '/approvals'
+      fullPath: '/dashboard/approvals'
+      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/wishlist': {
-      id: '/_authenticated/dashboard/wishlist'
-      path: '/wishlist'
-      fullPath: '/dashboard/wishlist'
-      preLoaderRoute: typeof AuthenticatedDashboardWishlistRouteImport
+    '/_authenticated/dashboard/brands': {
+      id: '/_authenticated/dashboard/brands'
+      path: '/brands'
+      fullPath: '/dashboard/brands'
+      preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder': {
+      id: '/_authenticated/dashboard/builder'
+      path: '/builder'
+      fullPath: '/dashboard/builder'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bulk-editor': {
+      id: '/_authenticated/dashboard/bulk-editor'
+      path: '/bulk-editor'
+      fullPath: '/dashboard/bulk-editor'
+      preLoaderRoute: typeof AuthenticatedDashboardBulkEditorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bundles': {
+      id: '/_authenticated/dashboard/bundles'
+      path: '/bundles'
+      fullPath: '/dashboard/bundles'
+      preLoaderRoute: typeof AuthenticatedDashboardBundlesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/carts': {
+      id: '/_authenticated/dashboard/carts'
+      path: '/carts'
+      fullPath: '/dashboard/carts'
+      preLoaderRoute: typeof AuthenticatedDashboardCartsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/catalog': {
+      id: '/_authenticated/dashboard/catalog'
+      path: '/catalog'
+      fullPath: '/dashboard/catalog'
+      preLoaderRoute: typeof AuthenticatedDashboardCatalogRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/categories': {
+      id: '/_authenticated/dashboard/categories'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/collections': {
+      id: '/_authenticated/dashboard/collections'
+      path: '/collections'
+      fullPath: '/dashboard/collections'
+      preLoaderRoute: typeof AuthenticatedDashboardCollectionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/customers': {
+      id: '/_authenticated/dashboard/customers'
+      path: '/customers'
+      fullPath: '/dashboard/customers'
+      preLoaderRoute: typeof AuthenticatedDashboardCustomersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/developers': {
+      id: '/_authenticated/dashboard/developers'
+      path: '/developers'
+      fullPath: '/dashboard/developers'
+      preLoaderRoute: typeof AuthenticatedDashboardDevelopersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/draft-orders': {
+      id: '/_authenticated/dashboard/draft-orders'
+      path: '/draft-orders'
+      fullPath: '/dashboard/draft-orders'
+      preLoaderRoute: typeof AuthenticatedDashboardDraftOrdersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/experiments': {
+      id: '/_authenticated/dashboard/experiments'
+      path: '/experiments'
+      fullPath: '/dashboard/experiments'
+      preLoaderRoute: typeof AuthenticatedDashboardExperimentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/exports': {
+      id: '/_authenticated/dashboard/exports'
+      path: '/exports'
+      fullPath: '/dashboard/exports'
+      preLoaderRoute: typeof AuthenticatedDashboardExportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/gift-cards': {
+      id: '/_authenticated/dashboard/gift-cards'
+      path: '/gift-cards'
+      fullPath: '/dashboard/gift-cards'
+      preLoaderRoute: typeof AuthenticatedDashboardGiftCardsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/inventory': {
+      id: '/_authenticated/dashboard/inventory'
+      path: '/inventory'
+      fullPath: '/dashboard/inventory'
+      preLoaderRoute: typeof AuthenticatedDashboardInventoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pages': {
+      id: '/_authenticated/dashboard/pages'
+      path: '/pages'
+      fullPath: '/dashboard/pages'
+      preLoaderRoute: typeof AuthenticatedDashboardPagesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/payments': {
+      id: '/_authenticated/dashboard/payments'
+      path: '/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof AuthenticatedDashboardPaymentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/plans': {
+      id: '/_authenticated/dashboard/plans'
+      path: '/plans'
+      fullPath: '/dashboard/plans'
+      preLoaderRoute: typeof AuthenticatedDashboardPlansRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pos': {
+      id: '/_authenticated/dashboard/pos'
+      path: '/pos'
+      fullPath: '/dashboard/pos'
+      preLoaderRoute: typeof AuthenticatedDashboardPosRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pricing': {
+      id: '/_authenticated/dashboard/pricing'
+      path: '/pricing'
+      fullPath: '/dashboard/pricing'
+      preLoaderRoute: typeof AuthenticatedDashboardPricingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/purchasing': {
+      id: '/_authenticated/dashboard/purchasing'
+      path: '/purchasing'
+      fullPath: '/dashboard/purchasing'
+      preLoaderRoute: typeof AuthenticatedDashboardPurchasingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/returns': {
+      id: '/_authenticated/dashboard/returns'
+      path: '/returns'
+      fullPath: '/dashboard/returns'
+      preLoaderRoute: typeof AuthenticatedDashboardReturnsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/reviews': {
+      id: '/_authenticated/dashboard/reviews'
+      path: '/reviews'
+      fullPath: '/dashboard/reviews'
+      preLoaderRoute: typeof AuthenticatedDashboardReviewsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings': {
+      id: '/_authenticated/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/shipping': {
+      id: '/_authenticated/dashboard/shipping'
+      path: '/shipping'
+      fullPath: '/dashboard/shipping'
+      preLoaderRoute: typeof AuthenticatedDashboardShippingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/staff': {
+      id: '/_authenticated/dashboard/staff'
+      path: '/staff'
+      fullPath: '/dashboard/staff'
+      preLoaderRoute: typeof AuthenticatedDashboardStaffRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/subscriptions': {
+      id: '/_authenticated/dashboard/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/dashboard/subscriptions'
+      preLoaderRoute: typeof AuthenticatedDashboardSubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/support': {
+      id: '/_authenticated/dashboard/support'
+      path: '/support'
+      fullPath: '/dashboard/support'
+      preLoaderRoute: typeof AuthenticatedDashboardSupportRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/oauth/authorize': {
@@ -3414,292 +3341,292 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoreSlugTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/ai/assistant': {
-      id: '/_authenticated/admin/ai/assistant'
+    '/_authenticated/dashboard/ai/assistant': {
+      id: '/_authenticated/dashboard/ai/assistant'
       path: '/ai/assistant'
-      fullPath: '/admin/ai/assistant'
-      preLoaderRoute: typeof AuthenticatedAdminAiAssistantRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/ai/assistant'
+      preLoaderRoute: typeof AuthenticatedDashboardAiAssistantRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/ai/settings': {
-      id: '/_authenticated/admin/ai/settings'
+    '/_authenticated/dashboard/ai/settings': {
+      id: '/_authenticated/dashboard/ai/settings'
       path: '/ai/settings'
-      fullPath: '/admin/ai/settings'
-      preLoaderRoute: typeof AuthenticatedAdminAiSettingsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/ai/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardAiSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/analytics_/insights': {
-      id: '/_authenticated/admin/analytics_/insights'
+    '/_authenticated/dashboard/analytics_/insights': {
+      id: '/_authenticated/dashboard/analytics_/insights'
       path: '/analytics/insights'
-      fullPath: '/admin/analytics/insights'
-      preLoaderRoute: typeof AuthenticatedAdminAnalyticsInsightsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/analytics/insights'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsInsightsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/analytics_/reports': {
-      id: '/_authenticated/admin/analytics_/reports'
+    '/_authenticated/dashboard/analytics_/reports': {
+      id: '/_authenticated/dashboard/analytics_/reports'
       path: '/analytics/reports'
-      fullPath: '/admin/analytics/reports'
-      preLoaderRoute: typeof AuthenticatedAdminAnalyticsReportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/analytics/reports'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsReportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/billing/': {
-      id: '/_authenticated/admin/billing/'
+    '/_authenticated/dashboard/billing/': {
+      id: '/_authenticated/dashboard/billing/'
       path: '/billing'
-      fullPath: '/admin/billing/'
-      preLoaderRoute: typeof AuthenticatedAdminBillingIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/billing/'
+      preLoaderRoute: typeof AuthenticatedDashboardBillingIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/billing/invoices': {
-      id: '/_authenticated/admin/billing/invoices'
+    '/_authenticated/dashboard/billing/invoices': {
+      id: '/_authenticated/dashboard/billing/invoices'
       path: '/billing/invoices'
-      fullPath: '/admin/billing/invoices'
-      preLoaderRoute: typeof AuthenticatedAdminBillingInvoicesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/billing/invoices'
+      preLoaderRoute: typeof AuthenticatedDashboardBillingInvoicesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/': {
-      id: '/_authenticated/admin/content/'
+    '/_authenticated/dashboard/content/': {
+      id: '/_authenticated/dashboard/content/'
       path: '/content'
-      fullPath: '/admin/content/'
-      preLoaderRoute: typeof AuthenticatedAdminContentIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/'
+      preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/editor': {
-      id: '/_authenticated/admin/content/editor'
+    '/_authenticated/dashboard/content/editor': {
+      id: '/_authenticated/dashboard/content/editor'
       path: '/content/editor'
-      fullPath: '/admin/content/editor'
-      preLoaderRoute: typeof AuthenticatedAdminContentEditorRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/editor'
+      preLoaderRoute: typeof AuthenticatedDashboardContentEditorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/media': {
-      id: '/_authenticated/admin/content/media'
+    '/_authenticated/dashboard/content/media': {
+      id: '/_authenticated/dashboard/content/media'
       path: '/content/media'
-      fullPath: '/admin/content/media'
-      preLoaderRoute: typeof AuthenticatedAdminContentMediaRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/media'
+      preLoaderRoute: typeof AuthenticatedDashboardContentMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/menus': {
-      id: '/_authenticated/admin/content/menus'
+    '/_authenticated/dashboard/content/menus': {
+      id: '/_authenticated/dashboard/content/menus'
       path: '/content/menus'
-      fullPath: '/admin/content/menus'
-      preLoaderRoute: typeof AuthenticatedAdminContentMenusRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/menus'
+      preLoaderRoute: typeof AuthenticatedDashboardContentMenusRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/pages': {
-      id: '/_authenticated/admin/content/pages'
+    '/_authenticated/dashboard/content/pages': {
+      id: '/_authenticated/dashboard/content/pages'
       path: '/content/pages'
-      fullPath: '/admin/content/pages'
-      preLoaderRoute: typeof AuthenticatedAdminContentPagesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/pages'
+      preLoaderRoute: typeof AuthenticatedDashboardContentPagesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/posts': {
-      id: '/_authenticated/admin/content/posts'
+    '/_authenticated/dashboard/content/posts': {
+      id: '/_authenticated/dashboard/content/posts'
       path: '/content/posts'
-      fullPath: '/admin/content/posts'
-      preLoaderRoute: typeof AuthenticatedAdminContentPostsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/posts'
+      preLoaderRoute: typeof AuthenticatedDashboardContentPostsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/content/themes': {
-      id: '/_authenticated/admin/content/themes'
+    '/_authenticated/dashboard/content/themes': {
+      id: '/_authenticated/dashboard/content/themes'
       path: '/content/themes'
-      fullPath: '/admin/content/themes'
-      preLoaderRoute: typeof AuthenticatedAdminContentThemesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/content/themes'
+      preLoaderRoute: typeof AuthenticatedDashboardContentThemesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/fraud/': {
-      id: '/_authenticated/admin/fraud/'
+    '/_authenticated/dashboard/fraud/': {
+      id: '/_authenticated/dashboard/fraud/'
       path: '/fraud'
-      fullPath: '/admin/fraud/'
-      preLoaderRoute: typeof AuthenticatedAdminFraudIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/fraud/'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/fraud/ad-defense': {
-      id: '/_authenticated/admin/fraud/ad-defense'
+    '/_authenticated/dashboard/fraud/ad-defense': {
+      id: '/_authenticated/dashboard/fraud/ad-defense'
       path: '/fraud/ad-defense'
-      fullPath: '/admin/fraud/ad-defense'
-      preLoaderRoute: typeof AuthenticatedAdminFraudAdDefenseRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/fraud/ad-defense'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudAdDefenseRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/fraud/audit': {
-      id: '/_authenticated/admin/fraud/audit'
+    '/_authenticated/dashboard/fraud/audit': {
+      id: '/_authenticated/dashboard/fraud/audit'
       path: '/fraud/audit'
-      fullPath: '/admin/fraud/audit'
-      preLoaderRoute: typeof AuthenticatedAdminFraudAuditRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/fraud/audit'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudAuditRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/': {
-      id: '/_authenticated/admin/marketing/'
+    '/_authenticated/dashboard/marketing/': {
+      id: '/_authenticated/dashboard/marketing/'
       path: '/marketing'
-      fullPath: '/admin/marketing/'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/articles': {
-      id: '/_authenticated/admin/marketing/articles'
+    '/_authenticated/dashboard/marketing/articles': {
+      id: '/_authenticated/dashboard/marketing/articles'
       path: '/marketing/articles'
-      fullPath: '/admin/marketing/articles'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingArticlesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/articles'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingArticlesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/campaigns': {
-      id: '/_authenticated/admin/marketing/campaigns'
+    '/_authenticated/dashboard/marketing/campaigns': {
+      id: '/_authenticated/dashboard/marketing/campaigns'
       path: '/marketing/campaigns'
-      fullPath: '/admin/marketing/campaigns'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingCampaignsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/campaigns'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCampaignsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/codes': {
-      id: '/_authenticated/admin/marketing/codes'
+    '/_authenticated/dashboard/marketing/codes': {
+      id: '/_authenticated/dashboard/marketing/codes'
       path: '/marketing/codes'
-      fullPath: '/admin/marketing/codes'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingCodesRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/codes'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCodesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/coupons': {
-      id: '/_authenticated/admin/marketing/coupons'
+    '/_authenticated/dashboard/marketing/coupons': {
+      id: '/_authenticated/dashboard/marketing/coupons'
       path: '/marketing/coupons'
-      fullPath: '/admin/marketing/coupons'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingCouponsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/coupons'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCouponsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/forms': {
-      id: '/_authenticated/admin/marketing/forms'
+    '/_authenticated/dashboard/marketing/forms': {
+      id: '/_authenticated/dashboard/marketing/forms'
       path: '/marketing/forms'
-      fullPath: '/admin/marketing/forms'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingFormsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/forms'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingFormsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/media': {
-      id: '/_authenticated/admin/marketing/media'
+    '/_authenticated/dashboard/marketing/media': {
+      id: '/_authenticated/dashboard/marketing/media'
       path: '/marketing/media'
-      fullPath: '/admin/marketing/media'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingMediaRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/media'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/seo': {
-      id: '/_authenticated/admin/marketing/seo'
+    '/_authenticated/dashboard/marketing/seo': {
+      id: '/_authenticated/dashboard/marketing/seo'
       path: '/marketing/seo'
-      fullPath: '/admin/marketing/seo'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingSeoRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/seo'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSeoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketing/subscribers': {
-      id: '/_authenticated/admin/marketing/subscribers'
+    '/_authenticated/dashboard/marketing/subscribers': {
+      id: '/_authenticated/dashboard/marketing/subscribers'
       path: '/marketing/subscribers'
-      fullPath: '/admin/marketing/subscribers'
-      preLoaderRoute: typeof AuthenticatedAdminMarketingSubscribersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketing/subscribers'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSubscribersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketplace/': {
-      id: '/_authenticated/admin/marketplace/'
+    '/_authenticated/dashboard/marketplace/': {
+      id: '/_authenticated/dashboard/marketplace/'
       path: '/marketplace'
-      fullPath: '/admin/marketplace/'
-      preLoaderRoute: typeof AuthenticatedAdminMarketplaceIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketplace/'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketplace/creator': {
-      id: '/_authenticated/admin/marketplace/creator'
+    '/_authenticated/dashboard/marketplace/creator': {
+      id: '/_authenticated/dashboard/marketplace/creator'
       path: '/marketplace/creator'
-      fullPath: '/admin/marketplace/creator'
-      preLoaderRoute: typeof AuthenticatedAdminMarketplaceCreatorRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketplace/creator'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceCreatorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketplace/moderation': {
-      id: '/_authenticated/admin/marketplace/moderation'
+    '/_authenticated/dashboard/marketplace/moderation': {
+      id: '/_authenticated/dashboard/marketplace/moderation'
       path: '/marketplace/moderation'
-      fullPath: '/admin/marketplace/moderation'
-      preLoaderRoute: typeof AuthenticatedAdminMarketplaceModerationRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketplace/moderation'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceModerationRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/marketplace/versions': {
-      id: '/_authenticated/admin/marketplace/versions'
+    '/_authenticated/dashboard/marketplace/versions': {
+      id: '/_authenticated/dashboard/marketplace/versions'
       path: '/marketplace/versions'
-      fullPath: '/admin/marketplace/versions'
-      preLoaderRoute: typeof AuthenticatedAdminMarketplaceVersionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/marketplace/versions'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceVersionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/money/payments': {
-      id: '/_authenticated/admin/money/payments'
+    '/_authenticated/dashboard/money/payments': {
+      id: '/_authenticated/dashboard/money/payments'
       path: '/money/payments'
-      fullPath: '/admin/money/payments'
-      preLoaderRoute: typeof AuthenticatedAdminMoneyPaymentsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/money/payments'
+      preLoaderRoute: typeof AuthenticatedDashboardMoneyPaymentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/orders/': {
-      id: '/_authenticated/admin/orders/'
+    '/_authenticated/dashboard/orders/': {
+      id: '/_authenticated/dashboard/orders/'
       path: '/orders'
-      fullPath: '/admin/orders/'
-      preLoaderRoute: typeof AuthenticatedAdminOrdersIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/orders/'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/orders/$orderId': {
-      id: '/_authenticated/admin/orders/$orderId'
+    '/_authenticated/dashboard/orders/$orderId': {
+      id: '/_authenticated/dashboard/orders/$orderId'
       path: '/orders/$orderId'
-      fullPath: '/admin/orders/$orderId'
-      preLoaderRoute: typeof AuthenticatedAdminOrdersOrderIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/orders/$orderId'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/products/': {
-      id: '/_authenticated/admin/products/'
+    '/_authenticated/dashboard/products/': {
+      id: '/_authenticated/dashboard/products/'
       path: '/products'
-      fullPath: '/admin/products/'
-      preLoaderRoute: typeof AuthenticatedAdminProductsIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/products/'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/products/$productId': {
-      id: '/_authenticated/admin/products/$productId'
+    '/_authenticated/dashboard/products/$productId': {
+      id: '/_authenticated/dashboard/products/$productId'
       path: '/products/$productId'
-      fullPath: '/admin/products/$productId'
-      preLoaderRoute: typeof AuthenticatedAdminProductsProductIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/products/$productId'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsProductIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/products/new': {
-      id: '/_authenticated/admin/products/new'
+    '/_authenticated/dashboard/products/new': {
+      id: '/_authenticated/dashboard/products/new'
       path: '/products/new'
-      fullPath: '/admin/products/new'
-      preLoaderRoute: typeof AuthenticatedAdminProductsNewRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/products/new'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsNewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/api': {
-      id: '/_authenticated/admin/settings_/api'
+    '/_authenticated/dashboard/settings_/api': {
+      id: '/_authenticated/dashboard/settings_/api'
       path: '/settings/api'
-      fullPath: '/admin/settings/api'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsApiRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/api'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsApiRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/domains': {
-      id: '/_authenticated/admin/settings_/domains'
+    '/_authenticated/dashboard/settings_/domains': {
+      id: '/_authenticated/dashboard/settings_/domains'
       path: '/settings/domains'
-      fullPath: '/admin/settings/domains'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsDomainsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/domains'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsDomainsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/infrastructure': {
-      id: '/_authenticated/admin/settings_/infrastructure'
+    '/_authenticated/dashboard/settings_/infrastructure': {
+      id: '/_authenticated/dashboard/settings_/infrastructure'
       path: '/settings/infrastructure'
-      fullPath: '/admin/settings/infrastructure'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsInfrastructureRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/infrastructure'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsInfrastructureRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/providers': {
-      id: '/_authenticated/admin/settings_/providers'
+    '/_authenticated/dashboard/settings_/providers': {
+      id: '/_authenticated/dashboard/settings_/providers'
       path: '/settings/providers'
-      fullPath: '/admin/settings/providers'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsProvidersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/providers'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsProvidersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/security': {
-      id: '/_authenticated/admin/settings_/security'
+    '/_authenticated/dashboard/settings_/security': {
+      id: '/_authenticated/dashboard/settings_/security'
       path: '/settings/security'
-      fullPath: '/admin/settings/security'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsSecurityRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/security'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsSecurityRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/settings_/seo': {
-      id: '/_authenticated/admin/settings_/seo'
+    '/_authenticated/dashboard/settings_/seo': {
+      id: '/_authenticated/dashboard/settings_/seo'
       path: '/settings/seo'
-      fullPath: '/admin/settings/seo'
-      preLoaderRoute: typeof AuthenticatedAdminSettingsSeoRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/settings/seo'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsSeoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/api/public/ads/click': {
       id: '/api/public/ads/click'
@@ -3953,12 +3880,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoreSlugSitemapsKindRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/orders/$orderId_/invoice': {
-      id: '/_authenticated/admin/orders/$orderId_/invoice'
+    '/_authenticated/dashboard/orders/$orderId_/invoice': {
+      id: '/_authenticated/dashboard/orders/$orderId_/invoice'
       path: '/orders/$orderId/invoice'
-      fullPath: '/admin/orders/$orderId/invoice'
-      preLoaderRoute: typeof AuthenticatedAdminOrdersOrderIdInvoiceRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/dashboard/orders/$orderId/invoice'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/api/public/payments/live/$provider': {
       id: '/api/public/payments/live/$provider'
@@ -3991,195 +3918,209 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminActivityRoute: typeof AuthenticatedAdminActivityRoute
-  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
-  AuthenticatedAdminApprovalsRoute: typeof AuthenticatedAdminApprovalsRoute
-  AuthenticatedAdminBrandsRoute: typeof AuthenticatedAdminBrandsRoute
-  AuthenticatedAdminBuilderRoute: typeof AuthenticatedAdminBuilderRoute
-  AuthenticatedAdminBulkEditorRoute: typeof AuthenticatedAdminBulkEditorRoute
-  AuthenticatedAdminBundlesRoute: typeof AuthenticatedAdminBundlesRoute
-  AuthenticatedAdminCartsRoute: typeof AuthenticatedAdminCartsRoute
-  AuthenticatedAdminCatalogRoute: typeof AuthenticatedAdminCatalogRoute
-  AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
-  AuthenticatedAdminCollectionsRoute: typeof AuthenticatedAdminCollectionsRoute
-  AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
-  AuthenticatedAdminDevelopersRoute: typeof AuthenticatedAdminDevelopersRoute
-  AuthenticatedAdminDraftOrdersRoute: typeof AuthenticatedAdminDraftOrdersRoute
-  AuthenticatedAdminExperimentsRoute: typeof AuthenticatedAdminExperimentsRoute
-  AuthenticatedAdminExportsRoute: typeof AuthenticatedAdminExportsRoute
-  AuthenticatedAdminGiftCardsRoute: typeof AuthenticatedAdminGiftCardsRoute
-  AuthenticatedAdminInventoryRoute: typeof AuthenticatedAdminInventoryRoute
-  AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
-  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
-  AuthenticatedAdminPlansRoute: typeof AuthenticatedAdminPlansRoute
-  AuthenticatedAdminPosRoute: typeof AuthenticatedAdminPosRoute
-  AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
-  AuthenticatedAdminPurchasingRoute: typeof AuthenticatedAdminPurchasingRoute
-  AuthenticatedAdminReturnsRoute: typeof AuthenticatedAdminReturnsRoute
-  AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
-  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
-  AuthenticatedAdminShippingRoute: typeof AuthenticatedAdminShippingRoute
-  AuthenticatedAdminStaffRoute: typeof AuthenticatedAdminStaffRoute
-  AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
-  AuthenticatedAdminSupportRoute: typeof AuthenticatedAdminSupportRoute
-  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminAiAssistantRoute: typeof AuthenticatedAdminAiAssistantRoute
-  AuthenticatedAdminAiSettingsRoute: typeof AuthenticatedAdminAiSettingsRoute
-  AuthenticatedAdminAnalyticsInsightsRoute: typeof AuthenticatedAdminAnalyticsInsightsRoute
-  AuthenticatedAdminAnalyticsReportsRoute: typeof AuthenticatedAdminAnalyticsReportsRoute
-  AuthenticatedAdminBillingInvoicesRoute: typeof AuthenticatedAdminBillingInvoicesRoute
-  AuthenticatedAdminContentEditorRoute: typeof AuthenticatedAdminContentEditorRoute
-  AuthenticatedAdminContentMediaRoute: typeof AuthenticatedAdminContentMediaRoute
-  AuthenticatedAdminContentMenusRoute: typeof AuthenticatedAdminContentMenusRoute
-  AuthenticatedAdminContentPagesRoute: typeof AuthenticatedAdminContentPagesRoute
-  AuthenticatedAdminContentPostsRoute: typeof AuthenticatedAdminContentPostsRoute
-  AuthenticatedAdminContentThemesRoute: typeof AuthenticatedAdminContentThemesRoute
-  AuthenticatedAdminFraudAdDefenseRoute: typeof AuthenticatedAdminFraudAdDefenseRoute
-  AuthenticatedAdminFraudAuditRoute: typeof AuthenticatedAdminFraudAuditRoute
-  AuthenticatedAdminMarketingArticlesRoute: typeof AuthenticatedAdminMarketingArticlesRoute
-  AuthenticatedAdminMarketingCampaignsRoute: typeof AuthenticatedAdminMarketingCampaignsRoute
-  AuthenticatedAdminMarketingCodesRoute: typeof AuthenticatedAdminMarketingCodesRoute
-  AuthenticatedAdminMarketingCouponsRoute: typeof AuthenticatedAdminMarketingCouponsRoute
-  AuthenticatedAdminMarketingFormsRoute: typeof AuthenticatedAdminMarketingFormsRoute
-  AuthenticatedAdminMarketingMediaRoute: typeof AuthenticatedAdminMarketingMediaRoute
-  AuthenticatedAdminMarketingSeoRoute: typeof AuthenticatedAdminMarketingSeoRoute
-  AuthenticatedAdminMarketingSubscribersRoute: typeof AuthenticatedAdminMarketingSubscribersRoute
-  AuthenticatedAdminMarketplaceCreatorRoute: typeof AuthenticatedAdminMarketplaceCreatorRoute
-  AuthenticatedAdminMarketplaceModerationRoute: typeof AuthenticatedAdminMarketplaceModerationRoute
-  AuthenticatedAdminMarketplaceVersionsRoute: typeof AuthenticatedAdminMarketplaceVersionsRoute
-  AuthenticatedAdminMoneyPaymentsRoute: typeof AuthenticatedAdminMoneyPaymentsRoute
-  AuthenticatedAdminOrdersOrderIdRoute: typeof AuthenticatedAdminOrdersOrderIdRoute
-  AuthenticatedAdminProductsProductIdRoute: typeof AuthenticatedAdminProductsProductIdRoute
-  AuthenticatedAdminProductsNewRoute: typeof AuthenticatedAdminProductsNewRoute
-  AuthenticatedAdminSettingsApiRoute: typeof AuthenticatedAdminSettingsApiRoute
-  AuthenticatedAdminSettingsDomainsRoute: typeof AuthenticatedAdminSettingsDomainsRoute
-  AuthenticatedAdminSettingsInfrastructureRoute: typeof AuthenticatedAdminSettingsInfrastructureRoute
-  AuthenticatedAdminSettingsProvidersRoute: typeof AuthenticatedAdminSettingsProvidersRoute
-  AuthenticatedAdminSettingsSecurityRoute: typeof AuthenticatedAdminSettingsSecurityRoute
-  AuthenticatedAdminSettingsSeoRoute: typeof AuthenticatedAdminSettingsSeoRoute
-  AuthenticatedAdminBillingIndexRoute: typeof AuthenticatedAdminBillingIndexRoute
-  AuthenticatedAdminContentIndexRoute: typeof AuthenticatedAdminContentIndexRoute
-  AuthenticatedAdminFraudIndexRoute: typeof AuthenticatedAdminFraudIndexRoute
-  AuthenticatedAdminMarketingIndexRoute: typeof AuthenticatedAdminMarketingIndexRoute
-  AuthenticatedAdminMarketplaceIndexRoute: typeof AuthenticatedAdminMarketplaceIndexRoute
-  AuthenticatedAdminOrdersIndexRoute: typeof AuthenticatedAdminOrdersIndexRoute
-  AuthenticatedAdminProductsIndexRoute: typeof AuthenticatedAdminProductsIndexRoute
-  AuthenticatedAdminOrdersOrderIdInvoiceRoute: typeof AuthenticatedAdminOrdersOrderIdInvoiceRoute
-}
-
-const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminActivityRoute: AuthenticatedAdminActivityRoute,
-  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
-  AuthenticatedAdminApprovalsRoute: AuthenticatedAdminApprovalsRoute,
-  AuthenticatedAdminBrandsRoute: AuthenticatedAdminBrandsRoute,
-  AuthenticatedAdminBuilderRoute: AuthenticatedAdminBuilderRoute,
-  AuthenticatedAdminBulkEditorRoute: AuthenticatedAdminBulkEditorRoute,
-  AuthenticatedAdminBundlesRoute: AuthenticatedAdminBundlesRoute,
-  AuthenticatedAdminCartsRoute: AuthenticatedAdminCartsRoute,
-  AuthenticatedAdminCatalogRoute: AuthenticatedAdminCatalogRoute,
-  AuthenticatedAdminCategoriesRoute: AuthenticatedAdminCategoriesRoute,
-  AuthenticatedAdminCollectionsRoute: AuthenticatedAdminCollectionsRoute,
-  AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
-  AuthenticatedAdminDevelopersRoute: AuthenticatedAdminDevelopersRoute,
-  AuthenticatedAdminDraftOrdersRoute: AuthenticatedAdminDraftOrdersRoute,
-  AuthenticatedAdminExperimentsRoute: AuthenticatedAdminExperimentsRoute,
-  AuthenticatedAdminExportsRoute: AuthenticatedAdminExportsRoute,
-  AuthenticatedAdminGiftCardsRoute: AuthenticatedAdminGiftCardsRoute,
-  AuthenticatedAdminInventoryRoute: AuthenticatedAdminInventoryRoute,
-  AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
-  AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
-  AuthenticatedAdminPlansRoute: AuthenticatedAdminPlansRoute,
-  AuthenticatedAdminPosRoute: AuthenticatedAdminPosRoute,
-  AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
-  AuthenticatedAdminPurchasingRoute: AuthenticatedAdminPurchasingRoute,
-  AuthenticatedAdminReturnsRoute: AuthenticatedAdminReturnsRoute,
-  AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
-  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
-  AuthenticatedAdminShippingRoute: AuthenticatedAdminShippingRoute,
-  AuthenticatedAdminStaffRoute: AuthenticatedAdminStaffRoute,
-  AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
-  AuthenticatedAdminSupportRoute: AuthenticatedAdminSupportRoute,
-  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminAiAssistantRoute: AuthenticatedAdminAiAssistantRoute,
-  AuthenticatedAdminAiSettingsRoute: AuthenticatedAdminAiSettingsRoute,
-  AuthenticatedAdminAnalyticsInsightsRoute:
-    AuthenticatedAdminAnalyticsInsightsRoute,
-  AuthenticatedAdminAnalyticsReportsRoute:
-    AuthenticatedAdminAnalyticsReportsRoute,
-  AuthenticatedAdminBillingInvoicesRoute:
-    AuthenticatedAdminBillingInvoicesRoute,
-  AuthenticatedAdminContentEditorRoute: AuthenticatedAdminContentEditorRoute,
-  AuthenticatedAdminContentMediaRoute: AuthenticatedAdminContentMediaRoute,
-  AuthenticatedAdminContentMenusRoute: AuthenticatedAdminContentMenusRoute,
-  AuthenticatedAdminContentPagesRoute: AuthenticatedAdminContentPagesRoute,
-  AuthenticatedAdminContentPostsRoute: AuthenticatedAdminContentPostsRoute,
-  AuthenticatedAdminContentThemesRoute: AuthenticatedAdminContentThemesRoute,
-  AuthenticatedAdminFraudAdDefenseRoute: AuthenticatedAdminFraudAdDefenseRoute,
-  AuthenticatedAdminFraudAuditRoute: AuthenticatedAdminFraudAuditRoute,
-  AuthenticatedAdminMarketingArticlesRoute:
-    AuthenticatedAdminMarketingArticlesRoute,
-  AuthenticatedAdminMarketingCampaignsRoute:
-    AuthenticatedAdminMarketingCampaignsRoute,
-  AuthenticatedAdminMarketingCodesRoute: AuthenticatedAdminMarketingCodesRoute,
-  AuthenticatedAdminMarketingCouponsRoute:
-    AuthenticatedAdminMarketingCouponsRoute,
-  AuthenticatedAdminMarketingFormsRoute: AuthenticatedAdminMarketingFormsRoute,
-  AuthenticatedAdminMarketingMediaRoute: AuthenticatedAdminMarketingMediaRoute,
-  AuthenticatedAdminMarketingSeoRoute: AuthenticatedAdminMarketingSeoRoute,
-  AuthenticatedAdminMarketingSubscribersRoute:
-    AuthenticatedAdminMarketingSubscribersRoute,
-  AuthenticatedAdminMarketplaceCreatorRoute:
-    AuthenticatedAdminMarketplaceCreatorRoute,
-  AuthenticatedAdminMarketplaceModerationRoute:
-    AuthenticatedAdminMarketplaceModerationRoute,
-  AuthenticatedAdminMarketplaceVersionsRoute:
-    AuthenticatedAdminMarketplaceVersionsRoute,
-  AuthenticatedAdminMoneyPaymentsRoute: AuthenticatedAdminMoneyPaymentsRoute,
-  AuthenticatedAdminOrdersOrderIdRoute: AuthenticatedAdminOrdersOrderIdRoute,
-  AuthenticatedAdminProductsProductIdRoute:
-    AuthenticatedAdminProductsProductIdRoute,
-  AuthenticatedAdminProductsNewRoute: AuthenticatedAdminProductsNewRoute,
-  AuthenticatedAdminSettingsApiRoute: AuthenticatedAdminSettingsApiRoute,
-  AuthenticatedAdminSettingsDomainsRoute:
-    AuthenticatedAdminSettingsDomainsRoute,
-  AuthenticatedAdminSettingsInfrastructureRoute:
-    AuthenticatedAdminSettingsInfrastructureRoute,
-  AuthenticatedAdminSettingsProvidersRoute:
-    AuthenticatedAdminSettingsProvidersRoute,
-  AuthenticatedAdminSettingsSecurityRoute:
-    AuthenticatedAdminSettingsSecurityRoute,
-  AuthenticatedAdminSettingsSeoRoute: AuthenticatedAdminSettingsSeoRoute,
-  AuthenticatedAdminBillingIndexRoute: AuthenticatedAdminBillingIndexRoute,
-  AuthenticatedAdminContentIndexRoute: AuthenticatedAdminContentIndexRoute,
-  AuthenticatedAdminFraudIndexRoute: AuthenticatedAdminFraudIndexRoute,
-  AuthenticatedAdminMarketingIndexRoute: AuthenticatedAdminMarketingIndexRoute,
-  AuthenticatedAdminMarketplaceIndexRoute:
-    AuthenticatedAdminMarketplaceIndexRoute,
-  AuthenticatedAdminOrdersIndexRoute: AuthenticatedAdminOrdersIndexRoute,
-  AuthenticatedAdminProductsIndexRoute: AuthenticatedAdminProductsIndexRoute,
-  AuthenticatedAdminOrdersOrderIdInvoiceRoute:
-    AuthenticatedAdminOrdersOrderIdInvoiceRoute,
-}
-
-const AuthenticatedAdminRouteWithChildren =
-  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
-
 interface AuthenticatedDashboardRouteChildren {
-  AuthenticatedDashboardOrdersRoute: typeof AuthenticatedDashboardOrdersRoute
-  AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
-  AuthenticatedDashboardTrackRoute: typeof AuthenticatedDashboardTrackRoute
-  AuthenticatedDashboardWishlistRoute: typeof AuthenticatedDashboardWishlistRoute
+  AuthenticatedDashboardActivityRoute: typeof AuthenticatedDashboardActivityRoute
+  AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
+  AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
+  AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
+  AuthenticatedDashboardBuilderRoute: typeof AuthenticatedDashboardBuilderRoute
+  AuthenticatedDashboardBulkEditorRoute: typeof AuthenticatedDashboardBulkEditorRoute
+  AuthenticatedDashboardBundlesRoute: typeof AuthenticatedDashboardBundlesRoute
+  AuthenticatedDashboardCartsRoute: typeof AuthenticatedDashboardCartsRoute
+  AuthenticatedDashboardCatalogRoute: typeof AuthenticatedDashboardCatalogRoute
+  AuthenticatedDashboardCategoriesRoute: typeof AuthenticatedDashboardCategoriesRoute
+  AuthenticatedDashboardCollectionsRoute: typeof AuthenticatedDashboardCollectionsRoute
+  AuthenticatedDashboardCustomersRoute: typeof AuthenticatedDashboardCustomersRoute
+  AuthenticatedDashboardDevelopersRoute: typeof AuthenticatedDashboardDevelopersRoute
+  AuthenticatedDashboardDraftOrdersRoute: typeof AuthenticatedDashboardDraftOrdersRoute
+  AuthenticatedDashboardExperimentsRoute: typeof AuthenticatedDashboardExperimentsRoute
+  AuthenticatedDashboardExportsRoute: typeof AuthenticatedDashboardExportsRoute
+  AuthenticatedDashboardGiftCardsRoute: typeof AuthenticatedDashboardGiftCardsRoute
+  AuthenticatedDashboardInventoryRoute: typeof AuthenticatedDashboardInventoryRoute
+  AuthenticatedDashboardPagesRoute: typeof AuthenticatedDashboardPagesRoute
+  AuthenticatedDashboardPaymentsRoute: typeof AuthenticatedDashboardPaymentsRoute
+  AuthenticatedDashboardPlansRoute: typeof AuthenticatedDashboardPlansRoute
+  AuthenticatedDashboardPosRoute: typeof AuthenticatedDashboardPosRoute
+  AuthenticatedDashboardPricingRoute: typeof AuthenticatedDashboardPricingRoute
+  AuthenticatedDashboardPurchasingRoute: typeof AuthenticatedDashboardPurchasingRoute
+  AuthenticatedDashboardReturnsRoute: typeof AuthenticatedDashboardReturnsRoute
+  AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute
+  AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
+  AuthenticatedDashboardShippingRoute: typeof AuthenticatedDashboardShippingRoute
+  AuthenticatedDashboardStaffRoute: typeof AuthenticatedDashboardStaffRoute
+  AuthenticatedDashboardSubscriptionsRoute: typeof AuthenticatedDashboardSubscriptionsRoute
+  AuthenticatedDashboardSupportRoute: typeof AuthenticatedDashboardSupportRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardAiAssistantRoute: typeof AuthenticatedDashboardAiAssistantRoute
+  AuthenticatedDashboardAiSettingsRoute: typeof AuthenticatedDashboardAiSettingsRoute
+  AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute
+  AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute
+  AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute
+  AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute
+  AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute
+  AuthenticatedDashboardContentPagesRoute: typeof AuthenticatedDashboardContentPagesRoute
+  AuthenticatedDashboardContentPostsRoute: typeof AuthenticatedDashboardContentPostsRoute
+  AuthenticatedDashboardContentThemesRoute: typeof AuthenticatedDashboardContentThemesRoute
+  AuthenticatedDashboardFraudAdDefenseRoute: typeof AuthenticatedDashboardFraudAdDefenseRoute
+  AuthenticatedDashboardFraudAuditRoute: typeof AuthenticatedDashboardFraudAuditRoute
+  AuthenticatedDashboardMarketingArticlesRoute: typeof AuthenticatedDashboardMarketingArticlesRoute
+  AuthenticatedDashboardMarketingCampaignsRoute: typeof AuthenticatedDashboardMarketingCampaignsRoute
+  AuthenticatedDashboardMarketingCodesRoute: typeof AuthenticatedDashboardMarketingCodesRoute
+  AuthenticatedDashboardMarketingCouponsRoute: typeof AuthenticatedDashboardMarketingCouponsRoute
+  AuthenticatedDashboardMarketingFormsRoute: typeof AuthenticatedDashboardMarketingFormsRoute
+  AuthenticatedDashboardMarketingMediaRoute: typeof AuthenticatedDashboardMarketingMediaRoute
+  AuthenticatedDashboardMarketingSeoRoute: typeof AuthenticatedDashboardMarketingSeoRoute
+  AuthenticatedDashboardMarketingSubscribersRoute: typeof AuthenticatedDashboardMarketingSubscribersRoute
+  AuthenticatedDashboardMarketplaceCreatorRoute: typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  AuthenticatedDashboardMarketplaceModerationRoute: typeof AuthenticatedDashboardMarketplaceModerationRoute
+  AuthenticatedDashboardMarketplaceVersionsRoute: typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  AuthenticatedDashboardMoneyPaymentsRoute: typeof AuthenticatedDashboardMoneyPaymentsRoute
+  AuthenticatedDashboardOrdersOrderIdRoute: typeof AuthenticatedDashboardOrdersOrderIdRoute
+  AuthenticatedDashboardProductsProductIdRoute: typeof AuthenticatedDashboardProductsProductIdRoute
+  AuthenticatedDashboardProductsNewRoute: typeof AuthenticatedDashboardProductsNewRoute
+  AuthenticatedDashboardSettingsApiRoute: typeof AuthenticatedDashboardSettingsApiRoute
+  AuthenticatedDashboardSettingsDomainsRoute: typeof AuthenticatedDashboardSettingsDomainsRoute
+  AuthenticatedDashboardSettingsInfrastructureRoute: typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  AuthenticatedDashboardSettingsProvidersRoute: typeof AuthenticatedDashboardSettingsProvidersRoute
+  AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
+  AuthenticatedDashboardSettingsSeoRoute: typeof AuthenticatedDashboardSettingsSeoRoute
+  AuthenticatedDashboardBillingIndexRoute: typeof AuthenticatedDashboardBillingIndexRoute
+  AuthenticatedDashboardContentIndexRoute: typeof AuthenticatedDashboardContentIndexRoute
+  AuthenticatedDashboardFraudIndexRoute: typeof AuthenticatedDashboardFraudIndexRoute
+  AuthenticatedDashboardMarketingIndexRoute: typeof AuthenticatedDashboardMarketingIndexRoute
+  AuthenticatedDashboardMarketplaceIndexRoute: typeof AuthenticatedDashboardMarketplaceIndexRoute
+  AuthenticatedDashboardOrdersIndexRoute: typeof AuthenticatedDashboardOrdersIndexRoute
+  AuthenticatedDashboardProductsIndexRoute: typeof AuthenticatedDashboardProductsIndexRoute
+  AuthenticatedDashboardOrdersOrderIdInvoiceRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
-    AuthenticatedDashboardOrdersRoute: AuthenticatedDashboardOrdersRoute,
-    AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
-    AuthenticatedDashboardTrackRoute: AuthenticatedDashboardTrackRoute,
-    AuthenticatedDashboardWishlistRoute: AuthenticatedDashboardWishlistRoute,
+    AuthenticatedDashboardActivityRoute: AuthenticatedDashboardActivityRoute,
+    AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
+    AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
+    AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
+    AuthenticatedDashboardBuilderRoute: AuthenticatedDashboardBuilderRoute,
+    AuthenticatedDashboardBulkEditorRoute:
+      AuthenticatedDashboardBulkEditorRoute,
+    AuthenticatedDashboardBundlesRoute: AuthenticatedDashboardBundlesRoute,
+    AuthenticatedDashboardCartsRoute: AuthenticatedDashboardCartsRoute,
+    AuthenticatedDashboardCatalogRoute: AuthenticatedDashboardCatalogRoute,
+    AuthenticatedDashboardCategoriesRoute:
+      AuthenticatedDashboardCategoriesRoute,
+    AuthenticatedDashboardCollectionsRoute:
+      AuthenticatedDashboardCollectionsRoute,
+    AuthenticatedDashboardCustomersRoute: AuthenticatedDashboardCustomersRoute,
+    AuthenticatedDashboardDevelopersRoute:
+      AuthenticatedDashboardDevelopersRoute,
+    AuthenticatedDashboardDraftOrdersRoute:
+      AuthenticatedDashboardDraftOrdersRoute,
+    AuthenticatedDashboardExperimentsRoute:
+      AuthenticatedDashboardExperimentsRoute,
+    AuthenticatedDashboardExportsRoute: AuthenticatedDashboardExportsRoute,
+    AuthenticatedDashboardGiftCardsRoute: AuthenticatedDashboardGiftCardsRoute,
+    AuthenticatedDashboardInventoryRoute: AuthenticatedDashboardInventoryRoute,
+    AuthenticatedDashboardPagesRoute: AuthenticatedDashboardPagesRoute,
+    AuthenticatedDashboardPaymentsRoute: AuthenticatedDashboardPaymentsRoute,
+    AuthenticatedDashboardPlansRoute: AuthenticatedDashboardPlansRoute,
+    AuthenticatedDashboardPosRoute: AuthenticatedDashboardPosRoute,
+    AuthenticatedDashboardPricingRoute: AuthenticatedDashboardPricingRoute,
+    AuthenticatedDashboardPurchasingRoute:
+      AuthenticatedDashboardPurchasingRoute,
+    AuthenticatedDashboardReturnsRoute: AuthenticatedDashboardReturnsRoute,
+    AuthenticatedDashboardReviewsRoute: AuthenticatedDashboardReviewsRoute,
+    AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
+    AuthenticatedDashboardShippingRoute: AuthenticatedDashboardShippingRoute,
+    AuthenticatedDashboardStaffRoute: AuthenticatedDashboardStaffRoute,
+    AuthenticatedDashboardSubscriptionsRoute:
+      AuthenticatedDashboardSubscriptionsRoute,
+    AuthenticatedDashboardSupportRoute: AuthenticatedDashboardSupportRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardAiAssistantRoute:
+      AuthenticatedDashboardAiAssistantRoute,
+    AuthenticatedDashboardAiSettingsRoute:
+      AuthenticatedDashboardAiSettingsRoute,
+    AuthenticatedDashboardAnalyticsInsightsRoute:
+      AuthenticatedDashboardAnalyticsInsightsRoute,
+    AuthenticatedDashboardAnalyticsReportsRoute:
+      AuthenticatedDashboardAnalyticsReportsRoute,
+    AuthenticatedDashboardBillingInvoicesRoute:
+      AuthenticatedDashboardBillingInvoicesRoute,
+    AuthenticatedDashboardContentEditorRoute:
+      AuthenticatedDashboardContentEditorRoute,
+    AuthenticatedDashboardContentMediaRoute:
+      AuthenticatedDashboardContentMediaRoute,
+    AuthenticatedDashboardContentMenusRoute:
+      AuthenticatedDashboardContentMenusRoute,
+    AuthenticatedDashboardContentPagesRoute:
+      AuthenticatedDashboardContentPagesRoute,
+    AuthenticatedDashboardContentPostsRoute:
+      AuthenticatedDashboardContentPostsRoute,
+    AuthenticatedDashboardContentThemesRoute:
+      AuthenticatedDashboardContentThemesRoute,
+    AuthenticatedDashboardFraudAdDefenseRoute:
+      AuthenticatedDashboardFraudAdDefenseRoute,
+    AuthenticatedDashboardFraudAuditRoute:
+      AuthenticatedDashboardFraudAuditRoute,
+    AuthenticatedDashboardMarketingArticlesRoute:
+      AuthenticatedDashboardMarketingArticlesRoute,
+    AuthenticatedDashboardMarketingCampaignsRoute:
+      AuthenticatedDashboardMarketingCampaignsRoute,
+    AuthenticatedDashboardMarketingCodesRoute:
+      AuthenticatedDashboardMarketingCodesRoute,
+    AuthenticatedDashboardMarketingCouponsRoute:
+      AuthenticatedDashboardMarketingCouponsRoute,
+    AuthenticatedDashboardMarketingFormsRoute:
+      AuthenticatedDashboardMarketingFormsRoute,
+    AuthenticatedDashboardMarketingMediaRoute:
+      AuthenticatedDashboardMarketingMediaRoute,
+    AuthenticatedDashboardMarketingSeoRoute:
+      AuthenticatedDashboardMarketingSeoRoute,
+    AuthenticatedDashboardMarketingSubscribersRoute:
+      AuthenticatedDashboardMarketingSubscribersRoute,
+    AuthenticatedDashboardMarketplaceCreatorRoute:
+      AuthenticatedDashboardMarketplaceCreatorRoute,
+    AuthenticatedDashboardMarketplaceModerationRoute:
+      AuthenticatedDashboardMarketplaceModerationRoute,
+    AuthenticatedDashboardMarketplaceVersionsRoute:
+      AuthenticatedDashboardMarketplaceVersionsRoute,
+    AuthenticatedDashboardMoneyPaymentsRoute:
+      AuthenticatedDashboardMoneyPaymentsRoute,
+    AuthenticatedDashboardOrdersOrderIdRoute:
+      AuthenticatedDashboardOrdersOrderIdRoute,
+    AuthenticatedDashboardProductsProductIdRoute:
+      AuthenticatedDashboardProductsProductIdRoute,
+    AuthenticatedDashboardProductsNewRoute:
+      AuthenticatedDashboardProductsNewRoute,
+    AuthenticatedDashboardSettingsApiRoute:
+      AuthenticatedDashboardSettingsApiRoute,
+    AuthenticatedDashboardSettingsDomainsRoute:
+      AuthenticatedDashboardSettingsDomainsRoute,
+    AuthenticatedDashboardSettingsInfrastructureRoute:
+      AuthenticatedDashboardSettingsInfrastructureRoute,
+    AuthenticatedDashboardSettingsProvidersRoute:
+      AuthenticatedDashboardSettingsProvidersRoute,
+    AuthenticatedDashboardSettingsSecurityRoute:
+      AuthenticatedDashboardSettingsSecurityRoute,
+    AuthenticatedDashboardSettingsSeoRoute:
+      AuthenticatedDashboardSettingsSeoRoute,
+    AuthenticatedDashboardBillingIndexRoute:
+      AuthenticatedDashboardBillingIndexRoute,
+    AuthenticatedDashboardContentIndexRoute:
+      AuthenticatedDashboardContentIndexRoute,
+    AuthenticatedDashboardFraudIndexRoute:
+      AuthenticatedDashboardFraudIndexRoute,
+    AuthenticatedDashboardMarketingIndexRoute:
+      AuthenticatedDashboardMarketingIndexRoute,
+    AuthenticatedDashboardMarketplaceIndexRoute:
+      AuthenticatedDashboardMarketplaceIndexRoute,
+    AuthenticatedDashboardOrdersIndexRoute:
+      AuthenticatedDashboardOrdersIndexRoute,
+    AuthenticatedDashboardProductsIndexRoute:
+      AuthenticatedDashboardProductsIndexRoute,
+    AuthenticatedDashboardOrdersOrderIdInvoiceRoute:
+      AuthenticatedDashboardOrdersOrderIdInvoiceRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
@@ -4188,14 +4129,12 @@ const AuthenticatedDashboardRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOauthAuthorizeRoute: typeof AuthenticatedOauthAuthorizeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOauthAuthorizeRoute: AuthenticatedOauthAuthorizeRoute,
@@ -4208,9 +4147,11 @@ interface RootRouteChildren {
   RootAccessRoute: typeof RootAccessRoute
   RootAiRoute: typeof RootAiRoute
   RootAuditRoute: typeof RootAuditRoute
+  RootAuthRoute: typeof RootAuthRoute
   RootCouponsRoute: typeof RootCouponsRoute
   RootFraudRoute: typeof RootFraudRoute
   RootGatewayRoute: typeof RootGatewayRoute
+  RootLoginRoute: typeof RootLoginRoute
   RootMarketingRoute: typeof RootMarketingRoute
   RootMoneyRoute: typeof RootMoneyRoute
   RootObservabilityRoute: typeof RootObservabilityRoute
@@ -4232,9 +4173,11 @@ const RootRouteChildren: RootRouteChildren = {
   RootAccessRoute: RootAccessRoute,
   RootAiRoute: RootAiRoute,
   RootAuditRoute: RootAuditRoute,
+  RootAuthRoute: RootAuthRoute,
   RootCouponsRoute: RootCouponsRoute,
   RootFraudRoute: RootFraudRoute,
   RootGatewayRoute: RootGatewayRoute,
+  RootLoginRoute: RootLoginRoute,
   RootMarketingRoute: RootMarketingRoute,
   RootMoneyRoute: RootMoneyRoute,
   RootObservabilityRoute: RootObservabilityRoute,

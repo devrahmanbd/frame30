@@ -1,5 +1,5 @@
 /**
- * `/admin` navigation model — one declaration, three consumers.
+ * `/dashboard` navigation model — one declaration, three consumers.
  *
  * The shell renders it, the route gate refuses what the actor may not see, and
  * the command palette searches it. Permissions here are *affordances only*:
@@ -89,25 +89,25 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Dashboard",
     bn: "ড্যাশবোর্ড",
     icon: "dashboard",
-    to: "/admin",
+    to: "/dashboard",
     items: [
-      { to: "/admin", en: "Home", bn: "হোম", icon: "dashboard" },
+      { to: "/dashboard", en: "Home", bn: "হোম", icon: "dashboard" },
       {
-        to: "/admin/analytics",
+        to: "/dashboard/analytics",
         en: "Analytics",
         bn: "অ্যানালিটিক্স",
         icon: "analytics",
         permission: "analytics.read",
       },
       {
-        to: "/admin/exports",
+        to: "/dashboard/exports",
         en: "Exports",
         bn: "এক্সপোর্ট",
         icon: "exports",
         permission: "analytics.export",
       },
       {
-        to: "/admin/experiments",
+        to: "/dashboard/experiments",
         en: "Experiments",
         bn: "এক্সপেরিমেন্ট",
         icon: "analytics",
@@ -120,76 +120,76 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Orders",
     bn: "অর্ডার",
     icon: "orders",
-    to: "/admin/orders",
+    to: "/dashboard/orders",
     items: [
       {
-        to: "/admin/orders",
+        to: "/dashboard/orders",
         en: "All orders",
         bn: "সব অর্ডার",
         icon: "orders",
         permission: "orders.read",
       },
       {
-        to: "/admin/returns",
+        to: "/dashboard/returns",
         en: "Returns",
         bn: "রিটার্ন",
         icon: "returns",
         permission: "orders.read",
       },
       {
-        to: "/admin/draft-orders",
+        to: "/dashboard/draft-orders",
         en: "Drafts",
         bn: "ড্রাফট",
         icon: "receipt",
         permission: "orders.read",
       },
       {
-        to: "/admin/carts",
+        to: "/dashboard/carts",
         en: "Abandoned",
         bn: "পরিত্যক্ত কার্ট",
         icon: "carts",
         permission: "orders.read",
       },
       {
-        to: "/admin/shipping",
+        to: "/dashboard/shipping",
         en: "Shipping",
         bn: "শিপিং",
         icon: "shipping",
         permission: "shipping.read",
       },
     ],
-    more: [{ to: "/admin/pos", en: "POS till", bn: "পিওএস", icon: "pos", permission: "pos.read" }],
+    more: [{ to: "/dashboard/pos", en: "POS till", bn: "পিওএস", icon: "pos", permission: "pos.read" }],
   },
   {
     key: "products",
     en: "Products",
     bn: "পণ্য",
     icon: "products",
-    to: "/admin/products",
+    to: "/dashboard/products",
     items: [
       {
-        to: "/admin/products",
+        to: "/dashboard/products",
         en: "All products",
         bn: "সব পণ্য",
         icon: "products",
         permission: "catalog.read",
       },
       {
-        to: "/admin/inventory",
+        to: "/dashboard/inventory",
         en: "Inventory",
         bn: "ইনভেন্টরি",
         icon: "inventory",
         permission: "inventory.read",
       },
       {
-        to: "/admin/categories",
+        to: "/dashboard/categories",
         en: "Organisation",
         bn: "সংগঠন",
         icon: "categories",
         permission: "catalog.read",
       },
       {
-        to: "/admin/pricing",
+        to: "/dashboard/pricing",
         en: "Pricing",
         bn: "প্রাইসিং",
         icon: "pricing",
@@ -198,49 +198,49 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/collections",
+        to: "/dashboard/collections",
         en: "Collections",
         bn: "কালেকশন",
         icon: "collections",
         permission: "catalog.read",
       },
       {
-        to: "/admin/brands",
+        to: "/dashboard/brands",
         en: "Brands",
         bn: "ব্র্যান্ড",
         icon: "tags",
         permission: "catalog.read",
       },
       {
-        to: "/admin/bundles",
+        to: "/dashboard/bundles",
         en: "Bundles",
         bn: "বান্ডল",
         icon: "bundles",
         permission: "catalog.read",
       },
       {
-        to: "/admin/subscriptions",
+        to: "/dashboard/subscriptions",
         en: "Subscriptions",
         bn: "সাবস্ক্রিপশন",
         icon: "subscriptions",
         permission: "catalog.read",
       },
       {
-        to: "/admin/purchasing",
+        to: "/dashboard/purchasing",
         en: "Purchasing",
         bn: "ক্রয়",
         icon: "purchasing",
         permission: "inventory.read",
       },
       {
-        to: "/admin/bulk-editor",
+        to: "/dashboard/bulk-editor",
         en: "Bulk editor",
         bn: "বাল্ক এডিটর",
         icon: "catalog",
         permission: "catalog.update",
       },
       {
-        to: "/admin/catalog",
+        to: "/dashboard/catalog",
         en: "Catalog settings",
         bn: "ক্যাটালগ সেটিংস",
         icon: "catalog",
@@ -253,24 +253,24 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Customers",
     bn: "ক্রেতা",
     icon: "customers",
-    to: "/admin/customers",
+    to: "/dashboard/customers",
     items: [
       {
-        to: "/admin/customers",
+        to: "/dashboard/customers",
         en: "All customers",
         bn: "সব ক্রেতা",
         icon: "customers",
         permission: "customers.read",
       },
       {
-        to: "/admin/support",
+        to: "/dashboard/support",
         en: "Support",
         bn: "সাপোর্ট",
         icon: "support",
         permission: "customers.read",
       },
       {
-        to: "/admin/reviews",
+        to: "/dashboard/reviews",
         en: "Reviews",
         bn: "রিভিউ",
         icon: "customers",
@@ -279,7 +279,7 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/ai/assistant",
+        to: "/dashboard/ai/assistant",
         en: "AI assistant",
         bn: "AI সহায়তা",
         icon: "ai",
@@ -292,45 +292,45 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Content",
     bn: "কনটেন্ট",
     icon: "pages",
-    to: "/admin/content/pages",
+    to: "/dashboard/content/pages",
     items: [
       {
-        to: "/admin/content/pages",
+        to: "/dashboard/content/pages",
         en: "Pages",
         bn: "পেজ",
         icon: "pages",
         permission: "marketing.read",
       },
       {
-        to: "/admin/content/posts",
+        to: "/dashboard/content/posts",
         en: "Posts",
         bn: "পোস্ট",
         icon: "articles",
         permission: "marketing.read",
       },
       {
-        to: "/admin/content/media",
+        to: "/dashboard/content/media",
         en: "Media",
         bn: "মিডিয়া",
         icon: "media",
         permission: "marketing.read",
       },
       {
-        to: "/admin/content/menus",
+        to: "/dashboard/content/menus",
         en: "Menus",
         bn: "মেনু",
         icon: "categories",
         permission: "marketing.read",
       },
       {
-        to: "/admin/marketing/seo",
+        to: "/dashboard/marketing/seo",
         en: "SEO",
         bn: "এসইও",
         icon: "seo",
         permission: "marketing.read",
       },
       {
-        to: "/admin/marketplace",
+        to: "/dashboard/marketplace",
         en: "Themes & apps",
         bn: "থিম ও অ্যাপ",
         icon: "marketplace",
@@ -339,21 +339,21 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/content/themes",
+        to: "/dashboard/content/themes",
         en: "Themes",
         bn: "থিম",
         icon: "marketplace",
         permission: "themes.read",
       },
       {
-        to: "/admin/builder",
+        to: "/dashboard/builder",
         en: "Page builder",
         bn: "পেজ বিল্ডার",
         icon: "builder",
         permission: "themes.read",
       },
       {
-        to: "/admin/marketing/forms",
+        to: "/dashboard/marketing/forms",
         en: "Forms",
         bn: "ফর্ম",
         icon: "pages",
@@ -366,24 +366,24 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Marketing",
     bn: "মার্কেটিং",
     icon: "marketing",
-    to: "/admin/marketing/campaigns",
+    to: "/dashboard/marketing/campaigns",
     items: [
       {
-        to: "/admin/marketing/campaigns",
+        to: "/dashboard/marketing/campaigns",
         en: "Campaigns",
         bn: "ক্যাম্পেইন",
         icon: "send",
         permission: "marketing.read",
       },
       {
-        to: "/admin/marketing/coupons",
+        to: "/dashboard/marketing/coupons",
         en: "Discounts",
         bn: "ডিসকাউন্ট",
         icon: "marketing",
         permission: "marketing.read",
       },
       {
-        to: "/admin/marketing/subscribers",
+        to: "/dashboard/marketing/subscribers",
         en: "Audience",
         bn: "সাবস্ক্রাইবার",
         icon: "users",
@@ -392,14 +392,14 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/gift-cards",
+        to: "/dashboard/gift-cards",
         en: "Gift cards",
         bn: "গিফট কার্ড",
         icon: "gift",
         permission: "marketing.read",
       },
       {
-        to: "/admin/marketing/codes",
+        to: "/dashboard/marketing/codes",
         en: "Code batches",
         bn: "কোড ব্যাচ",
         icon: "ticket",
@@ -412,32 +412,32 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Money",
     bn: "অর্থ",
     icon: "receipt",
-    to: "/admin/payments",
+    to: "/dashboard/payments",
     items: [
       {
-        to: "/admin/payments",
+        to: "/dashboard/payments",
         en: "Payments",
         bn: "পেমেন্ট",
         icon: "receipt",
         permission: "finance.read",
       },
       {
-        to: "/admin/billing/invoices",
+        to: "/dashboard/billing/invoices",
         en: "Invoices",
         bn: "ইনভয়েস",
         icon: "receipt",
         permission: "finance.read",
       },
       {
-        to: "/admin/plans",
+        to: "/dashboard/plans",
         en: "Plan & billing",
         bn: "প্ল্যান",
         icon: "plans",
         permission: "finance.read",
       },
-      { to: "/admin/fraud", en: "Risk", bn: "ঝুঁকি", icon: "fraud", permission: "fraud.read" },
+      { to: "/dashboard/fraud", en: "Risk", bn: "ঝুঁকি", icon: "fraud", permission: "fraud.read" },
       {
-        to: "/admin/settings/providers",
+        to: "/dashboard/settings/providers",
         en: "Payment rails",
         bn: "পেমেন্ট রেইল",
         icon: "rails",
@@ -446,7 +446,7 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/fraud/ad-defense",
+        to: "/dashboard/fraud/ad-defense",
         en: "Ad defense",
         bn: "বিজ্ঞাপন সুরক্ষা",
         icon: "fraud",
@@ -459,32 +459,32 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     en: "Settings",
     bn: "সেটিংস",
     icon: "settings",
-    to: "/admin/settings",
+    to: "/dashboard/settings",
     items: [
       {
-        to: "/admin/settings",
+        to: "/dashboard/settings",
         en: "General",
         bn: "সাধারণ",
         icon: "settings",
         permission: "settings.read",
       },
-      { to: "/admin/staff", en: "Staff", bn: "স্টাফ", icon: "staff", permission: "staff.read" },
+      { to: "/dashboard/staff", en: "Staff", bn: "স্টাফ", icon: "staff", permission: "staff.read" },
       {
-        to: "/admin/settings/domains",
+        to: "/dashboard/settings/domains",
         en: "Domains",
         bn: "ডোমেইন",
         icon: "domains",
         permission: "settings.read",
       },
       {
-        to: "/admin/settings/security",
+        to: "/dashboard/settings/security",
         en: "Security",
         bn: "নিরাপত্তা",
         icon: "security",
         permission: "settings.read",
       },
       {
-        to: "/admin/settings/seo",
+        to: "/dashboard/settings/seo",
         en: "SEO",
         bn: "এসইও",
         icon: "settings",
@@ -493,14 +493,14 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     ],
     more: [
       {
-        to: "/admin/developers",
+        to: "/dashboard/developers",
         en: "Developers",
         bn: "ডেভেলপার",
         icon: "developers",
         permission: "apikeys.read",
       },
       {
-        to: "/admin/approvals",
+        to: "/dashboard/approvals",
         en: "Approvals",
         bn: "অনুমোদন",
         icon: "approvals",
@@ -508,21 +508,21 @@ export const ADMIN_NAV: readonly NavGroup[] = [
       },
 
       {
-        to: "/admin/settings/api",
+        to: "/dashboard/settings/api",
         en: "API keys",
         bn: "API কী",
         icon: "apikeys",
         permission: "apikeys.read",
       },
       {
-        to: "/admin/settings/infrastructure",
+        to: "/dashboard/settings/infrastructure",
         en: "Infrastructure",
         bn: "ইনফ্রাস্ট্রাকচার",
         icon: "infra",
         permission: "settings.read",
       },
       {
-        to: "/admin/ai/settings",
+        to: "/dashboard/ai/settings",
         en: "AI Gateway",
         bn: "এআই গেটওয়ে",
         icon: "ai",
@@ -539,28 +539,28 @@ export const ADMIN_NAV: readonly NavGroup[] = [
  */
 export const HIDDEN_DESTINATIONS: readonly NavItem[] = [
   {
-    to: "/admin/products/new",
+    to: "/dashboard/products/new",
     en: "New product",
     bn: "নতুন পণ্য",
     icon: "products",
     permission: "catalog.update",
   },
   {
-    to: "/admin/fraud/audit",
+    to: "/dashboard/fraud/audit",
     en: "Risk audit",
     bn: "ঝুঁকি অডিট",
     icon: "fraud",
     permission: "fraud.read",
   },
   {
-    to: "/admin/marketplace/creator",
+    to: "/dashboard/marketplace/creator",
     en: "Creator studio",
     bn: "ক্রিয়েটর",
     icon: "marketplace",
     permission: "themes.read",
   },
   {
-    to: "/admin/marketplace/versions",
+    to: "/dashboard/marketplace/versions",
     en: "App versions",
     bn: "ভার্সন",
     icon: "marketplace",
@@ -593,7 +593,7 @@ export function filterNav(
 export function permissionForPath(pathname: string): Permission | null {
   let best: NavItem | null = null;
   for (const item of [...flattenNav(), ...HIDDEN_DESTINATIONS]) {
-    if (item.to === "/admin") continue;
+    if (item.to === "/dashboard") continue;
     if (pathname === item.to || pathname.startsWith(`${item.to}/`)) {
       if (!best || item.to.length > best.to.length) best = item;
     }
@@ -602,5 +602,5 @@ export function permissionForPath(pathname: string): Permission | null {
 }
 
 export function isNavActive(pathname: string, to: string): boolean {
-  return to === "/admin" ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
+  return to === "/dashboard" ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
 }

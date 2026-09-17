@@ -8,11 +8,11 @@ import type { ContentKind, ContentRow } from "@/lib/content-desk";
 export function editHref(kind: ContentKind, id: string, editor?: "classic" | "builder"): string {
   const params = new URLSearchParams({ kind, id });
   if (editor) params.set("editor", editor);
-  return `/admin/content/editor?${params.toString()}`;
+  return `/dashboard/content/editor?${params.toString()}`;
 }
 
 export function newHref(kind: ContentKind): string {
-  return `/admin/content/editor?kind=${kind}`;
+  return `/dashboard/content/editor?kind=${kind}`;
 }
 
 export function previewHref(kind: ContentKind, row: Pick<ContentRow, "slug" | "status">, storeSlug: string): string {

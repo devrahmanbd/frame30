@@ -123,7 +123,7 @@ export function ThemesScreen() {
     onError: () => toast.error("That change could not be saved"),
   });
 
-  const openCustomize = () => void navigate({ to: "/admin/builder" as never });
+  const openCustomize = () => void navigate({ to: "/dashboard/builder" as never });
 
   const previewInstalled = (theme: InstalledTheme) =>
     setPreview({

@@ -256,13 +256,13 @@ export function ProductForm({
       snapshot.current = current;
       if (redirect) {
         toast.success("Product saved");
-        navigate({ to: "/admin/products" });
+        navigate({ to: "/dashboard/products" });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not save product";
       if (message.includes("plan_limit_products")) {
         toast.error(message.replace(/^.*plan_limit_products:\s*/, ""), {
-          action: { label: "Upgrade", onClick: () => navigate({ to: "/admin/plans" }) },
+          action: { label: "Upgrade", onClick: () => navigate({ to: "/dashboard/plans" }) },
         });
       } else {
         toast.error(message);
@@ -309,7 +309,7 @@ export function ProductForm({
                   {
                     id: "back",
                     label: "Back to products",
-                    onSelect: () => navigate({ to: "/admin/products" }),
+                    onSelect: () => navigate({ to: "/dashboard/products" }),
                   },
                 ]}
               />

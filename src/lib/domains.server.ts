@@ -590,7 +590,7 @@ export async function applyCertResult(input: {
       titleBn: "কাস্টম ডোমেইন চালু হয়েছে",
       bodyEn: `${row.hostname} now serves your storefront over HTTPS.`,
       bodyBn: `${row.hostname} এখন HTTPS-এ আপনার স্টোর দেখাচ্ছে।`,
-      href: "/admin/settings/domains",
+      href: "/dashboard/settings/domains",
     });
     // First live domain becomes primary automatically — one less manual step.
     const { count } = await service
@@ -616,7 +616,7 @@ export async function applyCertResult(input: {
       titleBn: "সার্টিফিকেট ইস্যু করা যায়নি",
       bodyEn: `We could not issue TLS for ${row.hostname}. Check the DNS records and retry.`,
       bodyBn: `${row.hostname}-এর জন্য TLS ইস্যু করা যায়নি। DNS রেকর্ড দেখে আবার চেষ্টা করুন।`,
-      href: "/admin/settings/domains",
+      href: "/dashboard/settings/domains",
     });
   }
 }

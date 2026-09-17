@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Phase 13 — server layer for `/admin/settings/seo`.
+ * Phase 13 — server layer for `/dashboard/settings/seo`.
  *
  * Everything here runs as the signed-in merchant (RLS applies); the panel only
  * ever sees its own tenant's rows. All writes re-parse through the pure models

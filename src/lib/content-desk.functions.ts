@@ -1,5 +1,5 @@
 /**
- * Content desk — typed RPC surface for `/admin/content/*` (Phase 11).
+ * Content desk — typed RPC surface for `/dashboard/content/*` (Phase 11).
  *
  * Reads need `marketing.read`; writes need `marketing.update`; permanent
  * deletion and publish/unpublish need `marketing.publish`. The merchant is

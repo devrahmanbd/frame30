@@ -241,7 +241,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক অ্যাডমিন অর্ডার ডেস্ক: সিওডি স্ট্যাটাস, কুরিয়ার ও পেমেন্ট কলামসহ ফিল্টার করা অর্ডার তালিকা।",
     },
     {
-      path: "/admin/orders",
+      path: "/dashboard/orders",
       selector: "main",
       viewport: { width: 1280, height: 800 },
       waitFor: "table, [data-testid='orders-table']",
@@ -257,7 +257,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক থিম বিল্ডার: সেকশন ট্রি, লাইভ ক্যানভাস এবং হিরো ব্লকের স্টাইল ইন্সপেক্টর খোলা।",
     },
     {
-      path: "/admin/builder",
+      path: "/dashboard/builder",
       selector: "main",
       viewport: { width: 1440, height: 860 },
       auth: "admin",
@@ -271,7 +271,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক পেমেন্টস ডেস্ক: গেটওয়ে হেলথ, সেটলমেন্ট ব্যাচ ও রিকনসিলিয়েশন ব্যতিক্রম।",
     },
     {
-      path: "/admin/payments",
+      path: "/dashboard/payments",
       selector: "main",
       viewport: { width: 1280, height: 760 },
       auth: "admin",
@@ -284,7 +284,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক ফুলফিলমেন্ট বোর্ড: কুরিয়ার অ্যাসাইনমেন্ট, পিকআপ ব্যাচ ও ডেলিভারি এসএলএ কাউন্টার।",
     },
     {
-      path: "/admin/returns",
+      path: "/dashboard/returns",
       selector: "main",
       viewport: { width: 1280, height: 760 },
       auth: "admin",
@@ -297,7 +297,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক কাস্টমার প্রোফাইল: অর্ডার ইতিহাস, সেগমেন্ট সদস্যপদ ও সাপোর্ট আলাপের টাইমলাইন।",
     },
     {
-      path: "/admin/customers",
+      path: "/dashboard/customers",
       selector: "main",
       viewport: { width: 1280, height: 760 },
       auth: "admin",
@@ -311,7 +311,7 @@ export const UI_STILLS: readonly UiStill[] = [
       bn: "ফ্রেমিক সিকিউরিটি সেটিংস: স্টাফ রোল, স্কোপড পারমিশন ও প্রিভিলেজড অ্যাকশনের অডিট লগ।",
     },
     {
-      path: "/admin/settings",
+      path: "/dashboard/settings",
       selector: "main",
       viewport: { width: 1280, height: 760 },
       auth: "admin",

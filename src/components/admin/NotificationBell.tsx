@@ -141,7 +141,7 @@ export function NotificationBell() {
 
           <div className="border-t border-border px-3 py-2 text-right">
             <Link
-              to="/admin/activity"
+              to="/dashboard/activity"
               onClick={() => setOpen(false)}
               className="text-xs text-primary underline-offset-2 hover:underline"
             >

@@ -377,7 +377,7 @@ function InvoiceRow({
       )}
 
       {verdict.kind === "support" && (
-        <Link to="/admin/support" className="inline-block text-xs underline">
+        <Link to="/dashboard/support" className="inline-block text-xs underline">
           {t("Contact support with this invoice number", "এই ইনভয়েস নম্বর নিয়ে সাপোর্টে যোগাযোগ করুন")}
         </Link>
       )}

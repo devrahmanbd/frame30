@@ -34,7 +34,7 @@ export const Route = createFileRoute("/api/public/payments/platform/$provider")(
             page({
               title: "Payment window closed",
               body: `<p>This payment attempt is no longer active (<code>${escape(charge.status)}</code>). Start a new payment from your invoices page.</p>
-                     <p><a href="/admin/billing/invoices">Back to invoices</a></p>`,
+                     <p><a href="/dashboard/billing/invoices">Back to invoices</a></p>`,
             }),
             410,
           );
@@ -93,7 +93,7 @@ function escape(value: string) {
 
 function notFoundBody() {
   return `<p>This payment attempt does not exist or has been replaced.</p>
-          <p><a href="/admin/billing/invoices">Back to invoices</a></p>`;
+          <p><a href="/dashboard/billing/invoices">Back to invoices</a></p>`;
 }
 
 function page({ title, body }: { title: string; body: string }) {

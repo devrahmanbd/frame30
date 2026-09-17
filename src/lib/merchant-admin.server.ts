@@ -25,14 +25,14 @@ function fail(message: string | undefined): never {
 }
 
 export const SETUP_STEPS = [
-  { key: "profile", href: "/admin/settings" },
-  { key: "payments", href: "/admin/payments" },
-  { key: "shipping", href: "/admin/shipping" },
-  { key: "courier", href: "/admin/shipping" },
-  { key: "product", href: "/admin/products" },
-  { key: "theme", href: "/admin/builder" },
-  { key: "vat", href: "/admin/settings" },
-  { key: "kyc", href: "/admin/staff" },
+  { key: "profile", href: "/dashboard/settings" },
+  { key: "payments", href: "/dashboard/payments" },
+  { key: "shipping", href: "/dashboard/shipping" },
+  { key: "courier", href: "/dashboard/shipping" },
+  { key: "product", href: "/dashboard/products" },
+  { key: "theme", href: "/dashboard/builder" },
+  { key: "vat", href: "/dashboard/settings" },
+  { key: "kyc", href: "/dashboard/staff" },
 ] as const;
 
 export type SetupStep = {

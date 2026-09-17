@@ -4,7 +4,7 @@ import { Lock, ShieldAlert, Loader2, ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { platformIsAdminFn } from "@/lib/platform.functions";
 
-const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com"];
+const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com", "flamedev7@gmail.com"];
 
 export const Route = createFileRoute("/root/login")({
   head: () => ({

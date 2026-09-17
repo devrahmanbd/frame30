@@ -9,7 +9,7 @@
  *
  * Three rules are enforced structurally rather than by convention:
  *
- *  1. **A merchant can never delete a platform safety directive.** `/admin`,
+ *  1. **A merchant can never delete a platform safety directive.** `/dashboard`,
  *     `/checkout`, `/api`, `/auth` (and the per-store transactional paths) are
  *     re-appended after merchant rules, and a raw-append block that tries to
  *     `Allow:` them is rejected with a named error, not silently dropped.
@@ -48,7 +48,7 @@ export const MAX_SHARDS_PER_KIND = 200;
 
 /** Platform-owned paths that must never become crawlable, whatever a merchant
  * types into the robots editor. */
-export const SAFETY_DISALLOW = ["/admin", "/root", "/auth", "/checkout", "/api/"] as const;
+export const SAFETY_DISALLOW = ["/dashboard", "/root", "/auth", "/checkout", "/api/"] as const;
 
 /** Per-store transactional paths, disallowed relative to the store base. */
 export const STORE_SAFETY_SUFFIXES = ["/checkout", "/account", "/order", "/track"] as const;

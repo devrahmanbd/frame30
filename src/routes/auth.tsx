@@ -57,39 +57,37 @@ type Stage = "credentials" | "mfa";
 const OWNER_EMAIL = "devrahmanbd@gmail.com";
 
 /**
- * Where a signed-in person belongs.
- * 1. Honors explicit redirect target if provided.
- * 2. Framique owner lands in /root.
- * 3. Shop staff and merchant owners land in /admin.
- * 4. Platform owners land in /root.
- * 5. Everyone else is a shopper/appointee and lands in /dashboard.
+ * Where a signed-in merchant belongs:
+ * 1. Honors explicit merchant redirect target if provided.
+ * 2. If merchant has an active store, lands on /dashboard.
+ * 3. Fresh merchant signup without a store lands on /onboarding.
+ *
+ * /root is strictly decoupled from /auth — platform owners log in via /root/login.
  */
 async function landingFor(
   userId: string,
   explicitRedirect?: string,
-  userEmail?: string | null,
 ): Promise<string> {
-  if (explicitRedirect && explicitRedirect.startsWith("/") && !explicitRedirect.startsWith("//")) {
-    return explicitRedirect;
+  if (
+    explicitRedirect &&
+    explicitRedirect.startsWith("/") &&
+    !explicitRedirect.startsWith("//") &&
+    !explicitRedirect.startsWith("/root")
+  ) {
+    return explicitRedirect.replace(/^\/admin/, "/dashboard");
   }
-  const email = (userEmail || "").toLowerCase();
-  const isOwner = email === OWNER_EMAIL || email === "nahid52flame@gmail.com";
-  if (isOwner) {
-    return "/root";
-  }
-  const [adminCheck, member] = await Promise.all([
-    supabase.from("platform_admins").select("user_id").eq("user_id", userId).maybeSingle(),
-    supabase
-      .from("merchant_members")
-      .select("merchant_id")
-      .eq("user_id", userId)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle(),
-  ]);
 
-  if (adminCheck.data) return "/root";
-  if (member.data) return "/dashboard";
+  const { data: member } = await supabase
+    .from("merchant_members")
+    .select("merchant_id")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .limit(1)
+    .maybeSingle();
+
+  if (member) {
+    return "/dashboard";
+  }
   return "/onboarding";
 }
 
@@ -157,7 +155,7 @@ function AuthPage() {
     void recordAuthEventFn({
       data: { event: "signin.success", outcome: "ok", userId: session.user.id },
     }).catch(() => undefined);
-    const target = await landingFor(session.user.id, search?.redirect, session.user.email);
+    const target = await landingFor(session.user.id, search?.redirect);
     navigate({ to: target as any, replace: true });
   }
 

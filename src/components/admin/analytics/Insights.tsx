@@ -74,7 +74,7 @@ export function Insights() {
             ))}
           </div>
           <Link
-            to="/admin/analytics/reports"
+            to="/dashboard/analytics/reports"
             className="min-h-9 rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted"
           >
             {t("Report builder", "রিপোর্ট বিল্ডার")}

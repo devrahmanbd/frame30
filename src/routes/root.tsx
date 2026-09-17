@@ -14,7 +14,7 @@ import { useLang } from "@/lib/i18n";
  * Non-owners are redirected to /dashboard.
  * Unauthenticated visitors are redirected to /root/login.
  */
-const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com"];
+const OWNER_EMAILS = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com", "flamedev7@gmail.com"];
 
 export const Route = createFileRoute("/root")({
   ssr: false,
@@ -27,21 +27,8 @@ export const Route = createFileRoute("/root")({
       Boolean(user) &&
       (OWNER_EMAILS.includes(email) || process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase() === email);
 
-    // If on the login page
-    if (isLoginRoute) {
-      if (isKnownOwnerEmail) {
-        throw redirect({ to: "/root" });
-      }
-      return { user };
-    }
-
-    // For protected /root routes:
-    if (!user) {
-      throw redirect({ to: "/root/login" });
-    }
-
     let isOwner = isKnownOwnerEmail;
-    if (!isOwner) {
+    if (user && !isOwner) {
       const { data: adminRow } = await supabase
         .from("platform_admins")
         .select("user_id")
@@ -50,6 +37,19 @@ export const Route = createFileRoute("/root")({
       if (adminRow) {
         isOwner = true;
       }
+    }
+
+    // If on the login page
+    if (isLoginRoute) {
+      if (isOwner) {
+        throw redirect({ to: "/root" });
+      }
+      return { user };
+    }
+
+    // For protected /root routes:
+    if (!user) {
+      throw redirect({ to: "/root/login" });
     }
 
     if (!isOwner) {

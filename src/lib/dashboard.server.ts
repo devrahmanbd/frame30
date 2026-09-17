@@ -117,7 +117,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       detailBn: o.customer_name ?? "গ্রাহক",
       actionEn: "Fulfil",
       actionBn: "পাঠান",
-      to: `/admin/orders/${o.id}`,
+      to: `/dashboard/orders/${o.id}`,
       amountMinorInt: o.total_minor_int,
     });
   }
@@ -140,7 +140,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       detailBn: o.customer_name ?? "অযাচাইকৃত ক্রেতা",
       actionEn: "Review",
       actionBn: "যাচাই",
-      to: `/admin/orders/${o.id}`,
+      to: `/dashboard/orders/${o.id}`,
       amountMinorInt: o.total_minor_int,
     });
   }
@@ -163,7 +163,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       detailBn: "প্রোভাইডার পেমেন্ট বাতিল করেছে",
       actionEn: "Open order",
       actionBn: "অর্ডার দেখুন",
-      to: p.order_id ? `/admin/orders/${p.order_id}` : "/admin/payments",
+      to: p.order_id ? `/dashboard/orders/${p.order_id}` : "/dashboard/payments",
       amountMinorInt: p.amount_minor_int,
     });
   }
@@ -203,7 +203,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       detailBn: `স্টকে বাকি ${available}টি`,
       actionEn: "Adjust stock",
       actionBn: "স্টক ঠিক করুন",
-      to: "/admin/inventory",
+      to: "/dashboard/inventory",
     });
   }
 
@@ -225,7 +225,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       titleEn: `Order #${o.order_number} placed`,
       titleBn: `অর্ডার #${o.order_number} এসেছে`,
       amountMinorInt: o.total_minor_int,
-      to: `/admin/orders/${o.id}`,
+      to: `/dashboard/orders/${o.id}`,
     })),
     ...(failedPayments ?? []).map<FeedItem>((p) => ({
       id: `pay-${p.id}`,
@@ -234,7 +234,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       titleEn: `${p.payment_provider} payment failed`,
       titleBn: `${p.payment_provider} পেমেন্ট ব্যর্থ`,
       amountMinorInt: p.amount_minor_int,
-      to: p.order_id ? `/admin/orders/${p.order_id}` : "/admin/payments",
+      to: p.order_id ? `/dashboard/orders/${p.order_id}` : "/dashboard/payments",
     })),
     ...(newSubscribers ?? []).map<FeedItem>((s) => ({
       id: `sub-${s.id}`,
@@ -242,7 +242,7 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       at: s.created_at,
       titleEn: `New subscriber ${s.email ?? s.phone ?? ""}`.trim(),
       titleBn: `নতুন সাবস্ক্রাইবার ${s.email ?? s.phone ?? ""}`.trim(),
-      to: "/admin/marketing",
+      to: "/dashboard/marketing",
     })),
   ]
     .sort((a, b) => (a.at < b.at ? 1 : -1))

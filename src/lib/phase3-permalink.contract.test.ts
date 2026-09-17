@@ -33,7 +33,7 @@ describe("permalink settings validation", () => {
   });
 
   it("refuses reserved application prefixes", () => {
-    expect(() => validateSettings({ articleBase: "/admin" })).toThrow(PermalinkError);
+    expect(() => validateSettings({ articleBase: "/dashboard" })).toThrow(PermalinkError);
     expect(isReservedBase("/api")).toBe(true);
     expect(isReservedBase("/journal")).toBe(false);
   });

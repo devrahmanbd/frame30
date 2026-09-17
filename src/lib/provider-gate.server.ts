@@ -437,7 +437,7 @@ export async function decideCredential(
       titleBn: input.decision === "live" ? "পেমেন্ট রেইল লাইভ হয়েছে" : "পেমেন্ট রেইল আপডেট",
       bodyEn: input.note ?? "Reviewed by the Framique payments team.",
       bodyBn: input.note ?? "ফ্রেমিক পেমেন্ট টিম রিভিউ করেছে।",
-      href: "/admin/settings/providers",
+      href: "/dashboard/settings/providers",
     });
   }
   return toView(updated);

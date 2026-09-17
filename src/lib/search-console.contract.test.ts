@@ -148,7 +148,7 @@ describe("runtime wiring", () => {
   });
 
   it("never mounts analytics on an admin route", () => {
-    const admin = read("src/routes/_authenticated/admin/marketing/seo.tsx");
+    const admin = read("src/routes/_authenticated/dashboard/marketing/seo.tsx");
     expect(admin).not.toContain("SiteKitSurface");
   });
 });

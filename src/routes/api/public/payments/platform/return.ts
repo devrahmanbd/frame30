@@ -43,7 +43,7 @@ async function handle(request: Request) {
         { headers: { "cache-control": "no-store" } },
       );
     }
-    const target = new URL("/admin/billing/invoices", url.origin);
+    const target = new URL("/dashboard/billing/invoices", url.origin);
     target.searchParams.set("pay", result.status);
     target.searchParams.set("invoice", result.invoiceId);
     if (result.receiptNumber) target.searchParams.set("receipt", result.receiptNumber);
@@ -57,7 +57,7 @@ async function handle(request: Request) {
     if (wantsJson) {
       return Response.json({ ok: false, code }, { status: httpStatus, headers: { "cache-control": "no-store" } });
     }
-    const target = new URL("/admin/billing/invoices", url.origin);
+    const target = new URL("/dashboard/billing/invoices", url.origin);
     target.searchParams.set("pay_error", code);
     return new Response(null, {
       status: 303,

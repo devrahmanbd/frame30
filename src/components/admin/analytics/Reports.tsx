@@ -146,7 +146,7 @@ export function Reports() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Link to="/admin/analytics/insights" className="min-h-9 rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted">
+          <Link to="/dashboard/analytics/insights" className="min-h-9 rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted">
             {t("Insights", "ইনসাইটস")}
           </Link>
           <button

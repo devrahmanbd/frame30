@@ -12,29 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       throw redirect({ to: "/auth" });
-    }
-    
-    // Root / Owner check - Platform owners belong in /root ONLY
-    const email = (user.email || "").toLowerCase();
-    const ownerEmails = ["devrahmanbd@gmail.com", "nahid52flame@gmail.com"];
-    const configuredOwner = (process.env["PLATFORM_OWNER_EMAIL"] || "").toLowerCase();
-    if (configuredOwner) ownerEmails.push(configuredOwner);
-
-    if (ownerEmails.includes(email)) {
-      throw redirect({ to: "/root" });
-    }
-    
-    const { data: adminRow } = await supabase
-      .from("platform_admins")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-      
-    if (adminRow) {
-      throw redirect({ to: "/root" });
     }
   },
   head: () => ({
@@ -62,36 +44,8 @@ function MerchantDashboardLayout() {
   useEffect(() => {
     if (isPending || merchant) return;
 
-    async function resolveFallback() {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData?.user) {
-        void navigate({ to: "/auth", replace: true });
-        return;
-      }
-
-      const email = userData.user.email?.toLowerCase() || "";
-      const isOwner = email === "devrahmanbd@gmail.com" || email === "nahid52flame@gmail.com";
-      if (isOwner) {
-        void navigate({ to: "/root", replace: true });
-        return;
-      }
-
-      const { data: adminRow } = await supabase
-        .from("platform_admins")
-        .select("user_id")
-        .eq("user_id", userData.user.id)
-        .maybeSingle();
-
-      if (adminRow) {
-        void navigate({ to: "/root", replace: true });
-        return;
-      }
-
-      // Fresh merchant signup with no store yet -> onboarding
-      void navigate({ to: "/onboarding", replace: true });
-    }
-
-    void resolveFallback();
+    // Fresh merchant signup with no store yet -> onboarding
+    void navigate({ to: "/onboarding", replace: true });
   }, [isPending, merchant, navigate]);
 
   if (isPending) {

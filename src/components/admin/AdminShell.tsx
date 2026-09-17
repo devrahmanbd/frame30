@@ -101,7 +101,7 @@ const ICONS: Record<IconKey, typeof LayoutDashboard> = {
 };
 
 function isActive(pathname: string, to: string) {
-  return to === "/admin" ? pathname === "/admin" : pathname === to || pathname.startsWith(`${to}/`);
+  return to === "/dashboard" ? pathname === "/dashboard" : pathname === to || pathname.startsWith(`${to}/`);
 }
 
 /**
@@ -131,7 +131,7 @@ function SidebarNav({
       {groups.map((g) => {
         const GroupIcon = ICONS[g.icon];
         const groupActive = g.items.some((i) => isActive(pathname, i.to));
-        const target = g.to ?? g.items[0]?.to ?? "/admin";
+        const target = g.to ?? g.items[0]?.to ?? "/dashboard";
         const label = t(g.en, g.bn);
         return (
           <Link

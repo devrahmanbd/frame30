@@ -1,5 +1,5 @@
 /**
- * `⌘K` palette for `/admin` — the real navigation of the console.
+ * `⌘K` palette for `/dashboard` — the real navigation of the console.
  *
  * It searches every destination the actor is allowed to see: the eight sidebar
  * sections *and* the destinations that no longer earn a sidebar row. Recently

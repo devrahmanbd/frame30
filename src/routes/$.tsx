@@ -15,6 +15,10 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/$")({
   loader: async ({ params, location }) => {
     const path = location.pathname;
+    if (path === "/admin" || path.startsWith("/admin/")) {
+      const target = path.replace(/^\/admin/, "/dashboard");
+      throw redirect({ href: target || "/dashboard", statusCode: 301 });
+    }
     const result = await resolvePathFn({ data: { path } });
     if (result.resolution.type === "redirect") {
       throw redirect({ href: result.resolution.to, statusCode: result.resolution.status === 302 ? 302 : 301 });
