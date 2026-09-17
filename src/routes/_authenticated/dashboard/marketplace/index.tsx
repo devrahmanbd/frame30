@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { AdminShell } from "@/components/admin/AdminShell";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import {
@@ -130,8 +129,7 @@ function Marketplace() {
   }
 
   return (
-    <AdminShell>
-      <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6">
         <header className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="font-bangla-display text-xl font-semibold">{t("Marketplace", "মার্কেটপ্লেস")}</h1>
@@ -339,7 +337,6 @@ function Marketplace() {
 
         <InstalledApps />
       </div>
-    </AdminShell>
   );
 }
 

@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { AdminShell } from "@/components/admin/AdminShell";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import {
   billingChangePlanFn,
@@ -166,7 +165,7 @@ function PlansPage() {
         : t("Cancels the scheduled downgrade.", "নির্ধারিত ডাউনগ্রেড বাতিল করবে।");
 
   return (
-    <AdminShell>
+    <>
       <div className="space-y-6">
         <header>
           <h1 className="font-bangla-display text-2xl font-semibold">
@@ -355,6 +354,6 @@ function PlansPage() {
         onConfirm={() => pending && change.mutate(pending.plan)}
         onCancel={() => setPending(null)}
       />
-    </AdminShell>
+    </>
   );
 }

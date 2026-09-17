@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AdminShell } from "@/components/admin/AdminShell";
 import {
   getAiGatewayConfigFn,
   testAiGatewayProbeFn,
@@ -99,8 +98,7 @@ function AiSettingsPage() {
   }
 
   return (
-    <AdminShell>
-      <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6">
+    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -256,6 +254,5 @@ function AiSettingsPage() {
           </div>
         </div>
       </div>
-    </AdminShell>
   );
 }

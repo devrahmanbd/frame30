@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { AdminShell } from "@/components/admin/AdminShell";
 import {
   supportInboxFn,
   supportThreadFn,
@@ -68,8 +67,7 @@ function AssistantPanel() {
   }
 
   return (
-    <AdminShell>
-      <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6">
         <header>
           <h1 className="font-bangla-display text-xl font-semibold">{t("AI support", "AI সহায়তা")}</h1>
           <p className="text-sm text-muted-foreground">
@@ -170,7 +168,6 @@ function AssistantPanel() {
           </section>
         </div>
       </div>
-    </AdminShell>
   );
 }
 

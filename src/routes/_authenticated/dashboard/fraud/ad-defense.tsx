@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { AdminShell } from "@/components/admin/AdminShell";
 import {
   CampaignTable,
   Kpi,
@@ -105,8 +104,7 @@ function AdDefense() {
   }
 
   return (
-    <AdminShell>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <header className="space-y-2">
           <h1 className="text-xl font-semibold">
             {bn ? "বিজ্ঞাপন সুরক্ষা ও অ্যাট্রিবিউশন" : "Ad defense & attribution integrity"}
@@ -374,6 +372,5 @@ function AdDefense() {
           )}
         </Section>
       </div>
-    </AdminShell>
   );
 }
