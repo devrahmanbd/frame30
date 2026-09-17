@@ -43,7 +43,6 @@ const CLASS_BY_PERMISSION: Record<string, StepUpClass> = {
   "tenant.purge": "purge",
   "tenant.suspend": "platform",
   "tenant.impersonate": "platform",
-  "plan.write": "platform",
 };
 
 /** The class guarding a permission, or null when the permission is ordinary. */

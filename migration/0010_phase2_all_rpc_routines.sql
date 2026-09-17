@@ -57,9 +57,10 @@ begin
   insert into public.merchant_members (merchant_id, user_id, role, status)
   values (v_merchant_id, v_user_id, 'owner', 'active');
 
-  -- Initialize merchant settings
-  insert into public.merchant_settings (merchant_id, business_name, setup_steps)
-  values (v_merchant_id, trim(p_name), '{"store_created": true}'::jsonb)
+  -- Initialize merchant settings. NOTE: merchant_settings has no
+  -- business_name column (display name lives on merchants.name).
+  insert into public.merchant_settings (merchant_id, setup_steps)
+  values (v_merchant_id, '{"store_created": true}'::jsonb)
   on conflict (merchant_id) do update set updated_at = now();
 
   -- Initialize subscription

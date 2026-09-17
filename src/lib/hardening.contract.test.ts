@@ -23,6 +23,15 @@ describe("§5 — step-up MFA", () => {
   it("keeps the grant window short", () => {
     expect(STEP_UP_MAX_AGE_SECONDS).toBeLessThanOrEqual(900);
   });
+
+  it("does not gate platform plan writes behind step-up (no platform grant can be minted)", () => {
+    // Regression: plan.write mapped to the "platform" class, which has no
+    // mint path (STEP_UP_ACTIONS / grantStepUpFn / StepUpCard cover money
+    // actions only), so every /root/plans save failed with step_up.required.
+    // The /root console is gated by platform_admin + stealth route + audit.
+    expect(DANGEROUS).not.toContain("plan.write");
+    expect(stepUpClassFor("plan.write")).toBeNull();
+  });
 });
 
 describe("§5 — bulk export reason gate", () => {

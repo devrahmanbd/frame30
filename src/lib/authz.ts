@@ -259,6 +259,14 @@ export type AnyPermission = Permission | PlatformPermission;
 
 /* ------------------------------------------------------------------ *
  * Dangerous actions — step-up MFA + reason + audit row, always
+ *
+ * Step-up is for money-moving and irreversible actions (BUILD.md §1.2).
+ * Every entry here MUST map to a mintable step-up class in step-up.ts
+ * (one covered by STEP_UP_ACTIONS / grantStepUpFn / the StepUpCard UI).
+ * `plan.write` is intentionally absent: the /root console is already gated
+ * by platform_admin + stealth route + audit row in platform_save_plan, and
+ * no "platform" grant can ever be minted — listing it here made every plan
+ * save fail with step_up.required.
  * ------------------------------------------------------------------ */
 
 export const DANGEROUS = [
@@ -279,7 +287,6 @@ export const DANGEROUS = [
   "gateway.rotate",
   "refund.force",
   "payouts.approve",
-  "plan.write",
 ] as const satisfies readonly AnyPermission[];
 
 export type DangerousPermission = (typeof DANGEROUS)[number];
