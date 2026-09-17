@@ -173,10 +173,6 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const activeRef = useRef<HTMLElement | null>(null);
 
-  if (!group || group.items.length < 2) return null;
-  const more = group.more ?? [];
-  const moreActive = more.some((i) => isActive(pathname, i.to));
-
   // Auto-scroll the active tab or "More" button into view on mount or route transition
   useEffect(() => {
     if (activeRef.current && scrollRef.current) {
@@ -187,6 +183,10 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
       });
     }
   }, [pathname]);
+
+  if (!group || group.items.length < 2) return null;
+  const more = group.more ?? [];
+  const moreActive = more.some((i) => isActive(pathname, i.to));
 
   return (
     <div
