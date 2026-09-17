@@ -167,6 +167,65 @@ function SidebarNav({
   );
 }
 
+function MoreMenu({
+  more,
+  pathname,
+  t,
+  moreActive,
+  activeRef,
+}: {
+  more: NavGroup["more"];
+  pathname: string;
+  t: (en: string, bn: string) => string;
+  moreActive: boolean;
+  activeRef?: React.MutableRefObject<HTMLElement | null>;
+}) {
+  if (!more || more.length === 0) return null;
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <button
+          ref={moreActive ? (el) => { if (el && activeRef) activeRef.current = el; } : undefined}
+          type="button"
+          aria-label={t("More", "আরও")}
+          className={`inline-flex min-h-9 sm:min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-fq-md px-3 sm:px-2.5 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer active:scale-95 ${
+            moreActive
+              ? "bg-foreground/[0.07] font-semibold text-foreground shadow-xs"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
+          }`}
+        >
+          <span>{t("More", "আরও")}</span>
+          <ChevronDown className="size-3.5 opacity-75" aria-hidden />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={6}
+        collisionPadding={12}
+        className="fq-admin z-50 min-w-48 max-w-[calc(100vw-2rem)] rounded-fq-lg border border-border bg-popover/95 p-1.5 text-popover-foreground shadow-xl backdrop-blur-md"
+      >
+        {more.map((i) => {
+          const active = isActive(pathname, i.to);
+          return (
+            <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
+              <Link
+                to={i.to}
+                className={`flex min-h-9 sm:min-h-8 w-full items-center rounded-fq-md px-3 py-2 text-[13px] transition-colors select-none touch-manipulation ${
+                  active
+                    ? "bg-primary/10 font-semibold text-primary"
+                    : "text-foreground/80 hover:bg-muted hover:text-foreground active:bg-muted"
+                }`}
+              >
+                {t(i.en, i.bn)}
+              </Link>
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 /** Sub-pages of the active section, rendered as page tabs (Polaris pattern). */
 function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathname: string }) {
   const { t } = useLang();
@@ -189,78 +248,67 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
   const moreActive = more.some((i) => isActive(pathname, i.to));
 
   return (
-    <div
-      ref={scrollRef}
-      className="sticky top-14 z-20 -mx-4 mb-4 flex items-center overflow-x-auto bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{ WebkitOverflowScrolling: "touch" }}
-    >
-      <nav
-        aria-label={group.en}
-        className="inline-flex gap-1 rounded-fq-lg border border-border bg-card p-1 shadow-xs"
-      >
-        {group.items.map((i) => {
-          const active = isActive(pathname, i.to);
-          return (
-            <Link
-              key={i.to}
-              ref={active ? (el) => { if (el) activeRef.current = el; } : undefined}
-              to={i.to}
-              aria-current={active ? "page" : undefined}
-              className={`inline-flex min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
-                active
-                  ? "bg-foreground/[0.07] font-semibold text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              <span className="font-bangla-display">{t(i.en, i.bn)}</span>
-            </Link>
-          );
-        })}
+    <div className="sticky top-14 z-20 -mx-4 mb-4 bg-background/95 backdrop-blur sm:-mx-6">
+      <div className="flex items-center px-4 sm:px-6">
+        {/* Scrollable primary tabs */}
+        <div
+          ref={scrollRef}
+          className="flex min-w-0 flex-1 items-center overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          <nav
+            aria-label={group.en}
+            className="inline-flex gap-1 rounded-fq-lg border border-border bg-card p-1 shadow-xs"
+          >
+            {group.items.map((i) => {
+              const active = isActive(pathname, i.to);
+              return (
+                <Link
+                  key={i.to}
+                  ref={active ? (el) => { if (el) activeRef.current = el; } : undefined}
+                  to={i.to}
+                  aria-current={active ? "page" : undefined}
+                  className={`inline-flex min-h-9 sm:min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3.5 sm:px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
+                    active
+                      ? "bg-foreground/[0.07] font-semibold text-foreground shadow-xs"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
+                  }`}
+                >
+                  <span className="font-bangla-display">{t(i.en, i.bn)}</span>
+                </Link>
+              );
+            })}
 
+            {/* Desktop: More button is inline inside the nav pill */}
+            {more.length > 0 ? (
+              <div className="hidden sm:block">
+                <MoreMenu
+                  more={more}
+                  pathname={pathname}
+                  t={t}
+                  moreActive={moreActive}
+                  activeRef={activeRef}
+                />
+              </div>
+            ) : null}
+          </nav>
+        </div>
+
+        {/* Mobile: More button is pinned on the right so it is ALWAYS visible & immediately clickable */}
         {more.length > 0 ? (
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <button
-                ref={moreActive ? (el) => { if (el) activeRef.current = el; } : undefined}
-                type="button"
-                aria-label={t("More", "আরও")}
-                className={`inline-flex min-h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer active:scale-95 ${
-                  moreActive
-                    ? "bg-foreground/[0.07] font-semibold text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <span>{t("More", "আরও")}</span>
-                <ChevronDown className="size-3.5 opacity-75" aria-hidden />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              sideOffset={6}
-              collisionPadding={12}
-              className="fq-admin z-50 min-w-48 max-w-[calc(100vw-2rem)] rounded-fq-lg border border-border bg-popover/95 p-1 text-popover-foreground shadow-xl backdrop-blur-md"
-            >
-              {more.map((i) => {
-                const active = isActive(pathname, i.to);
-                return (
-                  <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
-                    <Link
-                      to={i.to}
-                      className={`flex min-h-8 w-full items-center rounded-fq-md px-2.5 py-1.5 text-[13px] transition-colors select-none touch-manipulation ${
-                        active
-                          ? "bg-foreground/[0.07] font-semibold text-foreground"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      }`}
-                    >
-                      {t(i.en, i.bn)}
-                    </Link>
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="ml-2 shrink-0 sm:hidden">
+            <div className="rounded-fq-lg border border-border bg-card p-1 shadow-xs">
+              <MoreMenu
+                more={more}
+                pathname={pathname}
+                t={t}
+                moreActive={moreActive}
+                activeRef={activeRef}
+              />
+            </div>
+          </div>
         ) : null}
-      </nav>
+      </div>
     </div>
   );
 }
