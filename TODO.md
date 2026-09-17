@@ -56,10 +56,62 @@
 - [ ] **`/root` Platform Owner Dashboard Broken/Missing:** The `/root` route no longer resolves properly or has become disconnected in the routing tree, locking out the platform owner.
 - [ ] **Pervasive Security Gaps:** As noted, the website is "fully full of bugs and vulnerabilities" requiring a comprehensive security audit of row-level security (RLS) policies and SSR loader guards.
 
-### 2. High Priority Architecture Flaws
-- [ ] **Custom Domain Edge Resolution:** The custom domain logic (`mystore.com.bd` -> tenant injection) is weak. The application needs edge-level interception (via `resolveTenantCanaryRoute` in `server.ts`) to read the `Host` header, resolve the `merchant_id` from the `domains` table, and inject `x-framique-tenant-id` before hydration.
-- [ ] **Automated SSL & ACME Challenges:** The ACME challenge route exists (`[.]well-known.acme-challenge.$token.ts`) but lacks a robust background worker/cron to automatically request, validate, and reload HAProxy with new SSL certs for custom domains.
-- [ ] **Hardcoded Storefronts vs. Modular Themes:** To truly compete with Shopify/Webflow, `store.$slug.index.tsx` cannot be a hardcoded React page. The system requires a dynamic JSON-based AST or Liquid-style templating engine so merchants can drag-and-drop components without altering core repo code.
+### 2. 🚨 Foundational SaaS & Multi-Tenant Architecture Gaps (Audit Sept 18, 2026)
+
+#### 2.1 Storefront Hosting & Path-Based Abuse (`framique.qubickle.com/clients_website` / `/store/$slug`)
+- **Vulnerability / Architectural Flaw**:
+  - Hosting merchant stores on sub-paths of the platform apex (`framique.qubickle.com/store/$slug` or `framique.qubickle.com/<clients_website>`) is an **untenable security and SaaS anti-pattern**:
+    - **Origin Boundary Failure**: All stores share the same origin cookies, local storage, and session context with `framique.qubickle.com`. A single compromised store or rogue merchant script can poison browser storage or intercept credentials.
+    - **Platform Reputation & Blacklisting Risk**: If a fraudulent merchant launches a scam, phishing, or counterfeit storefront at `framique.qubickle.com/store/bad-store`, Google SafeBrowsing and security filters blacklist the **entire platform apex domain**, bringing down every merchant and the marketing site.
+    - **SEO Cannibalization**: Search engines treat sub-paths as subdirectories of Framique, diluting individual store ranking and brand equity.
+    - **System Route Collisions**: A merchant picking a slug like `api`, `admin`, `dashboard`, `auth`, `root`, or `builder` collides with or breaks core platform routing.
+- **Remediation Action Required**:
+  - [ ] **Dedicated Subdomain Architecture**: Enforce wildcard DNS (`*.framique.store` / `*.framique.com`) so every merchant receives an isolated origin subdomain: `<slug>.framique.store`. Cookies, storage, and CSP are strictly isolated per tenant.
+  - [ ] **Custom Domain in Onboarding Flow (`src/routes/_authenticated/onboarding.tsx`)**:
+    - Add an explicit **"Connect Custom Domain"** step during store onboarding:
+      - Prompt merchant to enter their domain (e.g., `brand.com` or `shop.brand.com`).
+      - Provide real-time DNS instructions: CNAME record pointing to `edge.framique.app` (or A record to edge IP).
+      - Include a prominent **"Skip for now — use my free `slug.framique.store` subdomain"** button, letting them finish onboarding instantly and connect their custom domain anytime from **Settings › Domains**.
+  - [ ] **Edge Request Rewriting (`src/server.ts` & OpenResty)**:
+    - When traffic arrives on a custom domain (`brand.com`) or tenant subdomain (`brand.framique.store`), resolve `merchant_id` via header/cache and internally rewrite the request to the storefront handler without exposing `/store/$slug` in browser URLs.
+
+#### 2.2 Edge Cache Bypass on Custom Domains
+- **Vulnerability / Architectural Flaw**:
+  - `isStorefrontPath(pathname)` in `src/lib/storefront-cache.ts` currently validates only `^\/store\/[^/]+(\/.*)?$`.
+  - When requests arrive on a custom domain (`https://brand.com/` or `https://brand.com/p/product`), `pathname` is `/` or `/p/product`.
+  - `isStorefrontPath` evaluates to `false`, causing **all custom domain requests to bypass the edge cache completely** and force full server-side rendering on the origin Node/Bun server. A moderate traffic spike on a single custom domain will overwhelm and crash the origin server.
+- **Remediation Action Required**:
+  - [ ] Refactor `isStorefrontPath` and `withStorefrontCache` to inspect `x-framique-tenant-id` (or the resolved custom domain Host header) so custom domain storefront paths (`/`, `/p/*`, `/c/*`, `/pages/*`, `/cart`) receive proper edge cache headers (`s-maxage=60, stale-while-revalidate=300`).
+
+#### 2.3 Memory Exhaustion via Base64 Media Uploads
+- **Vulnerability / Architectural Flaw**:
+  - `uploadMedia` in `src/lib/media.server.ts` receives raw `base64: string` via server RPC functions (`createServerFn`).
+  - Standard product images (3–8MB) expand by 33% as base64, generating 10MB+ JSON strings.
+  - Concurrent file uploads serialize large strings into V8 memory, causing severe heap bloat, GC pauses, and Nitro 413 Payload Too Large failures.
+- **Remediation Action Required**:
+  - [ ] Replace base64 RPC uploads with direct-to-storage presigned upload URLs (`createUploadSignedUrlFn`) or streaming multipart form-data. Uploads stream directly to Supabase storage without buffering through server memory.
+
+#### 2.4 Unsandboxed Custom Code Injection (Storefront XSS Risk)
+- **Vulnerability / Architectural Flaw**:
+  - `CustomCodeBody` and `CustomCodeSurface` (`src/components/store/CustomCode.tsx`) render raw HTML/JS injected by merchants without a sandboxed iframe or restrictive Content-Security-Policy.
+  - A compromised merchant account or malicious collaborator can inject credential-stealing keyloggers or fake payment inputs into checkout and cart surfaces.
+- **Remediation Action Required**:
+  - [ ] Enforce strict Content-Security-Policy (CSP) headers disallowing unsafe-inline scripts on checkout and payment pages. Restrict merchant custom scripts strictly to informational/marketing pages and pre-approved analytics integrations (Google Tag Manager, Meta Pixel).
+
+#### 2.5 Multi-Tenant CSRF Mismatch on Custom Domains
+- **Vulnerability / Architectural Flaw**:
+  - `src/server.ts` performs CSRF validation by comparing `originHost !== host`.
+  - When shoppers submit checkout or cart mutations across custom domains, reverse proxies, or external payment return redirects (e.g. bKash/Nagad gateways redirecting back to merchant domains), discrepancies between `x-forwarded-host`, `host`, and `origin` trigger `403 CSRF check failed (origin mismatch)`.
+- **Remediation Action Required**:
+  - [ ] Build a tenant-aware CSRF validator that validates whether `originHost` matches either the platform domain, the tenant's verified custom domain, or the tenant's registered subdomain.
+
+#### 2.6 Domain SNI Whitelist Exhaustion & Let's Encrypt Quota Burn
+- **Vulnerability / Architectural Flaw**:
+  - `verify-sni.ts` checks `merchant_domains` status, but there are no strict quotas on domain creation per merchant.
+  - Malicious actors can rapidly register throwaway domains to trigger edge ACME certificates requests and burn through Let's Encrypt platform rate limits.
+- **Remediation Action Required**:
+  - [ ] Enforce strict plan-based custom domain quotas (e.g., Starter: 1 domain, Growth: 3 domains, Business: 10 domains).
+  - [ ] Implement rate-limiting on custom domain additions (`domain.create` bucket) and automatic DNS health check backoff.
 
 ### 3. Recently Fixed
 - [x] **Multi-Tenant Portal Bleeding:** Enforced strict persona boundaries (Platform Admin vs Merchant vs Customer) at the server-loader level (`beforeLoad` in `admin.tsx` and `dashboard.tsx`) to prevent TanStack router state bleeding and infinite redirects.
