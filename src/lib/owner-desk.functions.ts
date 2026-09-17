@@ -65,3 +65,50 @@ export const ownerSetOwnerRightFn = createServerFn({ method: "POST" })
     const { setOwnerRight } = await import("./owner-people.server");
     return setOwnerRight(context.supabase, context.userId, data.userId, data.grant);
   });
+
+export const ownerCreateAccountFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        email: z.string().email(),
+        password: z.string().min(6).optional().nullable(),
+        isOwner: z.boolean().optional(),
+        merchantId: z.string().uuid().optional().nullable(),
+        role: z.enum(["owner", "admin", "staff", "viewer"]).optional().nullable(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { createAccount } = await import("./owner-people.server");
+    return createAccount(context.supabase, context.userId, data);
+  });
+
+export const ownerUpdateAccountFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        userId: z.string().uuid(),
+        email: z.string().email().optional().nullable(),
+        password: z.string().min(6).optional().nullable(),
+        merchantId: z.string().uuid().optional().nullable(),
+        role: z.enum(["owner", "admin", "staff", "viewer"]).optional().nullable(),
+        removeMerchantId: z.string().uuid().optional().nullable(),
+        isOwner: z.boolean().optional().nullable(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { updateAccount } = await import("./owner-people.server");
+    return updateAccount(context.supabase, context.userId, data);
+  });
+
+export const ownerDeleteAccountFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ userId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { deleteAccount } = await import("./owner-people.server");
+    return deleteAccount(context.supabase, context.userId, data.userId);
+  });
+

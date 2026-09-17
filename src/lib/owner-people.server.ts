@@ -85,6 +85,10 @@ export async function loadPeople(db: Client, userId: string, page = 1) {
         people,
         platformAdmins,
         storeUsers,
+        merchants: ((merchants.data ?? []) as Loose[]).map((m) => ({
+          id: m.id as string,
+          name: m.name as string,
+        })),
         page,
         hasMore: users.length === perPage,
         totals: {
@@ -98,6 +102,204 @@ export async function loadPeople(db: Client, userId: string, page = 1) {
   );
 }
 
+export type CreateAccountInput = {
+  email: string;
+  password?: string | null;
+  isOwner?: boolean;
+  merchantId?: string | null;
+  role?: "owner" | "admin" | "staff" | "viewer" | string | null;
+};
+
+export async function createAccount(db: Client, actorId: string, input: CreateAccountInput) {
+  const email = input.email.trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    throw new OwnerError("people.invalid_email", "Valid email is required.");
+  }
+  const password = input.password?.trim() || Math.random().toString(36).slice(-10) + "Aa1!";
+
+  return ownerGate(
+    db,
+    actorId,
+    {
+      action: "people.create_account",
+      entity: "auth.users",
+      bucket: "platform.write",
+      kind: "write",
+      meta: { email, isOwner: Boolean(input.isOwner), merchantId: input.merchantId ?? null },
+    },
+    async () => {
+      const svc = await service();
+      const { data: created, error } = await svc.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
+
+      let userId = created?.user?.id;
+      if (error) {
+        // Check if user already exists
+        const listed = await svc.auth.admin.listUsers({ page: 1, perPage: 100 });
+        const existing = (listed.data?.users ?? []).find((u: any) => u.email?.toLowerCase() === email);
+        if (!existing) {
+          throw new OwnerError("people.create_failed", error.message);
+        }
+        userId = existing.id;
+      }
+
+      if (!userId) {
+        throw new OwnerError("people.create_failed", "Could not create user account.");
+      }
+
+      if (input.isOwner) {
+        const { error: adminErr } = await svc
+          .from("platform_admins")
+          .upsert({ user_id: userId }, { onConflict: "user_id" });
+        if (adminErr) throw new OwnerError("people.grant_failed", adminErr.message);
+      }
+
+      if (input.merchantId) {
+        const role = input.role || "staff";
+        const { error: memberErr } = await svc
+          .from("merchant_members")
+          .upsert(
+            {
+              user_id: userId,
+              merchant_id: input.merchantId,
+              role,
+              status: "active",
+            },
+            { onConflict: "merchant_id,user_id" },
+          );
+        if (memberErr) throw new OwnerError("people.membership_failed", memberErr.message);
+      }
+
+      return { ok: true, userId };
+    },
+  );
+}
+
+export type UpdateAccountInput = {
+  userId: string;
+  email?: string | null;
+  password?: string | null;
+  merchantId?: string | null;
+  role?: "owner" | "admin" | "staff" | "viewer" | string | null;
+  removeMerchantId?: string | null;
+  isOwner?: boolean | null;
+};
+
+export async function updateAccount(db: Client, actorId: string, input: UpdateAccountInput) {
+  return ownerGate(
+    db,
+    actorId,
+    {
+      action: "people.update_account",
+      entity: "auth.users",
+      entityId: input.userId,
+      bucket: "platform.write",
+      kind: "write",
+      meta: { userId: input.userId },
+    },
+    async () => {
+      const svc = await service();
+      const updates: { email?: string; password?: string } = {};
+      if (input.email?.trim()) {
+        updates.email = input.email.trim().toLowerCase();
+      }
+      if (input.password?.trim()) {
+        updates.password = input.password.trim();
+      }
+
+      if (Object.keys(updates).length > 0) {
+        const { error: updateErr } = await svc.auth.admin.updateUserById(input.userId, updates);
+        if (updateErr) throw new OwnerError("people.update_failed", updateErr.message);
+      }
+
+      if (typeof input.isOwner === "boolean") {
+        if (input.isOwner) {
+          await svc.from("platform_admins").upsert({ user_id: input.userId }, { onConflict: "user_id" });
+        } else {
+          if (input.userId === actorId) {
+            throw new OwnerError("people.cannot_demote_self", "Cannot revoke your own root owner rights.");
+          }
+          const remaining = await svc.from("platform_admins").select("user_id");
+          if (((remaining.data ?? []) as Loose[]).length <= 1) {
+            throw new OwnerError("people.last_owner", "Cannot revoke the last platform owner.");
+          }
+          await svc.from("platform_admins").delete().eq("user_id", input.userId);
+        }
+      }
+
+      if (input.merchantId) {
+        const role = input.role || "staff";
+        const { error: memberErr } = await svc
+          .from("merchant_members")
+          .upsert(
+            {
+              user_id: input.userId,
+              merchant_id: input.merchantId,
+              role,
+              status: "active",
+            },
+            { onConflict: "merchant_id,user_id" },
+          );
+        if (memberErr) throw new OwnerError("people.membership_failed", memberErr.message);
+      }
+
+      if (input.removeMerchantId) {
+        const { error: delErr } = await svc
+          .from("merchant_members")
+          .delete()
+          .match({ user_id: input.userId, merchant_id: input.removeMerchantId });
+        if (delErr) throw new OwnerError("people.detach_failed", delErr.message);
+      }
+
+      return { ok: true };
+    },
+  );
+}
+
+export async function deleteAccount(db: Client, actorId: string, targetUserId: string) {
+  if (targetUserId === actorId) {
+    throw new OwnerError("people.cannot_delete_self", "Cannot delete your own account.");
+  }
+
+  return ownerGate(
+    db,
+    actorId,
+    {
+      action: "people.delete_account",
+      entity: "auth.users",
+      entityId: targetUserId,
+      bucket: "platform.write",
+      kind: "write",
+    },
+    async () => {
+      const svc = await service();
+      const { data: adminRow } = await svc
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", targetUserId)
+        .maybeSingle();
+
+      if (adminRow) {
+        const remaining = await svc.from("platform_admins").select("user_id");
+        if (((remaining.data ?? []) as Loose[]).length <= 1) {
+          throw new OwnerError("people.last_owner", "Cannot delete the last platform owner.");
+        }
+        await svc.from("platform_admins").delete().eq("user_id", targetUserId);
+      }
+
+      await svc.from("merchant_members").delete().eq("user_id", targetUserId);
+
+      const { error: delErr } = await svc.auth.admin.deleteUser(targetUserId);
+      if (delErr) throw new OwnerError("people.delete_failed", delErr.message);
+
+      return { ok: true };
+    },
+  );
+}
+
 export async function setOwnerRight(db: Client, actorId: string, targetUserId: string, grant: boolean) {
   if (!grant && targetUserId === actorId) throw new OwnerError("people.cannot_demote_self");
   return ownerGate(
@@ -107,7 +309,7 @@ export async function setOwnerRight(db: Client, actorId: string, targetUserId: s
       action: grant ? "people.grant_owner" : "people.revoke_owner",
       entity: "platform_admins",
       entityId: targetUserId,
-      bucket: "owner.suspend",
+      bucket: "platform.write",
       kind: "write",
     },
     async () => {

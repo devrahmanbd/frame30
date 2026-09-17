@@ -900,6 +900,22 @@ export const DICT = {
   },
   "owner.people.prev": { en: "Previous", bn: "পূর্ববর্তী" },
   "owner.people.next": { en: "Next", bn: "পরবর্তী" },
+  "owner.people.create_account": { en: "Create account", bn: "অ্যাকাউন্ট তৈরি করুন" },
+  "owner.people.add_owner": { en: "Add platform owner", bn: "প্ল্যাটফর্ম ওনার যুক্ত করুন" },
+  "owner.people.edit_account": { en: "Edit account", bn: "অ্যাকাউন্ট সম্পাদনা" },
+  "owner.people.delete_account": { en: "Delete account", bn: "অ্যাকাউন্ট মুছুন" },
+  "owner.people.delete_confirm": {
+    en: "Are you sure you want to permanently delete this account? All storefront memberships and console credentials will be deleted.",
+    bn: "আপনি কি নিশ্চিতভাবে এই অ্যাকাউন্টটি মুছে ফেলতে চান? সমস্ত স্টোর সদস্যতা এবং কনসোল অ্যাক্সেস মুছে যাবে।",
+  },
+  "owner.people.assign_store": { en: "Assign store", bn: "স্টোর যুক্ত করুন" },
+  "owner.people.detach_store": { en: "Detach store", bn: "স্টোর আলাদা করুন" },
+  "owner.people.detach_confirm": {
+    en: "Remove this person's access to this store?",
+    bn: "এই স্টোর থেকে এই ব্যক্তির অ্যাক্সেস প্রত্যাহার করবেন?",
+  },
+  "owner.people.save": { en: "Save changes", bn: "সংরক্ষণ করুন" },
+  "owner.people.cancel": { en: "Cancel", bn: "বাতিল" },
   "owner.settings.title": { en: "Compliance and retention", bn: "কমপ্লায়েন্স ও রিটেনশন" },
   "owner.settings.subtitle": {
     en: "Retention windows and the queue health the platform is accountable for.",
