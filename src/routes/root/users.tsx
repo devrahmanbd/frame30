@@ -21,7 +21,13 @@ import {
   ownerDeleteAccountFn,
 } from "@/lib/owner-desk.functions";
 import type { PersonRow } from "@/lib/owner-people.server";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
 
 export const Route = createFileRoute("/root/users")({
@@ -33,10 +39,14 @@ export const Route = createFileRoute("/root/users")({
         content:
           "Every Framique account: sign-in activity, the stores each person belongs to, and who holds platform owner rights.",
       },
-      { property: "og:title", content: "People and access — Framique owner console" },
+      {
+        property: "og:title",
+        content: "People and access — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Account roster, store memberships and platform owner rights for Framique.",
+        content:
+          "Account roster, store memberships and platform owner rights for Framique.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -60,34 +70,67 @@ export function PeopleDesk() {
   const [activeError, setActiveError] = useState<string | null>(null);
 
   // Modals state
-  const [createModal, setCreateModal] = useState<{ open: boolean; isOwner: boolean } | null>(null);
-  const [editModal, setEditModal] = useState<{ open: boolean; user: PersonRow; isOwner: boolean } | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ open: boolean; userId: string; label: string; isOwner: boolean } | null>(null);
-  const [detachModal, setDetachModal] = useState<{ open: boolean; userId: string; merchantId: string; merchantName: string; userLabel: string } | null>(null);
-  const [rightModal, setRightModal] = useState<{ open: boolean; userId: string; grant: boolean; label: string } | null>(null);
+  const [createModal, setCreateModal] = useState<{
+    open: boolean;
+    isOwner: boolean;
+  } | null>(null);
+  const [editModal, setEditModal] = useState<{
+    open: boolean;
+    user: PersonRow;
+    isOwner: boolean;
+  } | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    userId: string;
+    label: string;
+    isOwner: boolean;
+  } | null>(null);
+  const [detachModal, setDetachModal] = useState<{
+    open: boolean;
+    userId: string;
+    merchantId: string;
+    merchantName: string;
+    userLabel: string;
+  } | null>(null);
+  const [rightModal, setRightModal] = useState<{
+    open: boolean;
+    userId: string;
+    grant: boolean;
+    label: string;
+  } | null>(null);
 
   // Form states for create
   const [createEmail, setCreateEmail] = useState("");
   const [createPassword, setCreatePassword] = useState("");
   const [createMerchantId, setCreateMerchantId] = useState("");
-  const [createRole, setCreateRole] = useState<"owner" | "admin" | "staff" | "viewer">("staff");
+  const [createRole, setCreateRole] = useState<
+    "owner" | "admin" | "staff" | "viewer"
+  >("staff");
 
   // Form states for edit
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
   const [editMerchantId, setEditMerchantId] = useState("");
-  const [editRole, setEditRole] = useState<"owner" | "admin" | "staff" | "viewer">("staff");
+  const [editRole, setEditRole] = useState<
+    "owner" | "admin" | "staff" | "viewer"
+  >("staff");
 
-  const { data, isLoading, error: queryError } = useQuery({
+  const {
+    data,
+    isLoading,
+    error: queryError,
+  } = useQuery({
     queryKey: ["owner-people", page],
     queryFn: () => load({ data: { page } }),
   });
 
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["owner-people"] });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["owner-people"] });
 
   // Right toggle mutation
   const rightMut = useMutation({
-    mutationFn: (input: { userId: string; grant: boolean }) => setRight({ data: input }),
+    mutationFn: (input: { userId: string; grant: boolean }) =>
+      setRight({ data: input }),
     onSuccess: () => {
       setRightModal(null);
       setActiveError(null);
@@ -118,7 +161,9 @@ export function PeopleDesk() {
       invalidate();
     },
     onError: (e) => {
-      setActiveError(e instanceof Error ? e.message : "Account creation failed");
+      setActiveError(
+        e instanceof Error ? e.message : "Account creation failed",
+      );
     },
   });
 
@@ -157,14 +202,18 @@ export function PeopleDesk() {
     },
     onError: (e) => {
       setDeleteModal(null);
-      setActiveError(e instanceof Error ? e.message : "Account deletion failed");
+      setActiveError(
+        e instanceof Error ? e.message : "Account deletion failed",
+      );
     },
   });
 
   // Detach mutation
   const detachMut = useMutation({
     mutationFn: (input: { userId: string; merchantId: string }) =>
-      updateAccount({ data: { userId: input.userId, removeMerchantId: input.merchantId } }),
+      updateAccount({
+        data: { userId: input.userId, removeMerchantId: input.merchantId },
+      }),
     onSuccess: () => {
       setDetachModal(null);
       setActiveError(null);
@@ -172,13 +221,17 @@ export function PeopleDesk() {
     },
     onError: (e) => {
       setDetachModal(null);
-      setActiveError(e instanceof Error ? e.message : "Store detachment failed");
+      setActiveError(
+        e instanceof Error ? e.message : "Store detachment failed",
+      );
     },
   });
 
   const needle = query.trim().toLowerCase();
-  const rawAdmins = data?.platformAdmins ?? (data?.people ?? []).filter((p) => p.isOwner);
-  const rawStoreUsers = data?.storeUsers ?? (data?.people ?? []).filter((p) => !p.isOwner);
+  const rawAdmins =
+    data?.platformAdmins ?? (data?.people ?? []).filter((p) => p.isOwner);
+  const rawStoreUsers =
+    data?.storeUsers ?? (data?.people ?? []).filter((p) => !p.isOwner);
   const merchantsList = data?.merchants ?? [];
 
   const platformAdmins = rawAdmins.filter(
@@ -198,7 +251,11 @@ export function PeopleDesk() {
 
   const combinedError =
     activeError ||
-    (queryError instanceof Error ? queryError.message : queryError ? String(queryError) : null);
+    (queryError instanceof Error
+      ? queryError.message
+      : queryError
+        ? String(queryError)
+        : null);
 
   const openEdit = (user: PersonRow, isOwner: boolean) => {
     setEditEmail(user.email ?? "");
@@ -211,7 +268,10 @@ export function PeopleDesk() {
   return (
     <section className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <OwnerHeader title={tk("owner.people.title")} subtitle={tk("owner.people.subtitle")} />
+        <OwnerHeader
+          title={tk("owner.people.title")}
+          subtitle={tk("owner.people.subtitle")}
+        />
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -245,24 +305,45 @@ export function PeopleDesk() {
       </div>
 
       {combinedError ? (
-        <div role="alert" className="flex items-center justify-between rounded-fq-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <div
+          role="alert"
+          className="flex items-center justify-between rounded-fq-md bg-destructive/10 px-4 py-3 text-sm text-destructive"
+        >
           <span>{combinedError}</span>
-          <button type="button" onClick={() => setActiveError(null)} className="text-destructive hover:opacity-70">
+          <button
+            type="button"
+            onClick={() => setActiveError(null)}
+            className="text-destructive hover:opacity-70"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
       ) : null}
 
       <StatGrid>
-        <StatCard label={tk("owner.people.accounts")} value={String(data?.totals.users ?? 0)} />
-        <StatCard label={tk("owner.people.owners")} value={String(data?.totals.owners ?? 0)} />
-        <StatCard label={tk("owner.people.unconfirmed")} value={String(data?.totals.unconfirmed ?? 0)} />
-        <StatCard label={tk("owner.people.stores")} value={String(data?.totals.merchants ?? 0)} />
+        <StatCard
+          label={tk("owner.people.accounts")}
+          value={String(data?.totals.users ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.people.owners")}
+          value={String(data?.totals.owners ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.people.unconfirmed")}
+          value={String(data?.totals.unconfirmed ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.people.stores")}
+          value={String(data?.totals.merchants ?? 0)}
+        />
       </StatGrid>
 
       <div className="flex items-center justify-between gap-4">
         <label className="block text-sm flex-1 max-w-sm">
-          <span className="block pb-1 font-medium">{tk("owner.people.search")}</span>
+          <span className="block pb-1 font-medium">
+            {tk("owner.people.search")}
+          </span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -293,7 +374,9 @@ export function PeopleDesk() {
               Root operators with full infrastructure clearance.
             </p>
           </div>
-          <span className="text-xs text-muted-foreground font-mono">{platformAdmins.length} total</span>
+          <span className="text-xs text-muted-foreground font-mono">
+            {platformAdmins.length} total
+          </span>
         </div>
 
         {platformAdmins.length > 0 ? (
@@ -309,13 +392,19 @@ export function PeopleDesk() {
               <tr key={p.userId} className="border-t border-border align-top">
                 <td className="px-3 py-2">
                   <span className="block font-medium">{p.email ?? "—"}</span>
-                  <code className="font-mono text-xs text-muted-foreground">{p.userId}</code>
+                  <code className="font-mono text-xs text-muted-foreground">
+                    {p.userId}
+                  </code>
                 </td>
                 <td className="px-3 py-2 tabular-nums">
-                  {p.lastSignInAt ? new Date(p.lastSignInAt).toLocaleString() : tk("owner.people.never")}
+                  {p.lastSignInAt
+                    ? new Date(p.lastSignInAt).toLocaleString()
+                    : tk("owner.people.never")}
                 </td>
                 <td className="px-3 py-2">
-                  <StatePill tone="ok">{tk("owner.people.platform_owner")}</StatePill>
+                  <StatePill tone="ok">
+                    {tk("owner.people.platform_owner")}
+                  </StatePill>
                   {p.isYou ? (
                     <span className="block pt-1 text-xs text-muted-foreground">
                       {tk("owner.users.you")}
@@ -339,7 +428,12 @@ export function PeopleDesk() {
                           type="button"
                           title="Revoke clearance"
                           onClick={() =>
-                            setRightModal({ userId: p.userId, grant: false, label: p.email ?? p.userId })
+                            setRightModal({
+                              open: true,
+                              userId: p.userId,
+                              grant: false,
+                              label: p.email ?? p.userId,
+                            })
                           }
                           className="rounded-fq-sm border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 px-2 py-1 text-xs font-medium"
                         >
@@ -368,7 +462,9 @@ export function PeopleDesk() {
             ))}
           </OwnerTable>
         ) : (
-          <p className="text-sm text-muted-foreground py-2">No platform administrators match search.</p>
+          <p className="text-sm text-muted-foreground py-2">
+            No platform administrators match search.
+          </p>
         )}
       </div>
 
@@ -386,7 +482,9 @@ export function PeopleDesk() {
               Merchants and store staff accounts across all active storefronts.
             </p>
           </div>
-          <span className="text-xs text-muted-foreground font-mono">{storeUsers.length} on this page</span>
+          <span className="text-xs text-muted-foreground font-mono">
+            {storeUsers.length} on this page
+          </span>
         </div>
 
         {storeUsers.length > 0 ? (
@@ -403,22 +501,33 @@ export function PeopleDesk() {
               <tr key={p.userId} className="border-t border-border align-top">
                 <td className="px-3 py-2">
                   <span className="block font-medium">{p.email ?? "—"}</span>
-                  <code className="font-mono text-xs text-muted-foreground">{p.userId}</code>
+                  <code className="font-mono text-xs text-muted-foreground">
+                    {p.userId}
+                  </code>
                   {p.confirmed ? null : (
                     <span className="block pt-1">
-                      <StatePill tone="warn">{tk("owner.people.unconfirmed")}</StatePill>
+                      <StatePill tone="warn">
+                        {tk("owner.people.unconfirmed")}
+                      </StatePill>
                     </span>
                   )}
                 </td>
                 <td className="px-3 py-2">
                   {p.memberships.length === 0 ? (
-                    <span className="text-muted-foreground text-xs italic">No store assigned</span>
+                    <span className="text-muted-foreground text-xs italic">
+                      No store assigned
+                    </span>
                   ) : (
                     <ul className="space-y-1.5">
                       {p.memberships.map((m) => (
-                        <li key={`${p.userId}:${m.merchantId}`} className="flex items-center justify-between gap-2 text-xs">
+                        <li
+                          key={`${p.userId}:${m.merchantId}`}
+                          className="flex items-center justify-between gap-2 text-xs"
+                        >
                           <span>
-                            <strong className="font-medium text-foreground">{m.merchantName}</strong>{" "}
+                            <strong className="font-medium text-foreground">
+                              {m.merchantName}
+                            </strong>{" "}
                             <span className="text-muted-foreground">
                               ({m.role} · {m.status})
                             </span>
@@ -445,10 +554,14 @@ export function PeopleDesk() {
                   )}
                 </td>
                 <td className="px-3 py-2 tabular-nums">
-                  {p.lastSignInAt ? new Date(p.lastSignInAt).toLocaleString() : tk("owner.people.never")}
+                  {p.lastSignInAt
+                    ? new Date(p.lastSignInAt).toLocaleString()
+                    : tk("owner.people.never")}
                 </td>
                 <td className="px-3 py-2">
-                  <StatePill tone="warn">{tk("owner.people.merchant_only")}</StatePill>
+                  <StatePill tone="warn">
+                    {tk("owner.people.merchant_only")}
+                  </StatePill>
                 </td>
                 <td className="px-3 py-2 text-right">
                   <div className="flex items-center justify-end gap-1.5">
@@ -465,7 +578,12 @@ export function PeopleDesk() {
                       type="button"
                       title="Promote to platform owner"
                       onClick={() =>
-                        setRightModal({ userId: p.userId, grant: true, label: p.email ?? p.userId })
+                        setRightModal({
+                          open: true,
+                          userId: p.userId,
+                          grant: true,
+                          label: p.email ?? p.userId,
+                        })
                       }
                       className="rounded-fq-sm border border-border px-2 py-1 text-xs font-medium hover:bg-muted text-foreground"
                     >
@@ -492,7 +610,9 @@ export function PeopleDesk() {
             ))}
           </OwnerTable>
         ) : (
-          <p className="text-sm text-muted-foreground py-2">No merchant accounts found.</p>
+          <p className="text-sm text-muted-foreground py-2">
+            No merchant accounts found.
+          </p>
         )}
 
         <div className="flex items-center gap-2 pt-2">
@@ -504,7 +624,9 @@ export function PeopleDesk() {
           >
             {tk("owner.people.prev")}
           </button>
-          <span className="text-sm tabular-nums text-muted-foreground">{page}</span>
+          <span className="text-sm tabular-nums text-muted-foreground">
+            {page}
+          </span>
           <button
             type="button"
             disabled={!data?.hasMore}
@@ -555,7 +677,9 @@ export function PeopleDesk() {
                   email: createEmail,
                   password: createPassword || undefined,
                   isOwner: createModal.isOwner,
-                  merchantId: createModal.isOwner ? undefined : createMerchantId || undefined,
+                  merchantId: createModal.isOwner
+                    ? undefined
+                    : createMerchantId || undefined,
                   role: createModal.isOwner ? undefined : createRole,
                 });
               }}
@@ -577,7 +701,10 @@ export function PeopleDesk() {
 
               <div>
                 <label className="block text-xs font-medium text-foreground pb-1">
-                  Password <span className="text-muted-foreground">(min. 6 characters)</span>
+                  Password{" "}
+                  <span className="text-muted-foreground">
+                    (min. 6 characters)
+                  </span>
                 </label>
                 <input
                   type="text"
@@ -592,7 +719,8 @@ export function PeopleDesk() {
                 <>
                   <div>
                     <label className="block text-xs font-medium text-foreground pb-1">
-                      Assign to Store <span className="text-muted-foreground">(optional)</span>
+                      Assign to Store{" "}
+                      <span className="text-muted-foreground">(optional)</span>
                     </label>
                     <select
                       value={createMerchantId}
@@ -617,16 +745,23 @@ export function PeopleDesk() {
                       onChange={(e) => setCreateRole(e.target.value as any)}
                       className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                     >
-                      <option value="owner">Owner (Full merchant authority)</option>
-                      <option value="admin">Admin (Staff & store manager)</option>
-                      <option value="staff">Staff (Orders & inventory only)</option>
+                      <option value="owner">
+                        Owner (Full merchant authority)
+                      </option>
+                      <option value="admin">
+                        Admin (Staff & store manager)
+                      </option>
+                      <option value="staff">
+                        Staff (Orders & inventory only)
+                      </option>
                       <option value="viewer">Viewer (Read-only access)</option>
                     </select>
                   </div>
                 </>
               ) : (
                 <p className="text-xs text-rose-400/90 bg-rose-500/10 border border-rose-500/20 rounded-fq-sm p-2.5">
-                  Platform owners have unrestricted infrastructure clearance across all merchant stores, audit logs, and configurations.
+                  Platform owners have unrestricted infrastructure clearance
+                  across all merchant stores, audit logs, and configurations.
                 </p>
               )}
 
@@ -644,7 +779,9 @@ export function PeopleDesk() {
                   disabled={createMut.isPending}
                   className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                 >
-                  {createMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {createMut.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : null}
                   <span>{tk("owner.people.create_account")}</span>
                 </button>
               </div>
@@ -665,7 +802,9 @@ export function PeopleDesk() {
               <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
                 <Pencil className="h-4 w-4 text-primary" />
                 <span>
-                  {editModal.isOwner ? tk("owner.people.edit_owner") : tk("owner.people.edit_account")}
+                  {editModal.isOwner
+                    ? tk("owner.people.edit_owner")
+                    : tk("owner.people.edit_account")}
                 </span>
               </h3>
               <button
@@ -678,7 +817,10 @@ export function PeopleDesk() {
             </div>
 
             <div className="text-xs text-muted-foreground">
-              User ID: <code className="font-mono text-foreground">{editModal.user.userId}</code>
+              User ID:{" "}
+              <code className="font-mono text-foreground">
+                {editModal.user.userId}
+              </code>
             </div>
 
             <form
@@ -686,7 +828,8 @@ export function PeopleDesk() {
                 e.preventDefault();
                 updateMut.mutate({
                   userId: editModal.user.userId,
-                  email: editEmail !== editModal.user.email ? editEmail : undefined,
+                  email:
+                    editEmail !== editModal.user.email ? editEmail : undefined,
                   password: editPassword || undefined,
                   merchantId: editMerchantId || undefined,
                   role: editMerchantId ? editRole : undefined,
@@ -709,7 +852,10 @@ export function PeopleDesk() {
 
               <div>
                 <label className="block text-xs font-medium text-foreground pb-1">
-                  Reset Password <span className="text-muted-foreground">(leave blank to keep unchanged)</span>
+                  Reset Password{" "}
+                  <span className="text-muted-foreground">
+                    (leave blank to keep unchanged)
+                  </span>
                 </label>
                 <input
                   type="text"
@@ -731,7 +877,9 @@ export function PeopleDesk() {
                       onChange={(e) => setEditMerchantId(e.target.value)}
                       className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                     >
-                      <option value="">— Select store to assign or update —</option>
+                      <option value="">
+                        — Select store to assign or update —
+                      </option>
                       {merchantsList.map((m) => (
                         <option key={m.id} value={m.id}>
                           {m.name}
@@ -750,10 +898,18 @@ export function PeopleDesk() {
                         onChange={(e) => setEditRole(e.target.value as any)}
                         className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                       >
-                        <option value="owner">Owner (Full merchant authority)</option>
-                        <option value="admin">Admin (Staff & store manager)</option>
-                        <option value="staff">Staff (Orders & inventory only)</option>
-                        <option value="viewer">Viewer (Read-only access)</option>
+                        <option value="owner">
+                          Owner (Full merchant authority)
+                        </option>
+                        <option value="admin">
+                          Admin (Staff & store manager)
+                        </option>
+                        <option value="staff">
+                          Staff (Orders & inventory only)
+                        </option>
+                        <option value="viewer">
+                          Viewer (Read-only access)
+                        </option>
                       </select>
                     </div>
                   ) : null}
@@ -774,7 +930,9 @@ export function PeopleDesk() {
                   disabled={updateMut.isPending}
                   className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                 >
-                  {updateMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {updateMut.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : null}
                   <span>{tk("owner.people.save")}</span>
                 </button>
               </div>
@@ -786,16 +944,30 @@ export function PeopleDesk() {
       {/* --- CONFIRM RIGHT GRANT / REVOKE --- */}
       <RootConfirmDialog
         open={Boolean(rightModal)}
-        title={rightModal?.grant ? tk("owner.people.grant") : tk("owner.people.revoke")}
+        title={
+          rightModal?.grant
+            ? tk("owner.people.grant")
+            : tk("owner.people.revoke")
+        }
         description={
           rightModal?.grant
             ? `Grant platform owner clearance to ${rightModal?.label}? ${tk("owner.people.grant_hint")}`
             : `Revoke platform clearance for ${rightModal?.label}? ${tk("owner.people.revoke_hint")}`
         }
-        confirmLabel={rightModal?.grant ? tk("owner.people.grant") : tk("owner.people.revoke")}
+        confirmLabel={
+          rightModal?.grant
+            ? tk("owner.people.grant")
+            : tk("owner.people.revoke")
+        }
         tone={rightModal?.grant ? "primary" : "danger"}
         busy={rightMut.isPending}
-        onConfirm={() => rightModal && rightMut.mutate({ userId: rightModal.userId, grant: rightModal.grant })}
+        onConfirm={() =>
+          rightModal &&
+          rightMut.mutate({
+            userId: rightModal.userId,
+            grant: rightModal.grant,
+          })
+        }
         onCancel={() => setRightModal(null)}
       />
 
@@ -821,7 +993,10 @@ export function PeopleDesk() {
         busy={detachMut.isPending}
         onConfirm={() =>
           detachModal &&
-          detachMut.mutate({ userId: detachModal.userId, merchantId: detachModal.merchantId })
+          detachMut.mutate({
+            userId: detachModal.userId,
+            merchantId: detachModal.merchantId,
+          })
         }
         onCancel={() => setDetachModal(null)}
       />

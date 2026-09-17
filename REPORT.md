@@ -1,221 +1,173 @@
-# Framique Public Website & Marketing Copy Audit Report
+# Framique — Cloud SaaS CMS Weak-Foundation Report (Sept 18, 2026)
 
-> **Audit Scope**: Live Deployments (`https://que.qubickle.com/`, `https://framique.qubickle.com/`) & Current Public Surface  
-> **Date**: September 11, 2026  
-> **Auditor**: Senior UI/UX Designer & Lead Frontend Engineer  
-> **Status**: Comprehensive Analysis Completed · **Zero Code Changes Applied**
-
----
-
-## Executive Summary
-
-A comprehensive architectural and visual audit of the live deployments and codebase reveals a central paradox: **Framique possesses a world-class commerce engine underneath, but its public presentation creates immediate visual fatigue, cognitive overload, and emotional friction.**
-
-The current design oscillated between an aggressive, airless dark cave and a stark, blinding flat-white canvas. Neither connects with real-world merchants, brand owners, and business operators in Bangladesh who need **clarity, calm confidence, and effortless trust**.
-
-### The Aesthetic Dilemma & Breakthrough
-As noted in executive design review:
-> *"I can't be happy with any design. I like minimal black and white but a bit color makes it playful. I like blue like facebook and pink like I have in the favicon svg. Pink is for calm and smoothness rather than flat white."*
-
-This insight unlocks the true design direction for Framique:
-1. **A Minimal Black & White Foundation**: Clean, crisp typography, generous whitespace, confident structure, and high contrast — the hallmarks of high-credibility modern platforms (Cal.com, Linear, Stripe).
-2. **Calm, Smooth Pink (`#FFF1F3` / `#FDF8F9` / `#F43F5E`)**: Replacing harsh, clinical, hospital-like "flat white" with a velvety, soothing ambient warmth. Soft pink undertones deliver visual calm, tactile smoothness, and approachable sophistication.
-3. **Facebook Blue (`#1877F2`)**: The universal gold standard for digital trust, high-intent action triggers, verified merchant badges, and energetic commercial reliability.
-4. **Playful Micro-Moments**: Subtle micro-interactions, spring physics, and animated icon highlights that prevent the interface from feeling stiff or utilitarian.
+> **Mandate**: proper cloud SaaS CMS like Shopify, WordPress-grade user journey + UX.
+> **Method**: `/code-review` + 3 parallel explore subagents + live WordPress audit via Chrome MCP (`http://maxwilliam.shop/wp-admin`, user `maxw`).
+> **Repo rules**: `AGENTS.md` (no dead buttons, no fabricated counts, `[A]` needs deny+replay+audit), `BUILD.md` Tier 0, `SYSTEM.md` §4.2/§10.
+> **Status of `TODO.md` domain item**: already tracked as §2.1 + §2.2 + `BUILD.md` §0.5 — this report does **not** duplicate it, it adds the 20+ sibling gaps found in the same sweep.
 
 ---
 
-## 1. Visual Hierarchy & Layout Clutter Audit
+## 0. Live WordPress reference (verified this session, NOT from memory)
 
-| Screen Area | Current Weakness | Cognitive Impact | Recommended Direction |
-| :--- | :--- | :--- | :--- |
-| **Header & Topbar** | Legacy 36px topbar with "System Status", "Prices in BDT", and static office hours. | Visitors feel they landed on an outdated government portal or internal admin tool. | Clean sticky nav with glassmorphism blur, verified brand monogram, navigation links, and a single Facebook Blue CTA pill. |
-| **Hero Viewport** | Wordy headlines accompanied by static, fake OS window chrome (macOS dots, faux URL bars). | Creates visual noise without demonstrating actual software capability or merchant delight. | Bold, benefit-driven headline + dual actions + clean dummy image placeholder with calm pink ambient glow and direct AI prompt. |
-| **Bento & Feature Cards** | Heavy borders, dark-on-dark surfaces or stark white boxes with dense paragraphs. | Scanning is impossible; visitors skip directly to the bottom or bounce. | Minimalist cards with soft blush-pink surface washes (`#FFF1F3`), animated icons on hover, and clear 3-bullet takeaways. |
-| **Product Architecture Tour** | 6 consecutive heavy sections consuming over 2,400px of vertical scrolling. | Extreme scroll fatigue (35+ screen swipes on mobile). | A unified 3-tab interactive showcase (*Storefront*, *Fulfilment*, *Margins*) with sub-second responsive tab transitions. |
-| **Financial / Math Tables** | Complex worked arithmetic showing negative COD return losses (`-৳180 per return`). | Introduces fear, uncertainty, and doubt (FUD) about selling online. | Shift focus from negative losses to positive automated retention: *"Save up to 42% on COD returns with automated fraud scoring."* |
-| **Footers & Closing Bands** | Abrupt cutoff without clear visual anchor or closing emotional reassurance. | Leaves the customer without a clear next step. | Clean deep navy/carbon footer with verified payment rail pills, bilingual toggle, and risk-free trial banner. |
+Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 
----
+### Dashboard (`/wp-admin/`)
+- Left `#adminmenu`: Dashboard, Updates, Elementor (Home, Editor, Theme Builder, Submissions, Connect, Upgrade), Posts (All, Add, Categories, Tags), Media (Library, Add), Pages (All, Add), Comments (1 in moderation), **Appearance (Themes, Editor, Fonts)**, **Plugins (Installed Plugins, Add Plugin)**, Users (All, Add, Profile), Tools (Available, Import, Export, Site Health, Export/Erase Personal Data, Theme/Plugin File Editor), Settings (General, Connectors, Writing, Reading, Discussion, Media, Permalinks, Privacy), Collapse button.
+- Top toolbar: About WP, site name, `⌘K command palette`, comments bubble, `+ New`, user `Howdy, maxw`.
+- Main: Welcome panel (Add new page / Open site editor / Edit styles), Elementor Overview (Create New Page, Recently Edited, News), Site Health (Good + 4 items), At a Glance (1 post, 1 page, 1 comment, theme Twenty Twenty-Five), Activity (Recently Published + Recent Comments with Approve/Reply/Edit/Spam/Trash), Quick Draft, Events (WordCamp Sylhet 2026).
 
-## 2. Color Temperature & Emotional Psychology
+### Themes (`/wp-admin/themes.php`, 3 found)
+- Active card: `Active: Twenty Twenty-Five` + primary **Customize** (`site-editor.php?return=...`).
+- Inactive cards: **Activate** (`themes.php?action=activate&stylesheet=...&_wpnonce=...`) + **Live Preview** (`site-editor.php?wp_theme_preview=...&return=...`); **Delete** lives in Theme Details modal.
+- Header: **Add Theme** → `theme-install.php`, search installed themes box.
 
-### The Problem with Stark "Flat White"
-Many modern SaaS templates assume that a light theme means pure `#ffffff` everywhere. In reality:
-- **Visual Glare**: Blinding white artboards cause pupil constriction and eye strain during prolonged reading.
-- **Sterility**: Pure white feels cold, clinical, and impersonal — like a spreadsheet or hospital corridor.
-- **Lack of Depth**: When the background is `#ffffff` and card backgrounds are `#ffffff`, designers are forced to rely on heavy borders or muddy grey drop-shadows to establish depth.
+### Plugins (`/wp-admin/plugins.php`, 1 installed: Elementor 4.2.4)
+- Views: All (1) | Active (1) | Auto-updates Disabled (1). Search box.
+- Bulk: Activate, Deactivate, Update, Delete, Enable/Disable Auto-updates + Apply (top + bottom).
+- Row: checkbox, `Settings | Deactivate | Get Pro`, Description, Version/By, View details / Docs / Videos, Enable auto-updates toggle.
+- Header: **Add Plugin** → `plugin-install.php`.
 
-### The Problem with Pure Dark Cave
-Conversely, the previous dark artboard (`#090909`, `#141414`) swung too far in the other direction:
-- Felt like a developer terminal or crypto exchange, alienating boutique fashion merchants, organic grocers, and retail brand founders.
-- Poor contrast in daylight mobile browsing (reflection on smartphone screens in Dhaka traffic).
-
-### The Tri-Color Harmony: Minimal B&W + Calm Pink + Facebook Blue
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    MINIMAL BLACK & WHITE                    │
-│      (Crisp #0F172A Typography, Clean #FFFFFF Cards)        │
-│                                                             │
-│       ┌─────────────────────┐   ┌─────────────────────┐     │
-│       │      CALM PINK      │   │    FACEBOOK BLUE    │     │
-│       │  (#FFF1F3 / #FDF8F9)│   │  (#1877F2 / #EBF5FF)│     │
-│       │  Tactile Smoothness │   │  Universal Trust    │     │
-│       │  Calming Ambient Glow│   │  High-Intent CTAs   │     │
-│       │  Replaces Flat White│   │  Playful Energy     │     │
-│       └─────────────────────┘   └─────────────────────┘     │
-└─────────────────────────────────────────────────────────────┘
-```
-
-1. **Calm Pink (`#FFF1F3` to `#FDF8F9`)**:
-   - Acts as the ambient canvas wash and card highlight tint.
-   - Provides smooth, velvety visual comfort that makes the entire screen feel human, calm, and premium.
-2. **Facebook Blue (`#1877F2`)**:
-   - Used for primary CTA buttons, active tab indicators, and verified merchant badges.
-   - Triggers universal digital familiarity — every merchant in Bangladesh operates on Facebook and trusts this hue instinctively.
-3. **Deep Ink (`#0F172A`) & Muted Slate (`#64748B`)**:
-   - Anchors the reading experience with crisp, readable typographic contrast.
+### WP journey invariants Framique must copy
+1. Appearance + Plugins are **first-class top-level** with submenus — never buried under Content/More.
+2. Every installed theme: Activate + Live Preview + Delete (Delete blocked while active). Install → Activate → Activated/Customize state machine.
+3. Installed Plugins is a **table** with All/Active/Inactive views, bulk actions, per-row Activate|Deactivate|Settings|Delete.
+4. `Customize / site-editor` always opens **in context of a theme** (active or `?wp_theme_preview=`), with return URL.
+5. Command palette (`⌘K`), Screen Options, Help, collapse menu, At-a-Glance counts are real queries — never fixtures.
 
 ---
 
-## 3. Typography & Bilingual Script Hierarchy
+## 1. P0 — Theme / Plugin / Marketplace lifecycle (WP `themes.php` parity broken)
 
-### Weaknesses in Current Typography:
-1. **Aggressive Latin Negative Tracking Applied Globally**:
-   - The latin display face was styled with `-3.4px` to `-5.0px` letter-spacing. When inherited by Bengali script (`Noto Sans Bengali`), it caused broken ligatures, overlapping vowel signs (kar), and truncated upper matras.
-2. **Measure (Line Length) Sprawl**:
-   - On viewports wider than 1200px, paragraph text stretched to over 95 characters per line, violating the optimal 45–75 character reading measure.
-3. **Dry Academic Tone**:
-   - Subheadings read like software requirements documents (*"Pillar deep dives"*, *"Fee anatomy"*, *"Unified data model"*) rather than merchant solutions.
+### WF-01 — Two install paths, only one writes the ledger [P0]
+- `src/lib/themes/appearance.server.ts:148-172` (`installCatalogTheme`: direct `store_themes` insert, `is_active:false`, no ledger, `source_install_id=NULL`) vs `src/lib/marketplace-install.server.ts:315-363` (`installBuiltinTheme`: RPC `marketplace_install_preset` + `marketplace_installs` + link).
+- Callers: `appearance.functions.ts:22-32` (`themeInstallFn`) from `ThemesScreen.tsx:91-102,237` and `ThemePreviewSplit.tsx:61` + `ThemesScreen.tsx:185-195`; vs `marketplace.functions.ts:69-88` (`marketInstallFn`).
+- Effect: `listCatalog.themeStates` (`marketplace.server.ts:60-66`, joins only via `source_install_id`) is blind to Appearance installs; `loadThemesWorkspace` (`appearance.server.ts:106-130`, matches by `source_listing_slug`) ignores ledger status. Same key installed twice → divergent shapes.
+- Fix: single `installTheme` server path that always creates inactive `store_themes` + ledger row (per `AGENTS.md` TOP PRIORITY). Retire the direct-insert branch.
 
-### Prescribed Typographic System:
-- **Display Face**: Clean geometric sans with restrained tracking (`-0.5px` to `-1.5px` for Latin; strictly `0px` letter-spacing for Bengali).
-- **Line Heights**: Generous `1.4` to `1.6` line-height for body paragraphs to ensure Bengali diacritics breathe naturally.
-- **Dual-Script Pairing**: Seamless font-fallback stack:
-  ```css
-  font-family: Inter, system-ui, -apple-system, "Noto Sans Bengali", sans-serif;
-  ```
+### WF-02 — `status='removed'` violates Postgres enum [P0, crash on real DB]
+- `marketplace-install.server.ts:390-394` writes `removed`; enum is `installed|trial|paused|rolled_back` (`supabase/baseline_parts/part1.sql:26`, `generated_baseline.sql:26`). Test `marketplace-lifecycle.test.ts:127` passes only on fakeDb.
+- Fix: migration adding `removed` (or terminal `uninstalled`), keep delete-then-retire order atomic.
 
----
+### WF-03 — Non-builtin theme installs never create `store_themes` → Activate/Delete dead [P0]
+- `marketplace-install.server.ts:46-145` (`installListing`: ledger + `install_count` bump, then `applyTheme` only); `applyTheme:147-154` calls `market_apply_theme_install` RPC which **does not exist** in any migration (only a comment ref in `20260917220000_phase2f*`).
+- UI `dashboard/marketplace/index.tsx:360-384` renders Activate/Delete only from `themeStateBySlug`/`liveInstall` (needs `source_install_id`).
+- Fix: implement the RPC (or direct inactive-row insert per WF-01) for `kind=theme` third-party listings; add missing-migration CI check.
 
-## 4. Mobile Responsiveness & Viewport Stress Test
+### WF-04 — Live Preview is fake: `?preview_theme=` never consumed [P0, WP Customizer parity]
+- Builder: `appearance.ts:313-321` builds `/store/<slug>?preview_device=&preview_theme=`; `ThemePreviewSplit.tsx:60,186-190` iframes it.
+- Consumer: `store.$slug.index.tsx:20-25` → `getStorefront({slug})` (`storefront.functions.ts:11-26`, zod `{slug}` only) → `loadStorefront` → `loadPublished(merchant.id,"index")` (`storefront.server.ts:159-192`, active theme only). Device toggle only changes iframe `maxWidth` (`181-184`).
+- Fix: `preview_theme_id` loader path (`/dashboard/builder?preview_theme_id=:id` per TODO P0) that resolves inactive theme in isolation, read-only, no publish side-effects.
 
-### 1. 320px – 375px (Compact Mobile: iPhone SE, Entry-Level Android)
-- **Observed Issues**:
-  - Hero CTA buttons wrap unevenly, creating jagged button heights.
-  - Multi-column comparison tables overflow the viewport horizontally, cutting off critical pricing tier labels without a scroll indicator.
-  - Excessive vertical height requires **over 35 screen swipes** to navigate from Hero to Footer.
-- **Fix**:
-  - Implement mobile-first vertical button stacks with full-width tap targets (`h-12 w-full`).
-  - Convert matrix tables into stacked accordion cards on viewports under 640px.
-  - Consolidate 13 heavy bands into 7 focused, high-impact sections.
+### WF-05 — Plugin Delete exists server-side, zero UI [P0]
+- Server `plugins.functions.ts:63-70` (`pluginUninstallFn` → `uninstallPlugin:156-164`, deletes `plugin_state` only) has **zero component imports** (grep). `InstalledApps.tsx:1-74` + `PluginSettingsForm.tsx:16-69` expose Settings + enabled toggle only.
+- Server also leaves `marketplace_installs` untouched (no terminal status) and no widget reconciliation.
+- Fix: per-row Delete + confirm in Installed table (WP parity), wire `pluginUninstallFn`, retire ledger row.
 
-### 2. 768px – 1024px (Tablets: iPad, Foldable Devices)
-- **Observed Issues**:
-  - Bento grid cards collapse into 2 uneven columns with awkward asymmetrical gaps.
-  - Hero visual drops completely below the viewport fold, leaving tablet users with an ocean of text.
-- **Fix**:
-  - Implement fluid CSS grid layouts (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
-  - Optimize the hero section to display text on the left and the hero visual artboard on the right on viewports ≥ 960px.
+### WF-06 — Widgets can Pause/Restore but never Uninstall [P0]
+- `marketplace-install.server.ts:174-212` + `marketplace.functions.ts:137-151` expose `paused|installed|rolled_back` only. Marketplace UI `index.tsx:375-384,416-424,432-469` wires Delete + `ConfirmDialog` + `marketUninstallThemeFn` for `kind==="theme"` only; no `marketUninstallWidgetFn`.
+- Fix: widget uninstall path (delete `plugin_state` + terminal ledger).
 
-### 3. 1440px+ (Ultrawide Desktop Displays)
-- **Observed Issues**:
-  - Wide text measure creates reading eye-strain.
-- **Fix**:
-  - Constrain content containers to `max-w-7xl` (1280px) with centered alignment and `max-w-2xl` line-length clamps for running prose.
+### WF-07 — Activate forks the wrong draft; REST diverges [P0]
+- `appearance.server.ts:179-204` flips `is_active` then `installRegistryTheme(...,source_listing_slug,true)` → `themes.server.ts:507-531` → RPC `theme_install_preset` (`20260917200000_phase2d_theme_install_preset.sql:34-44`) picks `ORDER BY is_active DESC, created_at ASC LIMIT 1` (active-or-oldest, **not** the `themeId` being activated).
+- REST `rest-gateway.server.ts:505-530` flips flags with no fork at all; storefront reads versions/drafts (`loadPublished`), so API-activated theme may not render.
+- Fix: fork by explicit `themeId`; single activate implementation shared by UI + REST; contract test asserting published AST follows `is_active`.
+
+### WF-08 — Idempotency key `Date.now()` defeats replay guard [P0, double-charge]
+- `marketplace/index.tsx:123-132` mints `${listing.id}-${trial?"trial":"buy"}-${Date.now()}` per click; server replay check is key equality (`marketplace-install.server.ts:51-57`). Double-click → duplicate ledger + double `install_count` (`130-133`) + double debit. Builtin path uses separate slug check (`marketplace.functions.ts:50-67`) — inconsistent.
+- Fix: stable key per (merchant, listing, intent) minted once per dialog open; disable-while-pending; dedupe test.
 
 ---
 
-## 5. Marketing Copy & Conversion Friction
+## 2. P0 — SaaS hosting / tenant-isolation abuse surface (user-reported `framique.qubickle.com/clients_website`)
 
-### 1. Defensive vs. Confident Copy
-| Current Defensive Copy (Weak) | Modern Real-World Business Copy (Strong) | Rationale |
-| :--- | :--- | :--- |
-| *"Is Framique another Shopify clone?"* | **"Built from the ground up for Bangladesh commerce."** | Market leaders never validate critics or mention competitors on their homepage. |
-| *"Counts are rounded down, never up. A metric we cannot verify is left out."* | **"Real-time analytics reconciled down to the last Paisa."** | Replaces defensive disclaimers with positive financial precision. |
-| *"What if bKash changes their API?"* | **"Direct MFS integrations. Zero downtime, zero middleman delays."** | Projects engineering mastery rather than anxiety. |
-| *"Delivered order: +৳1,400 vs Returned COD: -৳180 net cash."* | **"Stop losing money on returns with automated buyer trust scoring."** | Focuses on the positive prevention capability rather than reminding merchants of painful losses. |
+> `TODO.md` §2.1–§2.2 + `BUILD.md` §0.5 already track subdomain + onboarding + edge-cache. The below are the **sibling flaws in the same surface** — fix together or the subdomain move alone does not close abuse.
 
-### 2. High-Intent Call to Actions
-- Replace dry technical links with benefit-led action triggers:
-  - **Primary**: `Start 14-Day Free Trial →` (Subtext: *No credit card required · Live in 3 minutes*)
-  - **Secondary**: `Explore Demo Store` (Instant live lookbook preview)
+### WF-09 — Shared-cache serves cart/checkout/account/order as `public` — cross-shopper PII leak [P0, critical]
+- `server.ts:119-129` caches **any** `GET 200 text/html` under `isStorefrontPath` (`storefront-cache.ts:79-81`, matches `/store/:slug/cart|checkout|account|order|track|search`); headers `public, s-maxage=60, stale-while-revalidate=300`, `vary: accept-language` only (`88-95`). Always called with `null` (`server.ts:127`), so documented `etag tv-...` never emitted.
+- Fix: cache only anonymous template docs (index/product/collection/page); `private, no-store` on cart/checkout/account/order; add `Vary: Cookie, Host`; key by tenant+version.
 
----
+### WF-10 — `localhost` substring bypass kills HTTPS + CSRF [P0]
+- `server.ts:159` `hostname.includes("localhost")` gates HTTPS-301 skip (`161`) + CSRF skip (`175,186,194`). `localhost.evil.com` / `mylocalhost.com` → plaintext + no origin check.
+- Fix: exact `=== "localhost"` + loopback/`*.local` allowlist, never substring.
 
-## 6. Actionable Roadmap
+### WF-11 — CSRF fail-open on `/api/*` without Origin [P0]
+- `server.ts:166-198`: non-`/api/public` + non-`/api/canary-alert` checked only if Origin/Referer present; `else if (!isLocalhost && !pathname.startsWith("/api/")) 403` → any `POST /api/...` **without** headers passes. `/api/public/*` + `/api/canary-alert` skip entirely (`233-244` processes Prometheus webhook with no visible signature).
+- Fix: tenant-aware validator (platform domain + verified custom domain + registered `<slug>.framique.store`), require Origin **or** token on mutations; sign canary webhook. (Already in TODO §2.5 — keep.)
 
-1. **Step 1: Formalize DESIGN.md**  
-   Publish the complete design system specification following the Cal.com format with minimal B&W foundation, Facebook Blue accents, and calm pink smooth canvas surfaces.
-2. **Step 2: Update Public CSS Tokens**  
-   Wire the semantic CSS variables in `src/styles.css` to reflect the calm pink canvas (`oklch(0.978 0.008 25)`), Facebook blue (`oklch(0.55 0.22 255)`), and crisp ink hierarchy for both light and dark themes.
-3. **Step 3: Refactor Homepage Copy & Layout**  
-   Condense the 13 legacy bands into 7 streamlined, high-converting stages with interactive 3-tab architecture and clean dummy placeholder images.
-4. **Step 4: Mobile Viewport Hardening**  
-   Audit and enforce responsive rules across all screen sizes (320px to 1920px) with zero horizontal overflow and optimal touch ergonomics.
+### WF-12 — No Host-based tenancy; SYSTEM §4.2 promise is aspirational [P0]
+- All loaders resolve by path slug only (`storefront.server.ts:69-76,99-107,159-168,248-256`; `storefront.functions.ts:11-26`). Routes are `store.$slug.*` only; no `<slug>.framique.store` handler, no Host→merchant rewrite in `server.ts` (only canary headers `tenant-canary.server.ts:142-156`). Onboarding `onboarding.tsx:123-243` is 3 steps (name → slug `.store.framique.com:190` → plan), **no domain step** → `DOMAIN_EDGE_HOOK_URL` unset parks domains in `issuing_cert` forever (`domains.server.ts:413-444`).
+- Fix: wildcard subdomain + Host rewrite + onboarding domain step with Skip (TODO §2.1 as specified by user: prompt + CNAME to `edge.framique.app` + Skip to free subdomain + Settings › Domains later). Also fix `SYSTEM.md:117-124` until shipped.
 
----
+### WF-13 — Legacy SVG path: unsanitized upload served as executable `image/svg+xml inline` [P0, stored XSS]
+- `media.server.ts:93-131` writes SVG bytes with no `sanitiseSvg` (only `library.server.ts:123-128` has it); served `inline` with only `nosniff` (`api/public/media/$.ts:21,53-61`). Upload is base64 JSON (`media.functions.ts:20-40`, 7.5 MB cap, sync `atob` loop `media.server.ts:151-157`) — event-loop block + no magic-byte check.
+- Fix: route all SVG via `sanitiseSvg`, serve as `attachment`/sandboxed, presigned direct-to-storage uploads (TODO §2.3).
 
-## 7. Hallmark & 10-Skill WCAG Contrast & Ergonomics Audit
+### WF-14 — Advertised CSP+nonce never sent; merchant JS runs in storefront origin [P0, skimming]
+- `custom-code.ts:486-506` defines `buildCsp`/`newNonce` (`474-480`); `server.ts:77-89` sends only `nosniff/referrer/SAMEORIGIN` — no CSP header. `CustomCode.tsx:39-62` appends `code.js` as live script; `reviewJs:249-271` is regex-deny (bypass via `globalThis['ev'+'al']`, `constructor.constructor`, `import()`); `body` allows `https:` iframes with no `sandbox` (`384`).
+- Fix: send CSP + nonce, sandbox body iframes / isolate custom JS like `html` widget `sandboxSrcDoc` (`444-457`); restrict checkout/payment to allowlisted analytics (TODO §2.4).
 
-### 1. The Eye-Soothing Sweet Spot: Why Extreme Contrast Fails
-Most automated tools or unskilled prompts push contrast to pure black (`#000000`) on pure white (`#FFFFFF`) (21:1 ratio). While technically "passing", 21:1 contrast causes severe visual halation, eye strain, and cognitive fatigue during extended reading. Conversely, low contrast (< 4.5:1) renders text washed out and unreadable.
+### WF-15 — `verify-sni` is an unauthenticated DB oracle [P1]
+- `api/public/domains/verify-sni.ts:17-82` `GET ?host=` → DB lookup, no rate-limit/token (unlike `callback.ts:52-68` HMAC), `Cache-Control: public, max-age=60`. Distinguishes unregistered/pending/active; per-SNI DB hit; global ingress limit fail-open on Redis error (`server.ts:202-218`).
+- Fix: `enforceRateLimit` + negative cache + quota/backoff (TODO §2.6).
 
-Using **Hallmark** OKLCH color science and APCA/WCAG standards, Framique achieves the **eye-soothing sweet spot**:
-
-#### A. Light Theme (Default Warm Velvet Calm)
-| Element | Token / Color | Background | Measured WCAG Ratio | Eye-Comfort Grade |
-| :--- | :--- | :--- | :--- | :--- |
-| **Canvas** | `oklch(0.978 0.008 25)` (`#FAF6F7`) | — | — | Replaces sterile flat white with soothing calm blush warmth |
-| **Card / Plate** | `oklch(0.995 0.003 25)` (`#FDFBFB`) | Canvas | ~1.15:1 | Elevated surface with hairline border (`#E7E0E3`) |
-| **Primary Ink (Headings/Body)** | `oklch(0.26 0.015 25)` (`#2B272A`) | Canvas | **11.2:1** | **AAA Eye-Soothing** (No harsh 21:1 black glare) |
-| **Primary Ink (on Cards)** | `oklch(0.26 0.015 25)` (`#2B272A`) | Card Plate | **11.8:1** | **AAA Eye-Soothing** |
-| **Muted / Secondary Ink** | `oklch(0.48 0.018 25)` (`#665E64`) | Canvas | **5.3:1** | **AA Pass** (> 4.5:1 with clear hierarchy) |
-| **Muted Ink (on Cards)** | `oklch(0.48 0.018 25)` (`#665E64`) | Card Plate | **5.5:1** | **AA Pass** (> 4.5:1 with zero wash-out) |
-| **Primary CTA (Facebook Blue)** | `oklch(0.55 0.22 255)` (`#1465E8`) | White Text | **5.1:1** | **AA Pass** (> 4.5:1 high-intent trigger) |
-| **Brand Pink Focal Pip** | `oklch(0.62 0.22 18)` (`#F43F5E`) | — | — | **Hallmark 3% rule**: High-energy focal accents |
-
-#### B. Dark Theme (Rich Twilight Obsidian)
-| Element | Token / Color | Background | Measured WCAG Ratio | Eye-Comfort Grade |
-| :--- | :--- | :--- | :--- | :--- |
-| **Canvas** | `oklch(0.17 0.012 25)` (`#181517`) | — | — | Rich obsidian twilight (prevents OLED vibrating glare) |
-| **Card / Plate** | `oklch(0.21 0.014 25)` (`#221F22`) | Canvas | ~1.25:1 | Hallmark elevation rule: higher surfaces are lighter |
-| **Primary Ink** | `oklch(0.91 0.008 25)` (`#EAE4E7`) | Canvas | **11.8:1** | **AAA Eye-Soothing** (Soft parchment milk, zero halation) |
-| **Primary Ink (on Cards)** | `oklch(0.91 0.008 25)` (`#EAE4E7`) | Card Plate | **10.6:1** | **AAA Eye-Soothing** |
-| **Muted / Secondary Ink** | `oklch(0.70 0.015 25)` (`#A79EA4`) | Canvas | **5.8:1** | **AA Pass** (> 4.5:1 high clarity) |
-| **Muted Ink (on Cards)** | `oklch(0.70 0.015 25)` (`#A79EA4`) | Card Plate | **5.2:1** | **AA Pass** |
-| **Primary CTA (Facebook Blue)** | `oklch(0.58 0.21 255)` (`#1D70F4`) | White Text | **4.6:1** | **AA Pass** (Brightened for dark ambient lighting) |
-| **Brand Pink Focal Pip** | `oklch(0.72 0.18 20)` (`#FA7287`) | Canvas | **7.2:1** | Luminous rose badge accent |
+### WF-16 — Edge/cert defaults guarantee stuck domains [P1]
+- `domains.server.ts:59-66` defaults `cname=edge.framique.app`, `ips=[]` → apex never verifies (`domains.ts:132-167`); empty bearer `421-431` + `callback.ts:52-53` 404 → permanent `issuing_cert`; `sweepDomains:667-679` never re-polls `issuing_cert`; `renewing:717` is not a valid `DomainStatus` (`domains.ts:43-50`) → `illegal_transition` (`118-122`).
+- Fix: require env at boot, sweep `issuing_cert`, valid status machine, operator alert on stuck.
 
 ---
 
-### 2. Integration Matrix: The 10+ Skills Applied
-1. **Hallmark (`nutlope/hallmark`)**:
-   - Macrostructure variety: Hero -> Ecosystem Marquee -> Bento Grid -> 3-Tab Tour -> Pricing -> Merchant Cases -> FAQ -> Final CTA.
-   - Slop test gates enforced: Zero fake OS window chrome (dots/faux URL bars), token locking, OKLCH color science, 3% accent rule, typography purity (no italic headers).
-   - Strict mobile responsiveness: `overflow-x: clip`, no 2-line button breaks, `minmax(0, 1fr)` image grids.
-2. **`design-taste-frontend`**:
-   - Design read declared and honored: Minimalist B&W authority + calm pink warmth + Facebook Blue digital intent.
-   - Contextual anti-slop: Avoided generic purple meshes, centered card triplets, and vague SaaS claims.
-3. **`affaan-m-make-interfaces-feel-better`**:
-   - Concentric radius discipline: `outer = inner + padding` across cards and nested badges.
-   - Optical icon centering and hairline borders with subtle ambient shadows.
-   - Typography wrapping: `text-wrap: balance` on headlines and `text-wrap: pretty` on prose.
-   - Tabular numerals: `tabular-nums` on all metrics, currency amounts, and order counters.
-   - Touch ergonomics: 44px minimum hit targets on all mobile navigation and action triggers.
-   - Specific transitions: Targeted properties (`transform, background-color, border-color, box-shadow`), avoiding sluggish `transition: all`.
-4. **`affaan-m-design-system`**:
-   - Centralized token architecture in `src/styles.css` with seamless light and dark mode mappings.
-5. **`affaan-m-motion-foundations` & `affaan-m-motion-advanced`**:
-   - Responsive, interruptible 160–220ms cubic bezier transitions with full `prefers-reduced-motion` safety.
-6. **`frontend-design`**:
-   - Semantic HTML5 landmark tags (`<header>`, `<main>`, `<footer>`, `<nav>`, `<article>`), high-fidelity mobile drawer, structured outline.
-7. **`react-best-practices`**:
-   - Pure components, zero hydration layout shift, efficient SSR rendering.
-8. **`sickn33-marketing-psychology`**:
-   - Eliminated defensive COD anxiety copy. Replaced with positive merchant empowerment, automated fraud scoring, and instant courier dispatch.
-9. **`sickn33-price-psychology-strategist`**:
-   - Clear BDT pricing tiers anchored with "0% transaction fees", highlighting merchant margin retention.
-10. **`affaan-m-brand-voice`**:
-    - Direct, crisp, authoritative B2B tone tailored for Bangladeshi commercial leaders.
+## 3. P1 — Sidebar / Builder / Auth (WP `#adminmenu` + Gutenberg parity)
 
+### WF-17 — No Appearance/Plugins top-level; Commerce-first taxonomy [P1]
+- `console-nav.ts:86-533` has 8 groups (dashboard, orders, products, customers, content, marketing, money, settings). WP Appearance (Themes/Customize/Menus) is flattened into `Content:290-363` (`Pages/Posts/Media/Menus/SEO/Themes & apps` as tabs; `Themes:342-347` + `Page builder:348-354` buried in `more`). No `Plugins` group, no `/dashboard/plugins` route (glob empty); plugins only as builder `WidgetTray` data (`builder.tsx:174-179`).
+- `openCustomize` (`ThemesScreen.tsx:126`) jumps context-free to `/builder`; inactive cards hide Activate/Preview on hover (`ThemeCard.tsx:68-82,109-115`).
+- Fix: elevate Appearance (Themes, Customize, Menus) + Plugins (Installed, Add New) to top-level per `AGENTS.md` P1 + TODO P1; single nav source of truth; no URL-only routes.
+
+### WF-18 — No accordion submenus, no collapsed flyouts [P1]
+- `AdminShell.tsx:113-168` renders 8 flat links ("Shopify-style… Sub-pages are not repeated" comment). Collapsed rail `486-510` is icon + `title` tooltip only. Sub-pages are page-level `SectionTabs:230-314` + `MoreMenu:170-227`, not a sidebar tree. Highlight `isActive:109-111` is group-prefix only (no `current-menu-parent` expansion).
+- Fix: accordion in open sidebar + hover flyouts in rail, `current` propagation, matching WP `#adminmenu`.
+
+### WF-19 — Capability gating is affordance-only on theme/plugin paths [P1, authz hole]
+- `console-nav.ts:4-7` + `use-membership.ts:76-84` admit client-only filtering. `themes.functions.ts:15-174` + `plugins.functions.ts:14-60` use **only** `requireSupabaseAuth` (+ `currentMerchantId`), while `content-desk/editor/global-blocks/search-console` attach `requirePermission`. Nav hides by `themes.read` but server never asserts it.
+- Fix: add `requirePermission("themes.read/update")` etc. to every theme/plugin fn.
+
+### WF-20 — Two page systems, one stub-backed [P1]
+- Real: `dashboard/builder.tsx` (autosave `256-262`, status `938-946`, undo/redo `965-980`, commit `751-763`, publish `765-777`, history/rollback/schedule `779-815,1587-1621`, themes panel `1623-1797`) + `EditorShell.tsx:126-137,328-336` (draft/publish/revisions/restore/schedule via `useEditorDoc.ts:157-168`, `DocumentPanel`, `content/editor.tsx:20,100-115` `?editor=builder` = "Edit with Page Builder").
+- Stub: legacy `dashboard/pages.tsx:22-41` (no permission, `isPublished` boolean + `archivePageFn` only) imports `page-builder.ts:12-20,157-169` headed `// Stub — full implementation was not committed` (`1-3`), `starterDoc:91` is `any`-cast, yet exposes a "Page builder" toggle (`279-291,428-430`).
+- Fix: retire/re-route legacy desk; Pages table gets "Edit with Page Builder" loading real AST (TODO P1); schedule form must allow version pick (currently hardcodes `versions[0]:792-793`).
+
+### WF-21 — B2C/B2B + route guards are client-side [P1]
+- No `/admin` (glob empty; only `robots.txt` + `auth.tsx:53-85` `landingFor` which rejects `/root|/admin` prefixes; console root is `/dashboard`). Signup `registerMerchantFn` (`identity.server.ts:398-418`) sets no `account_type`/merchant row; store comes later via `create_store` (`onboarding.tsx:84-93`) — signup alone never escalates (good), but console rejects `account_type==="customer"` in two client spots (`auth.tsx:133-144`, `dashboard.tsx:21-25`) while nothing sets it on storefront signup (`store.$slug.account.tsx:57-62` shares session) and OAuth (`auth.tsx:277-291`) lands in onboarding by default.
+- All guards client-side (`ssr:false`: `_authenticated/route.tsx:5`, `root.tsx:18`; `supabase.auth.getUser()` in `beforeLoad`; tenant from `localStorage fq.active_merchant_id` `use-merchant.ts:60-70`).
+- `/root` is **not** broken (`root.tsx:17-60`, `root/index.tsx:4-6`, `RootLayout:74-103`) — but `root.tsx:26-30` + `root/login.tsx:50-54` do client `platform_admins` SELECT (migration `20260909194000:6-8` revokes write only; SELECT policy unclear → oracle or wasted round-trip + error oracle `login.tsx:74-76`).
+- Fix: server `beforeLoad`/loaders with `requireSupabaseAuth` + membership; set `account_type` server-side; delete client `platform_admins` SELECT, rely on `platformIsAdminFn` + DENY SELECT + test.
+
+---
+
+## 4. P2 — Polish / trust (violates repo rules today)
+
+- **WF-22 — Fabricated theme ratings/installs**: `catalog-meta.ts:23-121` hardcodes `4.4–4.9` / `2600–12800`; `appearance.server.ts:109-130` never reads real counts (comment claims override); `AddThemeScreen.tsx:262-266` renders as fact; Popular sort `appearance.ts:200-211` is fixture order. Widgets file (`builtin-plugins.ts:356-360`) does "Honest zeros" — themes must match. Violates `AGENTS.md` TOP PRIORITY.
+- **WF-23 — Upload Theme dead end**: `AddThemeScreen.tsx:272-337` validates zip client-side only (`appearance.ts:262-279`), success copy mentions media library, zero server path (no `themeUploadFn`/storage). Violates "no action button without working server path".
+- **WF-24 — No audit rows for theme/plugin lifecycle**: `appearance.server.ts:147-218`, `marketplace-install.server.ts:46-212,315-396`, `plugins.server.ts:71-164` write zero audit; `theme_audit` table (`types.ts:8777`) has no writer. `[A]` requires actor/before/after/reason.
+- **WF-25 — Preview ‹ › pools catalogue only**: `ThemesScreen.tsx:151-166` steps `catalogue`; custom/installed-only (`key=null`, `appearance.ts:13-15,291-301`) breaks. Details stepping (`168-172`) correctly uses `installed`.
+- **WF-26 — Tenant canary leaks + spoofing**: `server.ts:131-150` echoes `x-framique-tenant-id` on every shopper response; `tenant-canary.server.ts:111-169,299-311` trusts `X-Merchant-Id/X-Store-Slug/X-Tenant-Id`, `?merchant_id/store_slug`, cookies, and unconditional `X-Framique-Slot-Override: green|blue`. Fix: auth-gate override, stop echoing IDs.
+- **WF-27 — Gates with no enforcer**: `1.9` CI gate green locally but `.github/workflows/gates.yml` missing (BUILD `~` line) — nothing enforces per push.
+
+---
+
+## 5. Remediation order (maps to TODO/BUILD — do not re-plan elsewhere)
+
+1. **SaaS isolation first** (WF-09–12,16): subdomain + Host rewrite + onboarding domain step (Skip → free subdomain → Settings › Domains) + cache scoping + CSRF tenant-awareness. Unblocks everything Shopify-like.
+2. **Theme/plugin correctness** (WF-01–08): single install path (inactive + ledger), enum migration, third-party row creation, real preview route, plugin/widget Delete, correct fork, stable idempotency.
+3. **Nav + authz** (WF-17–19,21): Appearance/Plugins top-level + accordion/flyouts + `requirePermission` on theme/plugin fns + server guards + persona hardening.
+4. **Builder dedupe** (WF-20): kill stub desk, Pages "Edit with Page Builder" on real AST.
+5. **Trust/polish** (WF-22–27): honest zeros, upload path or remove button, audit writers, preview stepping, canary header hygiene, CI gates workflow.
+
+Every `[A]` fix ships with deny + replay + audit assertion per `AGENTS.md` Testing section before ticking `BUILD.md` §0.
+
+---
+
+## Appendix — Files touched by this audit (evidence index)
+
+- Chrome: `/wp-admin/` (dashboard), `/wp-admin/themes.php` (3 themes, Customize/Activate/Preview), `/wp-admin/plugins.php` (Elementor row, bulk, views).
+- Repo: `src/lib/console-nav.ts`, `src/components/admin/AdminShell.tsx`, `src/lib/themes/appearance.server.ts`, `appearance.ts`, `appearance.functions.ts`, `catalog-meta.ts`, `src/lib/marketplace-install.server.ts`, `marketplace.server.ts`, `marketplace.functions.ts`, `src/lib/plugins.server.ts`, `plugins.functions.ts`, `src/lib/storefront-cache.ts`, `src/server.ts`, `src/lib/storefront.server.ts`, `storefront.functions.ts`, `src/routes/store.$slug.index.tsx`, `src/routes/_authenticated/onboarding.tsx`, `dashboard/marketplace/index.tsx`, `dashboard/builder.tsx`, `dashboard/pages.tsx`, `content/editor.tsx`, `src/components/admin/themes/*`, `src/components/marketplace/InstalledApps.tsx`, `src/lib/media.server.ts`, `media.functions.ts`, `src/components/store/CustomCode.tsx`, `src/lib/custom-code.ts`, `src/lib/domains.ts`, `domains.server.ts`, `api/public/domains/verify-sni.ts`, `api/public/media/$.ts`, `src/lib/tenant-canary.server.ts`, `src/lib/rest-gateway.server.ts`, `TODO.md` §2.1–2.2, `BUILD.md` §0/§1.9, `SYSTEM.md` §4.2.

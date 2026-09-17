@@ -783,5 +783,112 @@ Instead of dead-ending the user, the agent immediately renders interactive actio
 
 ---
 
-_See `docs/00-meta/PLAN.md` for build sequencing, `ops/README.md` for operational runbooks, and `TODO.md` for development tasks._
+## 12. Platform Owner Control Plane & Sovereign Governance Architecture (`/root`)
+
+The Platform Owner Control Plane (`/root`) is the topmost administrative shell in Framique's three-tier SaaS topology:
+1. **Shopper / Storefront**: Edge-served public storefronts at `<slug>.framique.store` and verified custom domains.
+2. **Merchant Admin (`/admin`, `/dashboard`)**: Tenant-scoped merchant console for products, orders, inventory, POS, settings, and theme customization.
+3. **Platform Owner (`/root`)**: Sovereign root console granting platform administrators complete control over multi-tenant isolation, money engine conformance, 4-eyes payouts, AI customer support supervision, gateway rails, ad-fraud defense, and zero-downtime infrastructure operations.
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                   FRAMIQUE PLATFORM OWNER CONTROL PLANE (/root)                        │
+│             Sovereign Global Control, 4-Eyes Governance, System Telemetry              │
+└───────┬──────────────────────┬──────────────────────┬───────────────────┬──────────────┘
+        │                      │                      │                   │
+        ▼                      ▼                      ▼                   ▼
+┌────────────────┐    ┌────────────────┐    ┌────────────────┐   ┌────────────────┐
+│   Commercial   │    │  Multi-Tenant  │    │ Payments & MFS │   │ Trust, Risk    │
+│   Governance   │    │  Isolation     │    │ Settlement     │   │ & AI Superv.   │
+├────────────────┤    ├────────────────┤    ├────────────────┤   ├────────────────┤
+│ • Revenue / MRR│    │ • Tenants Quota│    │ • 4-Eyes Payout│   │ • AI Takeover  │
+│ • Plans Engine │    │ • Drift & Purge│    │ • Rails Config │   │ • Fraud Engine │
+│ • Trial Ladder │    │ • RBAC Roster  │    │ • DLQ Monitor  │   │ • Honeypot     │
+│ • Global Promo │    │ • Impersonation│    │ • Secret Burst │   │ • Consent Map  │
+└────────────────┘    └────────────────┘    └────────────────┘   └────────────────┘
+```
+
+### 12.1 Perimeter, RBAC & Isolation Boundary
+- **Standalone Route & Shell Isolation**: `/root` sits completely outside `_authenticated` and `dashboard`. It runs its own layout (`RootShell`), its own dedicated session gate, and its own authentication route (`/root/login`).
+- **Security-Definer Authorization**: Access is strictly governed by `platform_admins` table membership and `public.is_platform_admin()` security-definer database functions. Role columns on user profiles are strictly forbidden. Non-admin users are rejected with `owner.forbidden` and never confirmed the existence of internal endpoints.
+- **`merchant_id = 'platform'` RLS Scoping**: When platform administrators read or write platform-level metadata, queries explicitly use `merchant_id = 'platform'` to preserve RLS integrity across the entire schema.
+- **Append-Only Owner Action Audit Ledger**: Every privileged operation (limit override, suspension, payout approval, kill-switch toggle, impersonation session) writes an immutable, append-only row to `owner_action_logs` with actor ID, IP hash, target entity, timestamp, before/after states, and mandatory justification reason.
+
+### 12.2 The 16 Sovereign Control Desks
+The platform owner panel provides 16 dedicated operational desks ensuring total mastery over the ecosystem:
+
+1. **Executive Command Center (`/root/`)**:
+   - High-level telemetry cockpit featuring live MRR, ARR, active paying vs trialing store counts, escalated AI support requests, and pending payouts.
+   - Real-time emergency posture indicators with instant links to emergency controls and universal command palette (`Cmd+K`).
+2. **Platform Revenue Desk (`/root/revenue`)**:
+   - Live revenue analytics computed directly from active subscriptions and stored plan prices in integer minor units.
+   - ARPA, plan distribution mix, and 30/90-day trailing logo churn. Foreign-currency contracts are isolated and never dynamically converted without explicit snapshot FX rates.
+3. **Plans, Entitlements & Pricing Engine (`/root/plans`)**:
+   - Draft-to-published pricing lifecycle with two-key sign-off (`owner_ack` + audit row).
+   - Product catalog count caps, staff member limits, and hard DB constraint enforcement (`check_entitlement()` RPC).
+4. **Trial Lifecycle Manager (`/root/trial`)**:
+   - Funnel telemetry tracking progression: `signup → first order → paid subscriber`.
+   - 5-day trial ladder governance with anti-abuse fingerprinting and audited 4-eyes trial extensions (`trial.extended.with_reason`).
+5. **Global Coupons & Promotions (`/root/coupons`)**:
+   - Platform-wide promotion oversight and vendor-quick fixes (global coupon revoking via four-eyes authorization).
+   - Server-enforced discount percentage and minor-unit value ceilings (`offer.percent_cap_bdt`).
+6. **Money Engine & Conformance Desk (`/root/money`)**:
+   - Automated currency conformance auditor (`money_conformance()` RPC).
+   - Float-column prevention check, ledger split reconciliation, and legal year VAT table validation.
+7. **Tenants Directory & Quotas (`/root/tenants`)**:
+   - Exhaustive directory of all hosted stores with search and filter (`?q=slug`).
+   - Real-time resource meters (products used vs limit, staff used vs limit), subscription state, and audited limit overrides.
+8. **Tenancy, Drift & Purge Desk (`/root/tenancy`)**:
+   - Automated isolation posture monitoring and live schema drift detection (`schema_fingerprint()`).
+   - Soft-delete tombstone counters across all 14 tenant tables and GDPR cooling window purge queue scheduler.
+9. **Platform Users & RBAC Roster (`/root/users`)**:
+   - Directory of platform staff, owners, and merchant account associations.
+   - Granular RBAC permissions matrix, key revocation, and staff invitation queue.
+10. **Privileged Access & Impersonation Desk (`/root/access`)**:
+    - Merchant-consented, time-bounded support sessions (`owner_impersonation_grants`).
+    - Explicit `read` vs `write` permission scopes with automated expiration and complete activity logging.
+11. **Merchant Payouts & Settlement Queue (`/root/payouts`)**:
+    - Four-eyes dual approval queue for merchant funds disbursement (MFS bKash/Nagad/Rocket and bank transfer).
+    - Prevention of self-approval by the requesting operator; platform hold-on-fulfilment and cancellation workflows.
+12. **Payment Gateways & Rails Governance (`/root/gateway`)**:
+    - Per-gateway environment management: `mock → sandbox → pre-live sign-off → live`.
+    - Live activation requires wallet ledger balance verification and four-eyes review.
+    - Provider secret write-burst intrusion alerting (`ProviderSecretWriteBurst`).
+13. **Fraud Defense & Risk Desk (`/root/fraud`)**:
+    - Platform-wide fake-order and COD refusal velocity analysis.
+    - Salted cross-merchant blacklist and honeypot network (`ad_network_signals`).
+    - Scoring-engine fail-open emergency kill switch (`fraud_engine_enabled`).
+14. **AI Omnichannel Moderation & Takeover Room (`/root/ai`)**:
+    - Unified split-pane live conversation queue and active chat stream across all merchant storefronts.
+    - Instant 1-click human intervention (`takeover_mode: 'human_takeover'`), audible chime synthesizer, and private operator notes.
+15. **Operations, Job Runners & Cron Desk (`/root/ops`)**:
+    - Unified dead-letter queue (DLQ) for payment, shipping, and webhook failures with replay capabilities.
+    - Supercronic scheduler monitor, BullMQ worker fleet health, and automated data retention sweeps.
+16. **Snapshots, Backups & Disaster Recovery (`/root/snapshots`)**:
+    - Automated nightly snapshot backup drill verification.
+    - Continuous WAL point-in-time recovery (PITR) ledger and single-tenant disaster restore rehearsals.
+
+### 12.3 Emergency Platform Posture & Kill Switches
+The platform owner console provides physical circuit breakers capable of halting or degrading specific subsystems without taking the commerce core down:
+- **`ai_kill_switch`**: Instantly pauses autonomous AI support execution across all storefronts; escalates all inquiries to human ticketing.
+- **`fraud_engine_enabled`**: Disables edge heuristic scoring and fails open to manual risk review to prevent false-positive checkout blockage during flash sales.
+- **`consent_channel_switches`**: Global toggles for Email, SMS, and Push notification dispatches honoring recorded opt-outs.
+- **`gateway_live_gate`**: Immediate rollback of live payment provider credentials to sandbox or mock rails during external gateway API disruptions.
+
+### 12.4 Four-Eyes Principle (Dual-Operator Authorization)
+For high-exposure actions that could cause irrecoverable data loss or unauthorized money movement:
+- **Merchant Payouts**: The operator initiating a payout cannot approve the disbursement; a second distinct platform administrator must verify bank/MFS settlement before funds release.
+- **Tenant Purge**: Irrevocable deletion of a tenant's database rows following the cooling window requires two independent keys.
+- **Pricing Plan Publishing**: Modifying published subscription prices or tier limits requires draft review by a second administrator.
+
+### 12.5 Universal Command Palette (`⌘K`)
+The root console embeds a dedicated keyboard-first command engine (`RootCommandPalette`):
+- **Destinations**: Instant fuzzy jump to any of the 16 desks.
+- **Tenant Lookup**: Live cross-tenant search by merchant name, slug, or subscription status with direct deep-linking to tenant quota management (`/root/tenants?q=:slug`).
+- **Keyboard Traversal**: Arrow-key navigation, `Enter` to open, `Esc` to dismiss, preserving operator flow without mouse reliance.
+
+---
+
+_See `docs/00-meta/PLAN.md` for build sequencing, `ops/README.md` for operational runbooks, `docs/17-owner-console/` for console specifications, and `TODO.md` for development tasks._
+
 

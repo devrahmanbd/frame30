@@ -9,22 +9,27 @@
 
 ### P0 — Security first (blocks everything else)
 - [ ] **Rotate all exposed credentials** (GitHub PAT, Supabase passwords/JWT, Kong keys, SMTP) — open since Sept 11, unchanged.
+- [ ] **Shared-cache PII leak** (`REPORT.md` WF-09): `withStorefrontCache` marks cart/checkout/account/order `public, s-maxage=60` — scope cache to anonymous docs only, `private, no-store` on personalized routes, `Vary: Cookie, Host`.
+- [ ] **`localhost` substring bypass** (WF-10): `hostname.includes("localhost")` disables HTTPS + CSRF for `*.localhost.evil.com` — exact-match + loopback only.
+- [ ] **CSRF fail-open on `/api/*`** (WF-11): mutation POSTs without Origin/Referer pass — require Origin or token; sign canary webhook.
+- [ ] **SVG stored-XSS via legacy media path** (WF-13): `media.server.ts` skips `sanitiseSvg`, serves `inline` — route all SVG via sanitizer, serve `attachment`/sandboxed; presigned uploads (§2.3).
 - [ ] **Verify B2C/B2B segregation** after the auth-isolation commits (`321ba98`, `3cfa268`, `c868af9`) — may be partially fixed; needs a prove-it test, not blind rework.
-- [ ] **RLS + SSR loader-guard audit** across public tables.
-- [ ] **Custom-code XSS sandbox** (§2.4: CSP + sandbox merchant HTML/JS, keep checkout/payment surfaces clean).
+- [ ] **RLS + SSR loader-guard audit** across public tables (WF-19/WF-21: theme/plugin fns lack `requirePermission`; all route guards client-side `ssr:false`; client `platform_admins` SELECT oracle).
+- [ ] **Custom-code XSS sandbox** (§2.4 + WF-14: CSP+nonce defined in `custom-code.ts` but never sent; merchant JS runs in storefront origin — send CSP header + nonce, sandbox iframes, keep checkout/payment clean).
 - [ ] **Tenant-aware CSRF validator** (§2.5: custom domains + gateway return redirects currently risk 403s).
-- [ ] **SNI/domain quotas + rate limits** (§2.6: per-plan domain caps, `domain.create` bucket, DNS backoff).
+- [ ] **SNI/domain quotas + rate limits** (§2.6 + WF-15/WF-16: `verify-sni` unauthenticated DB oracle; `issuing_cert` never re-polled, `renewing` invalid status — rate-limit, negative cache, sweep stuck states).
 
 ### P1 — Merchant journey must work end-to-end (onboarding → dashboard → marketplace)
 - [x] DONE (Sept 17–18): step-up `plan.write` block, `create_store`/`store_slug_status`, `vat_resolve`/`collection_resolve`, 9 theme-engine RPCs, `cms_entitlements` rewrite, marketplace preset+plugin bridge with replay guard, install-as-new-inactive + Activate/Delete, schema-drift repairs (phases 2b–2g).
-- [ ] **WP-parity P0 remainder**: Live Preview wiring, Add Theme tile, Details-modal parity, plugin **Delete**, Add-New routing, bulk actions (see 🔴 block below).
+- [ ] **WP-parity P0 remainder**: Live Preview wiring (WF-04: `?preview_theme=` dead — needs real `preview_theme_id` route), Add Theme tile, Details-modal parity, plugin **Delete** (WF-05: server exists, zero UI) + widget uninstall (WF-06), Add-New routing, bulk actions (see 🔴 block below).
+- [ ] **Theme-install correctness** (WF-01/02/03/07/08): single install path (kill `installCatalogTheme` direct-insert bypass of ledger), `removed` enum migration, third-party `store_themes` row creation (missing `market_apply_theme_install` RPC), activate-by-explicit-`themeId` (RPC picks wrong draft), stable idempotency key (kill `Date.now()` per click).
 - [ ] **Subdomain architecture** (§2.1: wildcard `*.framique.store`, onboarding custom-domain step, edge tenant rewrite) — sub-path hosting is a security + SEO liability.
 - [ ] **Edge-cache tenant awareness** (§2.2: `isStorefrontPath` bypasses cache on custom domains — origin-crash risk under load).
 - [ ] **Presigned media uploads** (§2.3: base64 RPC uploads risk V8 heap blowups + Nitro 413s).
 
 ### P2 — Console parity + growth
-- [ ] **WP P1**: sidebar collapse/flyout/keyboard parity, Pages-table "Edit with Page Builder".
-- [ ] **WP P2**: theme screenshot pipeline.
+- [ ] **WP P1**: sidebar collapse/flyout/keyboard parity (WF-17/18: elevate Appearance + Plugins top-level, accordion + hover flyouts, `current` propagation), `requirePermission` on theme/plugin fns (WF-19), retire stub-backed legacy pages desk (WF-20: two page systems), Pages-table "Edit with Page Builder" on real AST.
+- [ ] **WP P2**: theme screenshot pipeline; honest-zero catalog counts (WF-22: hardcoded 4.4–4.9 ratings/2600–12800 installs violate no-fabrication rule); Upload Theme server path or remove button (WF-23); audit rows for all lifecycle mutations (WF-24); preview ‹ › pooling (WF-25); canary header hygiene (WF-26); CI gates workflow (WF-27: `.github/workflows/gates.yml` missing).
 - [ ] **Design §1.4 leftovers + SEO programmatic pages** (§3 matrix is reference, execute per quarter).
 
 ### Reference (not backlog — do not action directly)
@@ -33,8 +38,10 @@
 ---
 ## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Audited Sept 18, 2026)
 
-> **Reference Target**: Live WordPress 6.8+ Dashboard (`http://maxwilliam.shop/wp-admin`, audited with credentials `maxw`).  
+> **Reference Target**: Live WordPress 6.8+ Dashboard (`http://maxwilliam.shop/wp-admin`, audited with credentials `maxw`).
 > **Core Mandate**: Framique must deliver the exact user experience, user journey, theme/plugin/builder management systems, and sidebar architecture of WordPress.
+> **Deep-dive references (local)**: WordPress core `https://wordpress.org/latest.zip`, Elementor `https://github.com/elementor/elementor`, Elementor Pro `/Users/rahman/Downloads/elementor-pro` (builder UX, Theme Builder, submissions, template hierarchy).
+> **Weak-foundation findings**: `REPORT.md` (WF-01–WF-27, Sept 18, 2026 code-review + 3 subagents + live WP audit). Items below marked `[REPORT WF-xx]` are proven gaps, not speculation.
 
 ### 🔍 Live WP Reference Audit Summary (`http://maxwilliam.shop/wp-admin`)
 
@@ -49,32 +56,48 @@
 ### P0 — Marketplace Theme Lifecycle (Install → Activate → Activated/Customize)
 - [x] **Appearance Themes Grid Parity**: Content › Themes grid has Activate / Delete / Preview / Customize (`ThemesScreen.tsx` + `themeActivateFn`/`themeDeleteFn`).
 - [x] **Decoupled Marketplace Install**: install creates a **new inactive** `store_themes` row (`marketplace_install_preset` routine + `installBuiltinTheme`, replay-guarded), never mutating the active draft.
+  - [ ] **Follow-up [REPORT WF-01]**: kill the second install path — `installCatalogTheme` (`appearance.server.ts:148-172`) direct-inserts with no ledger/`source_install_id`, so Appearance installs are invisible to Marketplace `themeStates`. Single `installTheme` path only.
 - [x] **Direct Activate Action**: working **Activate** button per installed marketplace card (reuses `themeActivateFn`; Active badge + storefront sync).
+  - [ ] **Follow-up [REPORT WF-07]**: activate forks the wrong draft — RPC `theme_install_preset` picks `ORDER BY is_active DESC, created_at ASC LIMIT 1`, not the `themeId` being activated; REST `themes/:id/activate` never forks. Fork by explicit `themeId`, share one implementation, contract-test published AST follows `is_active`.
 - [ ] **Live Preview Action**: per installed theme — WP shows preview on hover + in details modal; wire existing `ThemePreviewSplit` into marketplace cards/modal (read-only builder preview, e.g. `/dashboard/builder?preview_theme_id=:id`).
+  - [ ] **Follow-up [REPORT WF-04]**: current `?preview_theme=`/`?preview_device=` params are dead — `getStorefront({slug})` ignores search, `loadPublished` always renders the active theme. Real inactive-theme isolated preview route required.
 - [ ] **Add Theme tile + directory button states**: dashed Add New tile routing to full catalog; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
 - [ ] **Theme Details modal parity**: WP details modal carries Activate/Live Preview/Delete together; ours splits actions between card and modal.
 - [x] **Direct Delete Action**: working **Delete** button per installed theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
+  - [ ] **Follow-up [REPORT WF-02]**: `removed` is not in the `market_install_status` enum (`installed|trial|paused|rolled_back`) — real Postgres rejects the retire update. Migration for terminal status + atomic delete-then-retire required.
 - [x] **State-Driven Badges & Buttons**: real state on marketplace cards (`isLiveInstall` + `themeStates`).
+  - [ ] **Follow-up [REPORT WF-01/WF-03]**: `paused` counts as Installed; Appearance vs Marketplace badge sources diverge (`source_listing_slug` vs `source_install_id`); third-party (non-builtin) installs never create a `store_themes` row (missing `market_apply_theme_install` RPC) so Activate/Delete never render. Badge must follow active/installed row state, not ledger presence alone.
+- [ ] **Stable idempotency [REPORT WF-08]**: key minted as `${listing.id}-…-${Date.now()}` per click defeats replay guard → duplicate ledger/debit. Stable per-(merchant, listing, intent) key + disable-while-pending.
 
 ### P0 — Plugin Lifecycle (Installed Plugins Table Parity)
 - [x] **Activate / Deactivate toggles + Settings form** (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`).
 - [x] **Bridged widgets**: 6 official plugins install on-demand via `upsertPlugin` (`builtin-plugins.ts`, manifests validated, honest zero counts).
-- [ ] **Delete Action**: per installed plugin (remove `plugin_state` row, ledger to terminal status, confirm dialog).
+- [ ] **Delete Action**: per installed plugin (remove `plugin_state` row, ledger to terminal status, confirm dialog) [REPORT WF-05: `pluginUninstallFn` exists server-side with zero UI imports; also leaves `marketplace_installs` untouched].
+- [ ] **Widget uninstall [REPORT WF-06]**: widgets Pause/Restore only — no `marketUninstallWidgetFn`, `plugin_state` persists after `rolled_back`. Add uninstall path + ledger coherence.
 - [ ] **Add New Plugin navigation**: Add New flow routes to marketplace widgets tab; 1-click Install → Activate (WP `plugin-install.php` parity).
 - [ ] **Bulk activate/deactivate/delete** via table checkboxes (WP shows it on the same screen).
 
 ### P1 — Sidebar System (WP Admin Menu Parity)
-- [ ] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups in `src/lib/console-nav.ts`.
-- [ ] Expandable accordion submenus in open sidebar + hover flyouts in collapsed rail, Collapse Menu button, current-section highlight, keyboard access (`AdminShell`, WP `#adminmenu` parity).
+- [ ] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups in `src/lib/console-nav.ts` [REPORT WF-17: no `Appearance`/`Plugins` group, no `/dashboard/plugins` route; `Themes` + `Page builder` buried in Content › More].
+- [ ] Expandable accordion submenus in open sidebar + hover flyouts in collapsed rail, Collapse Menu button, current-section highlight, keyboard access (`AdminShell`, WP `#adminmenu` parity) [REPORT WF-18: flat 8-link Shopify-style nav, tooltip-only rail, group-prefix highlight only].
 - [ ] Single nav source of truth; no route reachable only by URL.
+- [ ] Server authz parity [REPORT WF-19]: `themes.functions.ts` + `plugins.functions.ts` use only `requireSupabaseAuth` while content/editor enforce `requirePermission` — add `requirePermission("themes.read/update")` etc. so hidden-nav = refused-route.
 
 ### P1 — Page Builder Management Parity
 - [x] All 9 theme-engine RPCs implemented + verified live (phase 2e).
 - [x] Customize launcher exists (`openCustomize` → `/dashboard/builder`).
 - [ ] **Pages table action**: "Edit with Page Builder" per row (WP parity: row hover Edit/Trash/Preview + builder entry).
+- [ ] **Retire stub desk [REPORT WF-20]**: legacy `dashboard/pages.tsx` (no permission gate, `isPublished` boolean only) imports stub `page-builder.ts` ("full implementation was not committed") yet exposes a builder toggle — re-route to `content/*` + `EditorShell` real AST; schedule form must allow version pick (hardcodes `versions[0]`).
+- [ ] **Server-side route guards [REPORT WF-21]**: all guards client-side (`ssr:false` + `getUser()` in `beforeLoad`, tenant from `localStorage`); move to server `beforeLoad`/loaders with membership check; set `account_type` server-side (OAuth defaults to merchant onboarding); delete client `platform_admins` SELECT, rely on `platformIsAdminFn` + DENY SELECT + test.
 
 ### P2 — Polish
 - [ ] **Theme screenshot pipeline**: real per-theme previews replacing placeholder blocks on marketplace cards.
+- [ ] **Honest catalog counts [REPORT WF-22]**: `catalog-meta.ts` hardcodes ratings 4.4–4.9 / installs 2600–12800 rendered as fact; Popular sort is fixture order. Honest zeros like `builtin-plugins.ts` + real `install_count` ordering (no-fabrication rule).
+- [ ] **Upload Theme path [REPORT WF-23]**: `AddThemeScreen` validates zip client-side only, zero server path — implement `themeUploadFn` + storage or remove the dropzone (no dead buttons).
+- [ ] **Lifecycle audit rows [REPORT WF-24]**: install/activate/delete/toggle write zero audit (`theme_audit` table has no writer). Every `[A]` needs actor/before/after/reason.
+- [ ] **Preview stepping [REPORT WF-25]**: ‹ › pools catalogue only, breaks custom/installed-only themes. Step the opened list.
+- [ ] **Canary header hygiene [REPORT WF-26]**: stop echoing `x-framique-tenant-id` to shoppers; auth-gate `X-Framique-Slot-Override`.
+- [ ] **CI gates workflow [REPORT WF-27]**: `.github/workflows/gates.yml` missing — nothing enforces scan/gates per push.
 
 ### 1. Critical Vulnerabilities & Auth Flaws (Must Fix Immediately)
 - [ ] **Exposed Production Credentials:** Exposed raw SSH IPs, GitHub PATs, Supabase DB passwords, JWT Secrets, Kong API Keys, and SMTP passwords. **Action Required:** Immediate rotation of all credentials on the live server.
@@ -121,23 +144,42 @@
 - **Vulnerability / Architectural Flaw**:
   - `CustomCodeBody` and `CustomCodeSurface` (`src/components/store/CustomCode.tsx`) render raw HTML/JS injected by merchants without a sandboxed iframe or restrictive Content-Security-Policy.
   - A compromised merchant account or malicious collaborator can inject credential-stealing keyloggers or fake payment inputs into checkout and cart surfaces.
+  - [REPORT WF-14] `buildCsp` + `newNonce` exist in `src/lib/custom-code.ts:474-506` but **no CSP header is ever sent** (`server.ts:77-89` sets only nosniff/referrer/SAMEORIGIN); `CustomCodeScript` appends live script with full DOM access; `reviewJs` regex-deny bypassable (`globalThis['ev'+'al']`, `constructor.constructor`, dynamic `import()`); body `https:` iframes emit no `sandbox`.
 - **Remediation Action Required**:
   - [ ] Enforce strict Content-Security-Policy (CSP) headers disallowing unsafe-inline scripts on checkout and payment pages. Restrict merchant custom scripts strictly to informational/marketing pages and pre-approved analytics integrations (Google Tag Manager, Meta Pixel).
+  - [ ] Send the CSP header + nonce, sandbox body iframes / isolate custom JS like the `html` widget `sandboxSrcDoc`.
 
 #### 2.5 Multi-Tenant CSRF Mismatch on Custom Domains
 - **Vulnerability / Architectural Flaw**:
   - `src/server.ts` performs CSRF validation by comparing `originHost !== host`.
   - When shoppers submit checkout or cart mutations across custom domains, reverse proxies, or external payment return redirects (e.g. bKash/Nagad gateways redirecting back to merchant domains), discrepancies between `x-forwarded-host`, `host`, and `origin` trigger `403 CSRF check failed (origin mismatch)`.
+  - [REPORT WF-11] Inverse hole: any `POST /api/...` **without** Origin/Referer passes (fail-open); `/api/public/*` + `/api/canary-alert` skip checks entirely with no visible signature. [REPORT WF-10] `hostname.includes("localhost")` disables HTTPS-redirect + CSRF for `*.localhost.evil.com`.
 - **Remediation Action Required**:
   - [ ] Build a tenant-aware CSRF validator that validates whether `originHost` matches either the platform domain, the tenant's verified custom domain, or the tenant's registered subdomain.
+  - [ ] Require Origin or token on all mutation POSTs (fail closed); sign the canary webhook; exact-match localhost/loopback only.
 
 #### 2.6 Domain SNI Whitelist Exhaustion & Let's Encrypt Quota Burn
 - **Vulnerability / Architectural Flaw**:
   - `verify-sni.ts` checks `merchant_domains` status, but there are no strict quotas on domain creation per merchant.
   - Malicious actors can rapidly register throwaway domains to trigger edge ACME certificates requests and burn through Let's Encrypt platform rate limits.
+  - [REPORT WF-15] `GET /api/public/domains/verify-sni?host=` is unauthenticated + un-rate-limited → merchant-domain enumeration oracle + per-SNI DB hit (global ingress limit fails open on Redis error). [REPORT WF-16] `issuing_cert` never re-polled by `sweepDomains`; empty `DOMAIN_EDGE_TOKEN` bearer + `callback.ts` 404 = permanent limbo; `renewing` is not a valid `DomainStatus` → `illegal_transition` crash on renewal.
 - **Remediation Action Required**:
   - [ ] Enforce strict plan-based custom domain quotas (e.g., Starter: 1 domain, Growth: 3 domains, Business: 10 domains).
   - [ ] Implement rate-limiting on custom domain additions (`domain.create` bucket) and automatic DNS health check backoff.
+  - [ ] `enforceRateLimit` + negative cache on `verify-sni`; require edge env at boot; sweep `issuing_cert`; fix status machine; alert on stuck domains.
+
+#### 2.7 Shared-Cache Serves Personalized Routes as Public (Cross-Shopper PII Leak) [REPORT WF-09]
+- **Vulnerability / Architectural Flaw**:
+  - `withStorefrontCache` (`src/server.ts:119-129`) caches **any** `GET 200 text/html` under `isStorefrontPath` (`^\/store\/[^/]+(\/.*)?$`), matching `/store/:slug/cart|checkout|account|order/:id|track|search`, with `public, s-maxage=60, stale-while-revalidate=300` and `Vary: accept-language` only.
+  - Shopper A's cart/account/order HTML sits on the shared edge for 60s (+300s stale) and is served to shopper B. `storefrontCacheHeaders(null)` is always called with `null`, so the versioned `etag` invalidation is dead code.
+- **Remediation Action Required**:
+  - [ ] Cache only anonymous template docs (index/product/collection/page); `private, no-store` on cart/checkout/account/order; `Vary: Cookie, Host`; key by tenant + theme version.
+
+#### 2.8 Legacy SVG Upload → Stored XSS [REPORT WF-13]
+- **Vulnerability / Architectural Flaw**:
+  - Legacy `uploadMedia` (`src/lib/media.server.ts:93-131`) accepts `image/svg+xml` and writes bytes with **no `sanitiseSvg`** (only `library.server.ts` has it); delivery (`api/public/media/$.ts`) serves SVG `inline` with only `nosniff` — script executes in platform origin when navigated to directly.
+- **Remediation Action Required**:
+  - [ ] Route all SVG through `sanitiseSvg`, serve as `attachment`/sandboxed, magic-byte check; presigned direct-to-storage uploads per §2.3.
 
 ### 3. Recently Fixed
 - [x] **Multi-Tenant Portal Bleeding:** Enforced strict persona boundaries (Platform Admin vs Merchant vs Customer) at the server-loader level (`beforeLoad` in `admin.tsx` and `dashboard.tsx`) to prevent TanStack router state bleeding and infinite redirects.
