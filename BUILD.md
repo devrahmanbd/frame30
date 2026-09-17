@@ -29,10 +29,54 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 
 ### Tier definitions
 
+- **0. WordPress CMS Parity & Cloud SaaS Foundation** — absolute user journey parity with WordPress 6.8+ admin (`/wp-admin/` reference) + tenant-isolated SaaS cloud architecture. Top launch priority.
 - **1. Core** — the platform is not a platform without it. Blocks every other slice.
 - **2. Must have** — required for a merchant to run a real BD store and for us to bill them. Launch-blocking.
 - **3. Good to have** — competitive parity and depth. Post-launch, ordered by pull.
 - **4. Optional / out of the box** — differentiators, long-tail, and provider-gated work.
+
+---
+
+## 0. Top Priority — WordPress-Grade CMS Architecture & Parity Program
+
+Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/`, reference credentials `user: maxw`). Provides identical merchant user journey, theme/plugin lifecycles, collapsible `#adminmenu` navigation, visual page builder integration, and isolated SaaS cloud architecture.
+
+### 0.1 Appearance › Themes lifecycle (`themes.php` & `theme-install.php` parity)
+- [x] Active storefront theme showcase card (`ThemesScreen.tsx`) with version, author, live badge, and primary `Customize` launcher
+- [x] Installed themes grid with instant `Activate` action (swapping `is_active` while preserving published AST and storefront coherence)
+- [ ] `Live Preview` action for installed inactive themes launching isolated preview customizer (`/dashboard/builder?preview_theme_id=:id`)
+- [x] `[A]` Direct `Delete` action on inactive themes with modal confirmation, cascading draft/version cleanup, and active-theme deletion refusal
+- [x] `[A]` Decoupled marketplace theme installation: creates **new inactive** `store_themes` row (never mutating active draft) + append-only `marketplace_installs` ledger row
+- [x] Dynamic button & badge state machine on marketplace cards (`Install` → `Activate` → `Activated / Customize`)
+- [ ] Theme screenshot pipeline: dynamic rendering of real storefront snapshot preview assets instead of placeholder color blocks
+
+### 0.2 Plugins lifecycle (`plugins.php` & `plugin-install.php` parity)
+- [x] Installed Plugins tabular management view (`InstalledApps.tsx`) with status filtering (`All`, `Active`, `Inactive`)
+- [x] Instant `Activate` and `Deactivate` toggles (`plugin_state.enabled` toggle with ledger status recording)
+- [ ] `Delete` / Uninstall plugin action with confirmation dialog, cascading configuration cleanup, and terminal ledger audit
+- [ ] Direct "Add New Plugin" route (`/dashboard/plugins/new` → `/dashboard/marketplace?tab=apps`) matching WP Plugins › Add New
+- [x] `[A]` Plugin scope security model + explicit capability consent gate (`marketplace-scopes.ts` + `marketplace-vault.server.ts`)
+- [ ] Bulk actions on installed plugins (`Activate`, `Deactivate`, `Delete` via table multi-selection)
+
+### 0.3 Hierarchical CMS sidebar navigation (WP `#adminmenu` parity)
+- [ ] Nav model reorganization: elevating **Appearance** (Themes, Customize, Menus) and **Plugins** (Installed Plugins, Add New) to first-class top-level CMS groups
+- [ ] Expandable accordion submenus in open sidebar (`AdminShell.tsx`) matching WordPress collapsible submenus
+- [ ] Collapsed hover flyout submenus in rail mode matching WordPress `#adminmenu` flyouts
+- [ ] Capability-gated navigation entries with active-route highlighting and single navigation source of truth (`src/lib/console-nav.ts`)
+
+### 0.4 Visual page builder & template management
+- [x] Appearance › Customize direct bridge into visual drag-and-drop AST page builder (`openCustomize` → `/dashboard/builder`)
+- [ ] Content › Pages table row action "Edit with Page Builder" loaded with page AST
+- [x] Immutable builder version commits, live publish pipeline, autosave drafts, and instant rollback
+- [x] Template hierarchy support (index, product, collection, page, blog, cart, checkout)
+
+### 0.5 Foundational SaaS cloud architecture & tenant isolation
+- [ ] `[A]` Wildcard subdomain isolation (`<slug>.framique.store`): elimination of platform apex path-based hosting (`framique.qubickle.com/clients_website` / `/store/$slug`) to isolate cookies, local storage, CSP, and prevent platform-wide domain blacklisting
+- [ ] Onboarding Custom Domain Connection Step (`src/routes/_authenticated/onboarding.tsx`): real-time CNAME/A DNS instructions with "Skip for now" fallback to `<slug>.framique.store`
+- [ ] `[A]` Edge request rewriting & custom domain edge cache parity: refactoring `isStorefrontPath` in `src/lib/storefront-cache.ts` to cache custom domains (`/`, `/p/*`, `/c/*`, `/pages/*`, `/cart`) preventing origin SSR overload
+- [ ] Streaming presigned media uploads: direct-to-storage presigned URLs replacing base64 JSON RPC strings to eliminate V8 memory exhaustion and Nitro 413s
+- [ ] `[A]` Tenant-aware CSRF validator handling custom domains, reverse proxies, and external payment gateway return redirects
+- [ ] `[A]` Plan-based custom domain quotas and SNI rate-limiting to protect Let's Encrypt platform quotas
 
 ---
 
@@ -54,7 +98,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] Observability: structured logs, span latency/outcome metrics, Prometheus exposition at `/api/public/metrics`, Sentry forwarding
 - [x] Owner console tenancy desk (`/root/tenancy`): isolation posture, drift, tombstones, purge queue, runtime counters
 - [x] Grafana dashboard JSON committed next to the scrape config (`ops/observability/grafana/*.json`: platform, infrastructure, ad-fraud + provisioning)
-- [ ] Purge job scheduler (cron) so an elapsed cooling window executes without a human click
+- [x] Purge job scheduler (cron) so an elapsed cooling window executes without a human click — `src/routes/api/public/cron/purge.ts` + `ops/cron/crontab`
 
 ### 1.2 Identity & access
 - [x] Email/password auth, session hydration, `/auth` route
@@ -71,9 +115,9 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] `[A]` Brute-force / credential-stuffing lockout (email + IP double bucket, fail-closed messaging)
 - [x] `[A]` PII-minimal `auth_events` audit trail (salted SHA-256 email/IP hashes)
 - [x] `[A]` `auth_loop` failure suite: lockout, enumeration safety, gated security desk, closed metrics endpoint
-- [ ] Email change with re-verification
-- [ ] `[A]` Step-up gate extended to payouts and gateway credential edits
-- [ ] Recovery codes for TOTP loss
+- [x] Email change with re-verification — rate-limited `requestEmailChange` in `src/lib/identity.server.ts` + `requestEmailChangeFn` in `identity.functions.ts`
+- [x] `[A]` Step-up gate extended to payouts and gateway credential edits — `STEP_UP_CLASSES` in `src/lib/step-up.ts`, enforced in `identity.server.ts`, tested in `hardening.contract.test.ts` & `payouts.test.ts`
+- [x] Recovery codes for TOTP loss — `src/lib/mfa-recovery.ts`, `mfa-recovery.server.ts`, tested in `mfa-recovery.test.ts`
 
 ### 1.3 Money engine
 - [x] `[A]` Integer minor-unit money type across schema (all `bigint`)
@@ -85,7 +129,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] `[A]` Currency conformance report (`money_conformance()` RPC + owner money desk: float columns, missing triggers, split/currency mismatches)
 - [x] `[A]` Ledger model: append-only, no in-place amount mutation (DB triggers + `postLedgerEntry` / `postCorrection` with mandatory idempotency key)
 - [x] `[A]` Rounding + remainder policy: largest-remainder `allocate`, proportional refund VAT, unit-tested (`bun run test`)
-- [ ] BIN on invoice PDF (needs the invoice renderer in 2.x)
+- [x] BIN on invoice PDF — sequential numbering, legal year VAT breakdown, business BIN, and printable document styling at `/dashboard/orders/$orderId/invoice`
 
 ### 1.4 Catalog core
 - [x] Products (physical) with media, status, slug
@@ -103,7 +147,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] Catalog core desk (`/admin/catalog`): kind coverage, incoherence gaps, metafield contracts, reviewed import
 - [x] Observability + limits: `framique_catalog_import_total`, `catalog.import` (10/10min) and `catalog.search` buckets, cached collection preview
 - [x] Failure suite `catalog_loop` + isolation coverage for every new table
-- [ ] CSV export of the catalog with the same column contract (needs the 2.x export renderer)
+- [x] CSV export of the catalog with the same column contract — `exportCatalogCsv` in `src/lib/catalog.server.ts` + `exportCatalogCsvFn` in `src/lib/catalog.functions.ts`
 
 ### 1.5 Storefront core
 - [x] Tenant storefront at `/store/$slug` (index, product, checkout, order)
@@ -192,7 +236,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] Low-stock alerts
 - [x] `[A]` Fulfilment records + partial fulfilment — built; guard cases in `inventory.test.ts`, lag charted on the commerce dashboard
 - [~] `[A]` Tax-inclusive/exclusive display parity with stored totals — `commerce-vat.test.ts` covers math, not display parity
-- [~] `[A]` Invoice PDF with BIN, VAT breakdown, sequential numbering — numbering + document built, PDF renderer missing
+- [x] `[A]` Invoice PDF with BIN, VAT breakdown, sequential numbering — sequential numbering, BIN, legal VAT table, and printable document styling with `@media print` and `window.print()` trigger at `/dashboard/orders/$orderId/invoice`
 
 
 ### 2.3 Builder & themes
@@ -239,8 +283,8 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [ ] Email delivery (official SMTP + BYOK)
 - [ ] SMS delivery (BD providers, BYOK)
 - [ ] Drip sequences + segments
-- [ ] Form builder + submissions inbox
-- [ ] Google Search Console + GA integration
+- [x] Form builder + submissions inbox — field builder, consent, active toggle, and submissions inbox at `src/routes/_authenticated/dashboard/marketing/forms.tsx`
+- [x] Google Search Console + GA integration — Site Kit equivalent at `src/lib/search-console.ts`, `search-console.server.ts`, `SiteKitDesk.tsx`, and `/api/public/cron/search-console`
 
 ### 2.7 Owner console (platform)
 - [x] Rail navigation with the full platform map
@@ -264,7 +308,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 - [x] `[A]` Automated backup + verified restore drill — nightly via `/api/public/cron/ops`, ledgered, deny+replay+audit tests
 - [~] `[A]` Dead-letter queue console with replay across all providers — courier + gateway DLQ surfaces exist; no single cross-provider console
 - [~] Prometheus metrics + Grafana dashboards — 7 dashboards (platform, infrastructure, ad-fraud, commerce, marketing, developer platform, ecosystem/AI) + 54 alert rules; `observability-coverage.test.ts` pins the money/security metrics, long-tail counters still uncharted
-- [ ] Sentry error tracking with PII scrubbing — `captureError` wired, `SENTRY_DSN` unset so it is a no-op
+- [~] Sentry / GlitchTip error tracking with PII scrubbing — dual backends supported (GlitchTip + Sentry), PII sanitization and deterministic sampling verified via `scripts/error-tracking-verify.mjs`
 - [x] Status page + incident comms
 - [ ] `[A]` Secret rotation runbook (gateway secrets, API keys)
 - [x] Log retention policy (raw analytics 90d, PII-minimal)
@@ -275,26 +319,26 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 ## 3. Good to have
 
 ### 3.1 Storefront & conversion
-- [ ] Product reviews + moderation
-- [ ] Wishlists
-- [ ] Recently viewed / recommendations
-- [ ] Cross-sell + upsell blocks
-- [ ] Countdown / scarcity widgets
-- [ ] Size guide + variant swatches
+- [x] Product reviews + moderation — `/dashboard/reviews` moderation desk + storefront PDP review intake and score rollups (`reviews.tsx`, `phase2-pdp.test.ts`, `ConversionSurfaces.tsx`)
+- [x] Wishlists — `customer_wishlist_items` table, `customer_toggle_wishlist` RPC, `store.$slug.account.tsx` wishlist tab, and builder `wishlist_button` widget
+- [x] Recently viewed / recommendations — `conversion.server.ts` rails, `ConversionSurfaces.tsx`, and `recently_viewed` builder widget
+- [x] Cross-sell + upsell blocks — `productConversionBundle` cross-sell resolution, `apparel.tsx` complete-the-look / cross-sell slots
+- [x] Countdown / scarcity widgets — `countdownSeconds`, `formatCountdown`, `ConversionSurfaces.tsx`, and `countdown` builder AST section
+- [x] Size guide + variant swatches — `size_guide` builder AST section, `apparel.tsx` modal measurement table, variant swatches in PDP
 - [ ] PWA storefront + offline browse
 - [ ] Multi-language storefront catalogs (i18n beyond bn/en)
-- [ ] Store locator
+- [x] Store locator — `store_locator` builder AST section, LocalBusiness schema JSON-LD, apparel component, and blueprint presets
 - [x] `[A]` Server-side A/B experiments with stable variant assignment — `experiments.server.ts` + `experiments.test.ts` (stability replay, control-path degrade deny, integer-minor conversion guard)
 
 ### 3.2 Commerce
-- [ ] Pre-orders + backorder
-- [ ] Draft orders / invoice-by-link
-- [ ] B2B price lists + net terms
-- [ ] Purchase orders + supplier records
-- [ ] Barcode / SKU generator
-- [ ] Bulk price + inventory editor
-- [ ] Order tagging + saved views
-- [ ] `[A]` Subscription billing for storefront customers (recurring charge idempotency)
+- [x] Pre-orders + backorder — `BackorderPolicy` ("deny" | "allow" | "preorder"), `releaseAt` scheduling, `bulk-editor.tsx`, `commerce-desk.test.ts`
+- [x] Draft orders / invoice-by-link — `/dashboard/draft-orders` order builder, shareable quote link, convert to order once accepted
+- [x] B2B price lists + net terms — `/dashboard/pricing` wholesale quantity breaks, Net 15/30/60 terms calculation in `commerce-desk.ts`
+- [x] Purchase orders + supplier records — `/dashboard/purchasing` supplier directory, PO creation, partial/full stock receiving
+- [x] Barcode / SKU generator — `ean13` barcode generator, SKU auto-minting in `bulk-editor.tsx` and `commerce-desk.ts`
+- [x] Bulk price + inventory editor — `/dashboard/bulk-editor` multi-variant tabular editor for price, compare-at, stock, SKU, barcode, and pre-order
+- [x] Order tagging + saved views — `/dashboard/orders` saved view tabs and order tag filters via `commerce-desk.server.ts`
+- [x] `[A]` Subscription billing for storefront customers (recurring charge idempotency) — `customer_subscriptions` + `subscription_charges`, worker `for update skip locked` idempotency, `commerce-desk.server.ts`
 
 ### 3.3 Marketplace & ecosystem
 - [x] Official themes + plugins store surface
@@ -344,10 +388,10 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 ### 3.7 Merchant experience
 - [x] Custom domain onboarding with automated TLS (ACME http-01 responder at `/.well-known/acme-challenge/$token`, HMAC-signed edge callback, auto-renew sweep)
 - [x] Domain state machine + verification UI (`src/lib/domains.ts` rules + tests, `domains.server.ts` transitions/audit, `/admin/settings/domains`)
-- [ ] Onboarding checklist + guided tours
+- [~] Onboarding checklist + guided tours — `SetupChecklist.tsx` dynamic progress checklist on dashboard; interactive tour pending
 - [ ] In-app changelog + feature announcements
 - [ ] Merchant newsletter from platform
-- [ ] Mobile-responsive admin pass
+- [~] Mobile-responsive admin pass — `scripts/responsive-sweep.mjs` viewport sweep (320px-1920px), zero horizontal scroll and 44px touch targets enforced across core surfaces
 
 ---
 
