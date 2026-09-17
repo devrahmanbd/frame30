@@ -30,6 +30,8 @@
   --color-foreground: oklch(0.20 0.02 260); /* Deep Ink / Slate */
   --color-card: #ffffff;
   --color-card-foreground: oklch(0.20 0.02 260);
+  --color-popover: #ffffff;
+  --color-popover-foreground: oklch(0.20 0.02 260);
   
   /* primary is Facebook Blue tuned for WCAG AA (5.2:1) */
   --color-primary: oklch(0.48 0.23 255); 

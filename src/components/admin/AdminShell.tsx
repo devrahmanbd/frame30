@@ -216,7 +216,7 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
                 <ChevronDown className="size-3.5" aria-hidden />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-48 z-50">
+            <DropdownMenuContent align="end" className="fq-admin min-w-48 z-50">
               {more.map((i) => (
                 <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
                   <Link
