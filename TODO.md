@@ -5,40 +5,50 @@
 > **Target Standards**: `DESIGN.md`, Hallmark Skill Guidelines, OKLCH Comfort Contrast, Google Search Essentials, WCAG 2.1 AAA  
 
 ---
-## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Sept 2026)
+## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Audited Sept 18, 2026)
 
-> Goal: same UX, same user journey, same theme/plugin/page-builder management, same sidebar system as WordPress (`/wp-admin/`). Reference WP dashboard credentials are held by the owner (never committed).
+> **Reference Target**: Live WordPress 6.8+ Dashboard (`http://maxwilliam.shop/wp-admin`, audited with credentials `maxw`).  
+> **Core Mandate**: Framique must deliver the exact user experience, user journey, theme/plugin/builder management systems, and sidebar architecture of WordPress.
 
-### P0 — Marketplace theme lifecycle (user complaint: activation/install/delete missing)
-- [x] Content>Themes grid already has Activate / Delete / Preview / Customize (`ThemesScreen.tsx` + `themeActivateFn`/`themeDeleteFn`)
-- [x] Marketplace Install creates a **new inactive** `store_themes` row (`marketplace_install_preset` routine + `installBuiltinTheme`, replay-guarded)
-- [x] **Activate** button per installed marketplace theme (reuses `themeActivateFn`; Active badge)
-- [ ] **Live Preview** per installed marketplace theme (read-only builder preview route)
-- [x] **Delete** button per installed marketplace theme (server refuses active; cascade; ledger → `removed` status)
-- [x] Installed/active badges driven by real state on marketplace cards (`isLiveInstall` + `themeStates`)
+### 🔍 Live WP Reference Audit Summary (`http://maxwilliam.shop/wp-admin`)
 
-### P0 — Plugin lifecycle (Installed Plugins table parity)
-- [x] Activate/Deactivate toggle + Settings form (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`)
-- [ ] **Delete** per installed plugin (remove plugin_state row, ledger to terminal status, confirm dialog)
-- [ ] Add New flow routes to marketplace widgets tab (WP parity: Plugins › Add New)
-
-### P1 — Sidebar system (WP admin menu parity)
-- [ ] Audit `src/lib/console-nav.ts` + `AdminShell` vs WP menu model (sections, icons, collapsible submenus, current highlight, capability gating)
-- [ ] Single nav source of truth; no route reachable only by URL
-
-### P1 — Page builder management parity
-- [x] All 9 theme-engine RPCs implemented + verified live (phase 2e: autosave/commit/publish/rollback/schedules/update/demo)
-- [x] Customize launcher exists (`openCustomize` → `/dashboard/builder`)
-- [ ] "Edit with Page Builder" action on the Pages table (no builder entry point found in content/pages UI)
-
-### P2 — Polish
-- [ ] Theme screenshot/thumbnail pipeline (WP shows a screenshot per theme; marketplace cards show placeholder blocks today)
-- [ ] Bulk actions on Plugins screen (WP parity: bulk activate/deactivate/delete)
+| WordPress Component | Live WP Behavior & DOM Reference (`maxw`) | Framique Parity Implementation Target |
+| :--- | :--- | :--- |
+| **Sidebar Hierarchy (`#adminmenu`)** | Top-level items with dashicons + collapsible `.wp-submenu`: **Dashboard**, **Posts**, **Media**, **Pages**, **Comments**, **Templates** (Elementor/Builder), **Appearance** (Themes, Editor, Fonts), **Plugins** (Installed, Add Plugin), **Users**, **Tools**, **Settings**. | Reorganize `console-nav.ts` to elevate **Appearance** and **Plugins** as first-class top-level CMS groups with expandable submenus and collapsed hover-flyouts. |
+| **Theme Cards (`themes.php`)** | Active theme highlighted with primary `Customize` button. Inactive themes provide `Activate` (`themes.php?action=activate`), `Live Preview` (`site-editor.php?wp_theme_preview=...`), and in details modal bottom-right `Delete` (`themes.php?action=delete`). | Top active theme card + installed grid. Inactive cards offer direct **Activate**, **Live Preview**, and **Delete**. Active theme blocked from deletion. |
+| **Theme Directory (`theme-install.php`)** | Filter tabs (`Popular`, `Latest`, `Block Themes`, `Favorites`). Uninstalled cards show `Install` + `Preview`. Once installed, button turns to `Activate` + `Live Preview`. Active card shows `Activated` (disabled) + `Customize`. | `/dashboard/marketplace` (Themes tab) and `/dashboard/content/themes` (Add New) show dynamic button states: `Install` → `Activate` → `Activated / Customize`. |
+| **Plugins Table (`plugins.php`)** | Table with views (`All`, `Active`, `Inactive`), bulk actions (`Activate`, `Deactivate`, `Delete`), row actions: Active shows `Deactivate \| Settings`; Inactive shows `Activate \| Delete`. | Installed Plugins view in `/dashboard/marketplace` with tabular listing, active/inactive filters, single-click toggle actions, and delete confirmations. |
+| **Plugin Directory (`plugin-install.php`)** | Extension cards with `Install Now` + `More Details`. Once clicked, installs and transitions button immediately to `Activate`. Active plugin shows `Active` badge. | Widget/app directory on `/dashboard/marketplace` with 1-click `Install Now` transitioning to `Activate`. |
+| **Visual Builder Bridge** | Appearance › Editor / Customize and Templates list link directly to the visual site builder. Pages table includes "Edit with Elementor / Builder". | Appearance › Customize and Pages table "Edit with Page Builder" launch `/dashboard/builder` loaded with the active storefront draft. |
 
 ---
-## 🚨 Active Critical Issues & Vulnerabilities (Identified Sept 11, 2026)
 
-### 0. 🏆 WordPress-Grade CMS Transformation — CONSOLIDATED into the 🔴 TOP PRIORITY block above (single source of truth; verified statuses there supersede this list)
+### P0 — Marketplace Theme Lifecycle (user complaint: activation/install/delete missing)
+- [x] **Appearance Themes Grid Parity**: Content>Themes grid has Activate / Delete / Preview / Customize (`ThemesScreen.tsx` + `themeActivateFn`/`themeDeleteFn`).
+- [x] **Decoupled Marketplace Install**: Marketplace Install creates a **new inactive** `store_themes` row (`marketplace_install_preset` routine + `installBuiltinTheme`, replay-guarded), never mutating the active draft.
+- [x] **Direct Activate Action**: Working **Activate** button per installed marketplace theme card (reuses `themeActivateFn`; Active badge + storefront sync).
+- [ ] **Live Preview Action**: **Live Preview** button per installed marketplace theme (read-only builder preview route `/dashboard/builder?preview_theme_id=:id`).
+- [x] **Direct Delete Action**: Working **Delete** button per installed marketplace theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
+- [x] **State-Driven Badges & Buttons**: Real state on marketplace cards (`isLiveInstall` + `themeStates`: `Install` → `Activate` → `Activated / Customize`).
+
+### P0 — Plugin Lifecycle (Installed Plugins Table Parity)
+- [x] **Activate / Deactivate Toggles**: Instant toggle between enabled/paused (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`).
+- [ ] **Delete Action**: **Delete** per installed plugin (remove `plugin_state` row, ledger to terminal status, confirm dialog).
+- [ ] **Add New Plugin Navigation**: Add New flow routes directly to marketplace widgets tab (WP parity: Plugins › Add New).
+
+### P1 — Sidebar System (WP Admin Menu Parity)
+- [ ] **Audit & Refactor Nav Model**: Audit `src/lib/console-nav.ts` + `AdminShell` against the WP menu model (Appearance & Plugins top-level, sections, icons, capability gating).
+- [ ] **Hierarchical Submenus & Flyouts**: Expandable accordion submenus in open sidebar + hover flyouts in collapsed rail matching WordPress `#adminmenu`.
+- [ ] **Single Source of Truth**: Single nav source of truth; no route reachable only by URL.
+
+### P1 — Page Builder Management Parity
+- [x] **Theme Engine RPCs**: All 9 theme-engine RPCs implemented & verified live (phase 2e: autosave/commit/publish/rollback/schedules/update/demo).
+- [x] **Customize Launcher**: Direct launcher exists (`openCustomize` → `/dashboard/builder`).
+- [ ] **Pages Table Action**: "Edit with Page Builder" action link on each row of the Pages table (`/dashboard/content/pages`).
+
+### P2 — Polish & Bulk Operations
+- [ ] **Theme Screenshot Pipeline**: WP shows a real screenshot per theme; replace placeholder blocks on marketplace cards with generated/curated previews.
+- [ ] **Bulk Actions on Plugins**: WP parity for bulk `Activate`, `Deactivate`, `Delete` actions via table checkboxes.
 
 ### 1. Critical Vulnerabilities & Auth Flaws (Must Fix Immediately)
 - [ ] **Exposed Production Credentials:** Exposed raw SSH IPs, GitHub PATs, Supabase DB passwords, JWT Secrets, Kong API Keys, and SMTP passwords. **Action Required:** Immediate rotation of all credentials on the live server.
