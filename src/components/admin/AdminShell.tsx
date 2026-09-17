@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useLang } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -170,29 +170,45 @@ function SidebarNav({
 /** Sub-pages of the active section, rendered as page tabs (Polaris pattern). */
 function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathname: string }) {
   const { t } = useLang();
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const activeRef = useRef<HTMLElement | null>(null);
+
   if (!group || group.items.length < 2) return null;
   const more = group.more ?? [];
   const moreActive = more.some((i) => isActive(pathname, i.to));
+
+  // Auto-scroll the active tab or "More" button into view on mount or route transition
+  useEffect(() => {
+    if (activeRef.current && scrollRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [pathname]);
+
   return (
-    <div className="sticky top-14 z-20 -mx-4 mb-4 overflow-x-auto bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
-      {/* This is section navigation, not a tab widget: each item is a route
-          link and the "More" popover is not a tab, so `role="tablist"` failed
-          aria-required-children. A labelled <nav> with aria-current is the
-          honest role. */}
+    <div
+      ref={scrollRef}
+      className="sticky top-14 z-20 -mx-4 mb-4 flex items-center overflow-x-auto bg-background/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
       <nav
         aria-label={group.en}
-        className="inline-flex gap-1 rounded-fq-lg border border-border bg-card p-1"
+        className="inline-flex gap-1 rounded-fq-lg border border-border bg-card p-1 shadow-xs"
       >
         {group.items.map((i) => {
           const active = isActive(pathname, i.to);
           return (
             <Link
               key={i.to}
+              ref={active ? (el) => { if (el) activeRef.current = el; } : undefined}
               to={i.to}
               aria-current={active ? "page" : undefined}
-              className={`inline-flex min-h-8 items-center whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+              className={`inline-flex min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
                 active
-                  ? "bg-foreground/[0.07] text-foreground"
+                  ? "bg-foreground/[0.07] font-semibold text-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               }`}
             >
@@ -202,35 +218,45 @@ function SectionTabs({ group, pathname }: { group: NavGroup | undefined; pathnam
         })}
 
         {more.length > 0 ? (
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button
+                ref={moreActive ? (el) => { if (el) activeRef.current = el; } : undefined}
                 type="button"
-                className={`flex min-h-8 items-center gap-1 whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                aria-label={t("More", "আরও")}
+                className={`inline-flex min-h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer active:scale-95 ${
                   moreActive
-                    ? "bg-foreground/[0.07] text-foreground"
+                    ? "bg-foreground/[0.07] font-semibold text-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 <span>{t("More", "আরও")}</span>
-                <ChevronDown className="size-3.5" aria-hidden />
+                <ChevronDown className="size-3.5 opacity-75" aria-hidden />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="fq-admin min-w-48 z-50">
-              {more.map((i) => (
-                <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
-                  <Link
-                    to={i.to}
-                    className={`block w-full rounded-fq-md px-2.5 py-1.5 text-[13px] transition-colors ${
-                      isActive(pathname, i.to)
-                        ? "bg-foreground/[0.07] text-foreground font-medium"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
-                  >
-                    {t(i.en, i.bn)}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuContent
+              align="end"
+              sideOffset={6}
+              collisionPadding={12}
+              className="fq-admin z-50 min-w-48 max-w-[calc(100vw-2rem)] rounded-fq-lg border border-border bg-popover/95 p-1 text-popover-foreground shadow-xl backdrop-blur-md"
+            >
+              {more.map((i) => {
+                const active = isActive(pathname, i.to);
+                return (
+                  <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
+                    <Link
+                      to={i.to}
+                      className={`flex min-h-8 w-full items-center rounded-fq-md px-2.5 py-1.5 text-[13px] transition-colors select-none touch-manipulation ${
+                        active
+                          ? "bg-foreground/[0.07] font-semibold text-foreground"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      {t(i.en, i.bn)}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null}
@@ -280,6 +306,23 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setDrawer(false);
+    // Safety guard: ensure no stray pointer-events or scroll-lock blocks interaction
+    if (typeof document !== "undefined") {
+      const unlock = () => {
+        const hasActiveModal = document.querySelector('[role="dialog"][data-state="open"]');
+        if (!hasActiveModal) {
+          if (document.body.style.pointerEvents === "none") {
+            document.body.style.pointerEvents = "";
+          }
+          if (document.body.hasAttribute("data-scroll-locked")) {
+            document.body.removeAttribute("data-scroll-locked");
+          }
+        }
+      };
+      unlock();
+      const timer = setTimeout(unlock, 100);
+      return () => clearTimeout(timer);
+    }
   }, [pathname]);
 
   return (
