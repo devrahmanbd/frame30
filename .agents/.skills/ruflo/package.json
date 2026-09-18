@@ -101,7 +101,7 @@
   "overrides": {
     "ruvector": "^0.2.27",
     "better-sqlite3": "12.9.0",
-    "js-yaml": ">=4.3.0",
+    "js-yaml": ">=5.2.2",
     "hono": ">=4.13.5",
     "@ruvector/rvf-wasm": "0.1.5",
     "@hono/node-server": ">=2.0.10",
@@ -109,9 +109,9 @@
     "tar": ">=7.5.11",
     "picomatch": ">=4.0.3",
     "path-to-regexp": ">=8.2.1",
-    "undici": ">=8.5.0",
+    "undici": ">=8.10.2",
     "minimatch": ">=10.0.0",
-    "@isaacs/brace-expansion": ">=5.0.1",
+    "@isaacs/brace-expansion": ">=5.0.12",
     "cacache": ">=20.0.0",
     "make-fetch-happen": ">=15.0.0",
     "ip-address": ">=10.3.1",
@@ -120,7 +120,7 @@
     "express-rate-limit": ">=8.4.1",
     "express": ">=4.22.2",
     "qs": ">=6.16.0",
-    "protobufjs": ">=8.2.0",
+    "protobufjs": ">=8.7.0",
     "uuid": ">=14.0.0",
     "@opentelemetry/core": ">=2.8.0",
     "@opentelemetry/resources": ">=2.8.0",
@@ -134,7 +134,7 @@
     "@opentelemetry/otlp-exporter-base": ">=0.220.0",
     "@opentelemetry/otlp-grpc-exporter-base": ">=0.220.0",
     "@opentelemetry/otlp-transformer": ">=0.220.0",
-    "axios": ">=1.13.2",
+    "axios": ">=1.20.0",
     "fast-uri": ">=3.1.8",
     "vite": ">=8.0.16",
     "ws": ">=8.21.0",
@@ -142,7 +142,13 @@
     "form-data": ">=4.0.6",
     "http-proxy-middleware": ">=3.0.7",
     "@ruvector/ruvllm": ">=2.6.0",
-    "toml": ">=4.2.0"
+    "toml": ">=4.2.0",
+    "sharp": ">=0.35.4",
+    "nanoid": ">=6.0.1",
+    "postcss": ">=8.5.28",
+    "adm-zip": ">=0.6.1",
+    "brace-expansion": ">=5.0.12",
+    "@vitest/mocker": ">=4.1.11"
   },
   "devDependencies": {
     "@openai/codex": "^0.98.0",
@@ -151,7 +157,7 @@
     "eslint": "^8.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.0.0",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.11"
   },
   "pnpm": {
     "overrides": {
