@@ -22,6 +22,7 @@
  */
 import { incr, log, observe, registerMetric } from "./observability.server";
 import { redisConfigured, redisEval, redisKey } from "./redis.server";
+import { type RiskTier, resolvePolicy } from "./risk-tier";
 
 registerMetric(
   "framique_rate_limit_ms",
@@ -51,7 +52,6 @@ export type RateVerdict = {
   /** Which tier produced this verdict. `none` means both tiers were down. */
   source?: RateLimitSource;
 };
-
 
 /** Named buckets keep limits reviewable in one place instead of inline magic numbers. */
 export const BUCKETS = {
@@ -344,9 +344,7 @@ export const BUCKETS = {
   // from spending the sandbox tenant's own quota one address at a time.
   "docs.tryit": { limit: 20, windowSeconds: 300 },
   "docs.tryit_global": { limit: 600, windowSeconds: 60 },
-
 } as const;
-
 
 export type BucketName = keyof typeof BUCKETS;
 
@@ -384,7 +382,8 @@ return { allowed, hits, reset }
 
 /** Subject strings can be long (hashed IPs, ids); keep the key bounded. */
 function subjectKey(bucket: string, subject: string): string {
-  const safe = subject.length > 96 ? `${subject.slice(0, 88)}~${subject.length}` : subject;
+  const safe =
+    subject.length > 96 ? `${subject.slice(0, 88)}~${subject.length}` : subject;
   return redisKey("rl", bucket, safe);
 }
 
@@ -408,12 +407,17 @@ async function redisVerdict(
   );
   if (!result.ok || !Array.isArray(result.value)) return null;
 
-  const [allowedRaw, hitsRaw, resetRaw] = result.value as (number | string | null)[];
+  const [allowedRaw, hitsRaw, resetRaw] = result.value as (
+    number | string | null
+  )[];
   const hits = Number(hitsRaw ?? 0);
   const resetMs = Number(resetRaw ?? now + cfg.windowSeconds * 1000);
   if (!Number.isFinite(hits) || !Number.isFinite(resetMs)) return null;
 
-  observe("framique_rate_limit_ms", Date.now() - started, { bucket, source: "redis" });
+  observe("framique_rate_limit_ms", Date.now() - started, {
+    bucket,
+    source: "redis",
+  });
   return {
     allowed: Number(allowedRaw) === 1,
     hits,
@@ -431,10 +435,14 @@ async function postgresVerdict(
 ): Promise<RateVerdict | null> {
   const started = Date.now();
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await (
       supabaseAdmin as unknown as {
-        rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: unknown }>;
       }
     ).rpc("rate_limit_hit", {
       _bucket: bucket,
@@ -443,7 +451,10 @@ async function postgresVerdict(
       _window_seconds: cfg.windowSeconds,
     });
     if (error || !data) return null;
-    observe("framique_rate_limit_ms", Date.now() - started, { bucket, source: "postgres" });
+    observe("framique_rate_limit_ms", Date.now() - started, {
+      bucket,
+      source: "postgres",
+    });
     return { ...(data as RateVerdict), source: "postgres" };
   } catch (error) {
     log("warn", "rate_limit.postgres_failed", {
@@ -454,7 +465,10 @@ async function postgresVerdict(
   }
 }
 
-export async function rateLimit(bucket: BucketName, subject: string): Promise<RateVerdict> {
+export async function rateLimit(
+  bucket: BucketName,
+  subject: string,
+): Promise<RateVerdict> {
   const cfg = BUCKETS[bucket];
 
   const shared = await redisVerdict(bucket, subject, cfg);
@@ -469,7 +483,11 @@ export async function rateLimit(bucket: BucketName, subject: string): Promise<Ra
   if (redisConfigured()) {
     // Redis is configured but did not answer: the window is no longer shared.
     // That is a real degradation of the guarantee, so it is its own series.
-    incr("framique_rate_limit_total", { bucket, outcome: "degraded", source: "redis" });
+    incr("framique_rate_limit_total", {
+      bucket,
+      outcome: "degraded",
+      source: "redis",
+    });
     log("warn", "rate_limit.redis_degraded", { bucket });
   }
 
@@ -486,7 +504,11 @@ export async function rateLimit(bucket: BucketName, subject: string): Promise<Ra
   // Both tiers down. Fail open on purpose — an unavailable limiter must not
   // become an outage — but say so loudly enough to alert on.
   log("warn", "rate_limit.unavailable", { bucket });
-  incr("framique_rate_limit_total", { bucket, outcome: "unavailable", source: "none" });
+  incr("framique_rate_limit_total", {
+    bucket,
+    outcome: "unavailable",
+    source: "none",
+  });
   return {
     allowed: true,
     hits: 0,
@@ -505,7 +527,10 @@ export async function enforceRateLimit(bucket: BucketName, subject: string) {
 }
 
 export function rateLimitHeaders(v: RateVerdict) {
-  const resetSeconds = Math.max(0, Math.ceil((Date.parse(v.reset_at) - Date.now()) / 1000));
+  const resetSeconds = Math.max(
+    0,
+    Math.ceil((Date.parse(v.reset_at) - Date.now()) / 1000),
+  );
   return {
     "x-ratelimit-limit": String(v.limit),
     "x-ratelimit-remaining": String(v.remaining),
@@ -513,5 +538,19 @@ export function rateLimitHeaders(v: RateVerdict) {
     // RFC 9110-style hint for dumb clients that cannot parse the timestamp.
     "retry-after": String(resetSeconds),
   };
+}
 
+/**
+ * Apply risk tier multiplier to a rate limit bucket definition.
+ * Returns a new bucket with the adjusted limit (minimum 1).
+ */
+export function applyTierMultiplier(
+  bucket: { limit: number; windowSeconds: number },
+  tier: RiskTier,
+): { limit: number; windowSeconds: number } {
+  const policy = resolvePolicy(tier);
+  return {
+    limit: Math.max(1, Math.ceil(bucket.limit * policy.rateLimitMultiplier)),
+    windowSeconds: bucket.windowSeconds,
+  };
 }

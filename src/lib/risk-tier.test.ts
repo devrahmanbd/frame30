@@ -2,9 +2,12 @@ import { describe, it, expect } from "vitest";
 import {
   RiskTier,
   resolvePolicy,
+  resolveTierFromSignals,
   RESOLUTION_REASONS,
   type SandboxPolicy,
 } from "./risk-tier";
+import { applyTierMultiplier } from "./rate-limit.server";
+import { buildCsp } from "./custom-code";
 
 describe("risk-tier", () => {
   describe("resolvePolicy", () => {
@@ -62,14 +65,175 @@ describe("risk-tier", () => {
       expect(p.features.apiWrite).toBe(false);
       expect(p.features.builder).toBe(false);
     });
+  });
 
-    it("returns all resolution reasons", () => {
-      expect(RESOLUTION_REASONS).toContain("official_theme");
-      expect(RESOLUTION_REASONS).toContain("custom_theme");
-      expect(RESOLUTION_REASONS).toContain("custom_plugin");
-      expect(RESOLUTION_REASONS).toContain("behavior_signal");
-      expect(RESOLUTION_REASONS).toContain("admin_override");
-      expect(RESOLUTION_REASONS).toContain("fraud_engine");
+  describe("resolveTierFromSignals", () => {
+    it("returns low for official theme+plugin", () => {
+      const result = resolveTierFromSignals({
+        themeSource: "marketplace",
+        pluginSources: ["marketplace", "marketplace"],
+      });
+      expect(result.tier).toBe("low");
+      expect(result.reasons).toContain("official_theme");
+    });
+
+    it("returns lower_medium for custom theme", () => {
+      const result = resolveTierFromSignals({
+        themeSource: "custom",
+        pluginSources: ["marketplace"],
+      });
+      expect(result.tier).toBe("lower_medium");
+      expect(result.reasons).toContain("custom_theme");
+    });
+
+    it("returns lower_medium for custom plugin", () => {
+      const result = resolveTierFromSignals({
+        themeSource: "marketplace",
+        pluginSources: ["marketplace", "custom"],
+      });
+      expect(result.tier).toBe("lower_medium");
+      expect(result.reasons).toContain("custom_plugin");
+    });
+
+    it("returns medium for high bot score", () => {
+      const result = resolveTierFromSignals({
+        themeSource: "marketplace",
+        botScore: 70,
+      });
+      expect(result.tier).toBe("medium");
+      expect(result.reasons).toContain("visitor_flagged");
+    });
+
+    it("returns high for fraud score >= 80", () => {
+      const result = resolveTierFromSignals({
+        fraudScore: 85,
+      });
+      expect(result.tier).toBe("high");
+      expect(result.reasons).toContain("fraud_engine");
+    });
+
+    it("returns high for abuse flags >= 3", () => {
+      const result = resolveTierFromSignals({
+        abuseFlags: 5,
+      });
+      expect(result.tier).toBe("high");
+      expect(result.reasons).toContain("behavior_signal");
+    });
+
+    it("falls back to stored tier when no signals present", () => {
+      const result = resolveTierFromSignals({
+        storedTier: "medium",
+      });
+      expect(result.tier).toBe("medium");
+    });
+
+    it("falls back to low when no signals and no stored tier", () => {
+      const result = resolveTierFromSignals({});
+      expect(result.tier).toBe("low");
     });
   });
+
+  describe("upload policy by tier", () => {
+    it("low: standard scanning, 10MB", () => {
+      const p = resolvePolicy("low");
+      expect(p.upload.scanningStrictness).toBe("standard");
+      expect(p.upload.maxFileSizeBytes).toBe(10 * 1024 * 1024);
+      expect(p.upload.allowedMimeTypes).toContain("image/*");
+    });
+
+    it("lower_medium: enhanced scanning, 5MB", () => {
+      const p = resolvePolicy("lower_medium");
+      expect(p.upload.scanningStrictness).toBe("enhanced");
+      expect(p.upload.maxFileSizeBytes).toBe(5 * 1024 * 1024);
+    });
+
+    it("medium: strict scanning, 2MB, no wildcards", () => {
+      const p = resolvePolicy("medium");
+      expect(p.upload.scanningStrictness).toBe("strict");
+      expect(p.upload.maxFileSizeBytes).toBe(2 * 1024 * 1024);
+      expect(p.upload.allowedMimeTypes.every((m) => !m.includes("*"))).toBe(
+        true,
+      );
+    });
+
+    it("high: forensic scanning, 0 bytes (blocked)", () => {
+      const p = resolvePolicy("high");
+      expect(p.upload.scanningStrictness).toBe("forensic");
+      expect(p.upload.maxFileSizeBytes).toBe(0);
+      expect(p.upload.allowedMimeTypes).toHaveLength(0);
+    });
+  });
+
+  it("returns all resolution reasons", () => {
+    expect(RESOLUTION_REASONS).toContain("official_theme");
+    expect(RESOLUTION_REASONS).toContain("custom_theme");
+    expect(RESOLUTION_REASONS).toContain("custom_plugin");
+    expect(RESOLUTION_REASONS).toContain("behavior_signal");
+    expect(RESOLUTION_REASONS).toContain("admin_override");
+    expect(RESOLUTION_REASONS).toContain("fraud_engine");
+  });
 });
+
+describe("rate limit tier integration", () => {
+  it("low tier does not reduce limits", () => {
+    const result = applyTierMultiplier(
+      { limit: 100, windowSeconds: 60 },
+      "low",
+    );
+    expect(result.limit).toBe(100);
+  });
+
+  it("lower_medium reduces to 70%", () => {
+    const result = applyTierMultiplier(
+      { limit: 100, windowSeconds: 60 },
+      "lower_medium",
+    );
+    expect(result.limit).toBe(70);
+  });
+
+  it("medium reduces to 40%", () => {
+    const result = applyTierMultiplier(
+      { limit: 100, windowSeconds: 60 },
+      "medium",
+    );
+    expect(result.limit).toBe(40);
+  });
+
+  it("high reduces to 10%", () => {
+    const result = applyTierMultiplier(
+      { limit: 100, windowSeconds: 60 },
+      "high",
+    );
+    expect(result.limit).toBe(10);
+  });
+
+  it("rounds up to minimum 1", () => {
+    const result = applyTierMultiplier({ limit: 2, windowSeconds: 60 }, "high");
+    expect(result.limit).toBe(1);
+  });
+});
+
+describe("buildCsp with risk tiers", () => {
+    it("includes strict-dynamic for low tier", () => {
+      const csp = buildCsp("test-nonce", {}, "low");
+      expect(csp).toContain("'nonce-test-nonce'");
+      expect(csp).toContain("'strict-dynamic'");
+      expect(csp).toContain(
+        "frame-src 'self' https://www.youtube.com https://player.vimeo.com",
+      );
+    });
+
+    it("removes nonce and strict-dynamic for medium tier", () => {
+      const csp = buildCsp("test-nonce", {}, "medium");
+      expect(csp).not.toContain("test-nonce");
+      expect(csp).not.toContain("'strict-dynamic'");
+      expect(csp).toContain("script-src 'self'");
+    });
+
+    it("removes all frame-src for high tier", () => {
+      const csp = buildCsp("test-nonce", {}, "high");
+      expect(csp).toContain("frame-src");
+      expect(csp).not.toContain("youtube");
+      expect(csp).not.toContain("vimeo");
+    });
+  });
