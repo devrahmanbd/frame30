@@ -266,7 +266,8 @@ export type FieldKind =
   | "unit"
   | "group"
   | "html"
-  | "array";
+  | "array"
+  | "menu";
 export type Field = {
   key: string;
   label: string;
@@ -290,6 +291,16 @@ export type Field = {
   itemLabel?: string;
   /** `array`: maximum rows (defaults to MAX_ARRAY_ROWS). */
   maxRows?: number;
+};
+
+/** Menu item tree — used by `menu` field kind. */
+export type MenuItem = {
+  id: string;
+  label: string;
+  href: string;
+  type: "link" | "page" | "collection" | "product" | "category" | "custom";
+  children?: MenuItem[];
+  mega?: { enabled: boolean; columns: number };
 };
 
 export type CatalogEntry = {
@@ -337,6 +348,7 @@ const cols = (key: string, label: string): Field => ({
 const url = (key: string, label: string): Field => ({ key, label, kind: "url", max: 500, panel: "content" });
 const embed = (key: string, label: string): Field => ({ key, label, kind: "embed", max: 500, panel: "content" });
 const bool = (key: string, label: string): Field => ({ key, label, kind: "boolean", panel: "layout" });
+const menu = (key: string, label: string): Field => ({ key, label, kind: "menu", panel: "content" });
 
 /**
  * Phase 7.4: guides make claims, so they carry attribution. Shared so every
@@ -2943,15 +2955,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading (optional)", 60),
-      {
-        key: "items",
-        label: "Menu links",
-        kind: "array",
-        panel: "content",
-        itemLabel: "label",
-        maxRows: 12,
-        fields: [text("label", "Label", 40), url("href", "Link")],
-      },
+      menu("items", "Menu items"),
       {
         key: "layout",
         label: "Direction",

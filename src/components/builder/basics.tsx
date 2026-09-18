@@ -151,7 +151,19 @@ const IconWidget: WidgetComponent = ({ str, int }) => {
 /* ----------------------------------------------------------------- menu */
 
 const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
-  const items = rowsOf(section, "items");
+  const raw = section.props["items"];
+  /* Support both old flat PropRow[] and new MenuItem[] tree. */
+  const items: Array<{
+    label: string;
+    href: string;
+    children?: Array<{ label: string; href: string }>;
+    mega?: { enabled: boolean; columns: number };
+  }> = Array.isArray(raw)
+    ? (raw as never[])
+    : rowsOf(section, "items").map((r) => ({
+        label: readString(r, "label"),
+        href: safeHref(readString(r, "href")),
+      }));
   const column = str("layout") === "column";
   const align = str("align") === "center" ? "items-center text-center" : "items-start";
   const heading = str("heading");
@@ -161,18 +173,46 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
     <nav aria-label={heading || "Menu"} className={`flex flex-col gap-2 ${align}`}>
       {heading ? <p className="text-xs fq-caps text-muted-foreground">{heading}</p> : null}
       <ul className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}>
-        {items.slice(0, 12).map((row, i) => {
-          const label = readString(row, "label");
-          const href = safeHref(readString(row, "href"));
+        {items.slice(0, 12).map((item, i) => {
+          const label = item.label;
+          const href = safeHref(item.href);
           if (!label) return null;
+          const hasMega = item.mega?.enabled && item.children?.length;
+          const hasDropdown = !hasMega && item.children?.length;
           return (
-            <li key={`${label}-${i}`}>
+            <li key={`${label}-${i}`} className="relative group">
               {href ? (
                 <a href={href} className="text-sm hover:text-primary hover:underline">
                   {label}
                 </a>
               ) : (
                 <span className="text-sm text-muted-foreground">{label}</span>
+              )}
+              {/* Mega menu dropdown */}
+              {hasMega && (
+                <div className="absolute left-0 top-full z-30 mt-1 hidden w-[min(90vw,48rem)] rounded-fq-lg border border-border bg-card p-4 shadow-md group-hover:block">
+                  <nav className={`grid grid-cols-${item.mega!.columns} gap-4`}>
+                    {item.children!.map((child, ci) => (
+                      <div key={ci}>
+                        <a href={safeHref(child.href)} className="block text-sm font-semibold hover:underline">
+                          {child.label}
+                        </a>
+                      </div>
+                    ))}
+                  </nav>
+                </div>
+              )}
+              {/* Simple dropdown */}
+              {hasDropdown && (
+                <ul className="absolute left-0 top-full z-30 mt-1 hidden min-w-[12rem] rounded-fq-lg border border-border bg-card py-1 shadow-md group-hover:block">
+                  {item.children!.map((child, ci) => (
+                    <li key={ci}>
+                      <a href={safeHref(child.href)} className="block px-3 py-1.5 text-sm hover:bg-muted hover:text-primary">
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               )}
             </li>
           );

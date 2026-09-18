@@ -6,6 +6,7 @@ import {
   isContextMismatch,
   type Breakpoint,
   type Field,
+  type MenuItem,
   type PropRow,
   type PropScalar,
   type PropValue,
@@ -18,6 +19,7 @@ import { inheritanceOf } from "@/lib/responsive";
 import { altKey, sizesKey } from "@/lib/media";
 import { taxonomyOptions } from "@/lib/taxonomy";
 import { unitLabel } from "@/lib/unit-format";
+import { MenuBuilder } from "./MenuBuilder";
 import { dataEmptyState, missingBindings, widgetHelp } from "@/lib/widget-metadata";
 import type { VisibilityRule } from "@/lib/visibility";
 import { ArrayFieldEditor } from "./ArrayFieldEditor";
@@ -502,6 +504,11 @@ export function SectionInspector({
             />
             {t("Enabled", "চালু")}
           </label>
+        ) : field.kind === "menu" ? (
+          <MenuBuilder
+            value={Array.isArray(value) ? (value as unknown as MenuItem[]) : []}
+            onChange={(items) => onChange(field.key, items as unknown as PropValue, device)}
+          />
         ) : (
           <input
             id={id}
