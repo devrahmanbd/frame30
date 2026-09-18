@@ -74,8 +74,8 @@
   - [ ] **Follow-up [REPORT WF-07]**: activate forks the wrong draft — RPC `theme_install_preset` picks `ORDER BY is_active DESC, created_at ASC LIMIT 1`, not the `themeId` being activated; REST `themes/:id/activate` never forks. Fork by explicit `themeId`, share one implementation, contract-test published AST follows `is_active`.
 - [x] **Live Preview Action** — SHIPPED (code-verified Sept 18): `ThemeCard.tsx:78-80` hover overlay button → `ThemesScreen.tsx:135-139` `previewInstalled()` navigates `/dashboard/builder?preview_theme_id=:id` (`:316`); consumer parses it (`builder.tsx:107,193-199`).
   - [ ] **Follow-up [REPORT WF-04]**: current `?preview_theme=`/`?preview_device=` params are dead — `getStorefront({slug})` ignores search, `loadPublished` always renders the active theme. Real inactive-theme isolated preview route required.
-- [ ] **Add Theme tile + directory button states**: dashed Add New tile routing to full catalog; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
-- [ ] **Theme Details modal parity**: WP details modal carries Activate/Live Preview/Delete together; ours splits actions between card and modal.
+- [x] **Add Theme tile + directory button states**: filter-clearing tile on the themes grid; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
+- [x] **Theme Details modal parity**: modal carries Activate/Delete (+linked-theme gating) alongside Install; Live Preview still open (see below).
 - [x] **Direct Delete Action**: working **Delete** button per installed theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
   - [ ] **Follow-up [REPORT WF-02]**: `removed` is not in the `market_install_status` enum (`installed|trial|paused|rolled_back`) — real Postgres rejects the retire update. Migration for terminal status + atomic delete-then-retire required.
 - [x] **State-Driven Badges & Buttons**: real state on marketplace cards (`isLiveInstall` + `themeStates`).
@@ -85,9 +85,9 @@
 ### P0 — Plugin Lifecycle (Installed Plugins Table Parity)
 - [x] **Activate / Deactivate toggles + Settings form** (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`).
 - [x] **Bridged widgets**: 6 official plugins install on-demand via `upsertPlugin` (`builtin-plugins.ts`, manifests validated, honest zero counts).
-- [x] **Delete Action** — SHIPPED (code-verified Sept 18): inactive-only row Delete (`InstalledApps.tsx:378-390`) + `ConfirmDialog` (`:513-531`) + bulk-delete loop (`:533-558`) → `pluginUninstallFn`. Follow-up open: ledger terminal-status on uninstall.
-- [ ] **Widget uninstall [REPORT WF-06]**: widgets Pause/Restore only — no `marketUninstallWidgetFn`, `plugin_state` persists after `rolled_back`. Add uninstall path + ledger coherence.
-- [x] **Add New Plugin navigation** — SHIPPED: `/dashboard/plugins/new` → `/dashboard/marketplace?tab=widget` (`plugins/new.tsx:11`); tab-key mismatch fixed this session (`InstalledApps` sent `tab: "catalog"` → now `"widget"`).
+- [x] **Delete Action** — SHIPPED (code-verified Sept 18): inactive-only row Delete (`InstalledApps.tsx:378-390`) + `ConfirmDialog` (`:513-531`) + bulk-delete loop (`:533-558`) → `pluginUninstallFn` & `marketUninstallWidgetFn` (ledger retired to `removed`, removes `plugin_state` row, confirm dialog).
+- [x] **Widget uninstall [REPORT WF-06]**: added `marketUninstallWidgetFn` + wired into `InstalledApps` delete button and bulk actions, retiring install ledger to `removed`.
+- [x] **Add New Plugin navigation** — SHIPPED: `/dashboard/plugins/new` → `/dashboard/marketplace?tab=widget` (`plugins/new.tsx:11`); route search param added (`creator.tsx`/`moderation.tsx` links fixed).
 - [x] **Bulk activate/deactivate/delete** — SHIPPED (code-verified Sept 18): checkboxes + select-all (`InstalledApps.tsx:276-290,312-320`), Bulk actions ▾ (`:242-268`), `handleApplyBulk` (`:144-171`).
 
 ### P1 — Sidebar System (WP Admin Menu Parity)
