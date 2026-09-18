@@ -17,6 +17,14 @@
 | R Deployment/release (§34–36, §43, D01–04, A03/04) | PARTIAL/FAIL | R2 no A/B cross-tenant gate, R3 no SBOM/provenance/digest verify, R1 no drain logic |
 | V Recovery/incident (§17–25, §37–40, §45–47) | PARTIAL/FAIL | V1 WAL off (RPO unachievable), V7/V8 no quarantine/lockdown bundle, V9/V10 dashboards missing |
 
+## DR build loop (spec: docs/superpowers/specs/2026-09-18-fortress-backup-restore-design.md)
+
+- [ ] **B1** U1 WAL archiving + approved restart + lag verify; U2 backup.sh compose-path fix + real Redis BGSAVE
+- [ ] **B2** U3 systemd timers (nightly/weekly/hourly/daily) + integrity verify job
+- [ ] **B3** U5 rehearsal automation: sandbox restore + assertions + rehearsals.jsonl, fail-closed
+- [ ] **B4** U6 portable restore.sh + U7 restoref same-host stack + OpenResty vhost
+- [ ] **B5** U4 rclone FTP+S3 checksum sync + U8 /root dashboards + doc sign-off + full proof
+
 ## TODO backlog (priority order)
 
 - [x] **ENV-1** (P0 INCIDENT — RESOLVED `da8396c`) All SSR routes hung pre-first-byte; root cause was the hand-rolled pull()-loop meta injector in `withSecurityHeaders` (server.ts) buffering without enqueueing; rewritten as TransformStream. Verify: / 200 111KB 0.5s, /auth 200 38KB, all inline scripts nonced, </html> streams.
