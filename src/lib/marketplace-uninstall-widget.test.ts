@@ -49,11 +49,24 @@ describe("uninstallWidgetInstall", () => {
 
   it("removes the plugin row and retires the ledger row", async () => {
     const db = widgetDb();
-    const out: any = await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL);
+    const out: any = await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
     expect(out.ok).toBe(true);
     expect(out.removedPlugin).toBe(true);
     expect(db.rows("plugin_state")).toHaveLength(0);
     expect(db.rows("marketplace_installs")[0].status).toBe("removed");
+  });
+
+  it("writes an audit row attributing the actor", async () => {
+    const db = widgetDb();
+    await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
+    const rows = db.rows("activity_log");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      merchant_id: MERCHANT,
+      actor: "user-9",
+      action: "plugin.uninstalled",
+      resource_type: "plugin",
+    });
   });
 
   it("retires the ledger row even when no plugin row matches", async () => {

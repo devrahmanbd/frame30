@@ -176,7 +176,12 @@ export async function installCatalogTheme(db: Client, merchantId: string, key: s
  * steps on purpose: the flag is what the console reads, the fork is what the
  * storefront renders, and a fork failure must not leave two active rows.
  */
-export async function activateTheme(db: Client, merchantId: string, themeId: string) {
+export async function activateTheme(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  actorId?: string | null,
+) {
   const row = await requireRow(db, merchantId, themeId);
   const { error: clearError } = await db
     .from("store_themes")
@@ -190,6 +195,14 @@ export async function activateTheme(db: Client, merchantId: string, themeId: str
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
   if (error) throw error;
+  await db.from("theme_audit").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    actor: actorId ?? null,
+    action: "theme.activated",
+    before: null,
+    after: { name: (row as { name?: unknown }).name ?? null },
+  });
 
   let applied = false;
   if (row.source_listing_slug) {
@@ -203,7 +216,12 @@ export async function activateTheme(db: Client, merchantId: string, themeId: str
   return { id: themeId, applied };
 }
 
-export async function deleteTheme(db: Client, merchantId: string, themeId: string) {
+export async function deleteTheme(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  actorId?: string | null,
+) {
   const row = await requireRow(db, merchantId, themeId);
   if (row.is_active) {
     throw new ThemeDeskError("theme.active", "Activate another theme before deleting this one.");
@@ -214,6 +232,14 @@ export async function deleteTheme(db: Client, merchantId: string, themeId: strin
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
   if (error) throw error;
+  await db.from("theme_audit").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    actor: actorId ?? null,
+    action: "theme.deleted",
+    before: { name: (row as { name?: unknown }).name ?? null },
+    after: null,
+  });
   return { id: themeId };
 }
 

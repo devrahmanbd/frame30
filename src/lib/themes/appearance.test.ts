@@ -215,3 +215,15 @@ describe("presentation helpers", () => {
     expect(previewUrl("cloudman", null, "desktop")).toBe("/store/cloudman?preview_device=desktop");
   });
 });
+
+describe("catalogue honesty (no-fabrication rule)", () => {
+  it("ships zero installs and zero ratings until real marketplace data exists", async () => {
+    const { CATALOG_META } = await import("./catalog-meta");
+    const entries = Object.entries(CATALOG_META);
+    expect(entries.length).toBeGreaterThan(0);
+    for (const [key, meta] of entries) {
+      expect(meta.installs, key).toBe(0);
+      expect(meta.rating, key).toBe(0);
+    }
+  });
+});

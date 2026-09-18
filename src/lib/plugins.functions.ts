@@ -57,7 +57,7 @@ export const pluginToggleFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setPluginEnabled } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setPluginEnabled(context.supabase, merchantId, data.pluginId, data.enabled);
+    return setPluginEnabled(context.supabase, merchantId, data.pluginId, data.enabled, context.userId);
   });
 
 export const pluginUninstallFn = createServerFn({ method: "POST" })
@@ -66,7 +66,7 @@ export const pluginUninstallFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { uninstallPlugin } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallPlugin(context.supabase, merchantId, data.pluginId);
+    return uninstallPlugin(context.supabase, merchantId, data.pluginId, context.userId);
   });
 
 /** Platform owner only — RLS rejects a merchant who tries. */

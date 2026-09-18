@@ -9,6 +9,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
+import { auditAction } from "./hardening.server";
 import {
   defaultSettings,
   parseManifest,
@@ -62,6 +63,8 @@ export type UpsertInput = {
   manifest: unknown;
   grantedScopes: string[];
   installId?: string | null;
+  /** Audited actor; when omitted the row is still written but unattributed. */
+  actorId?: string | null;
 };
 
 /**
@@ -107,6 +110,12 @@ export async function upsertPlugin(db: Client, merchantId: string, input: Upsert
     throw new Error(`plugin_save_failed: ${error.message}`);
   }
 
+  // NOTE: resource_id is uuid-typed; the plugin slug rides in `changed`.
+  await auditAction(db, merchantId, input.actorId ?? null, existing ? "plugin.updated" : "plugin.installed", "plugin", {
+    plugin: manifest.id,
+    version: manifest.version,
+    scopes: manifest.permissions,
+  }, input.installId ?? null);
   return { ok: true, pluginId: manifest.id, permissionDiff: diff, warnings: verdict.warnings };
 }
 
@@ -143,6 +152,7 @@ export async function setPluginEnabled(
   merchantId: string,
   pluginId: string,
   enabled: boolean,
+  actorId?: string | null,
 ) {
   const { error } = await db
     .from("plugin_state")
@@ -150,16 +160,26 @@ export async function setPluginEnabled(
     .eq("merchant_id", merchantId)
     .eq("plugin_id", pluginId);
   if (error) throw new Error("plugin_toggle_failed");
-  return { ok: true, enabled };
+  await auditAction(db, merchantId, actorId ?? null, enabled ? "plugin.enabled" : "plugin.disabled", "plugin", {
+    plugin: pluginId,
+  }, null);
 }
 
-export async function uninstallPlugin(db: Client, merchantId: string, pluginId: string) {
+export async function uninstallPlugin(
+  db: Client,
+  merchantId: string,
+  pluginId: string,
+  actorId?: string | null,
+) {
   const { error } = await db
     .from("plugin_state")
     .delete()
     .eq("merchant_id", merchantId)
     .eq("plugin_id", pluginId);
   if (error) throw new Error("plugin_uninstall_failed");
+  await auditAction(db, merchantId, actorId ?? null, "plugin.uninstalled", "plugin", {
+    plugin: pluginId,
+  }, null);
   return { ok: true };
 }
 

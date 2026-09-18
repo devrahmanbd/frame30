@@ -36,7 +36,12 @@ export const themeActivateFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: themeId }).parse(d))
   .handler(async ({ data, context }) => {
     const { activateTheme } = await import("./appearance.server");
-    return activateTheme(context.supabase, await scope(context.supabase, context.userId), data.id);
+    return activateTheme(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data.id,
+      context.userId,
+    );
   });
 
 export const themeDeleteFn = createServerFn({ method: "POST" })
@@ -44,7 +49,12 @@ export const themeDeleteFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: themeId }).parse(d))
   .handler(async ({ data, context }) => {
     const { deleteTheme } = await import("./appearance.server");
-    return deleteTheme(context.supabase, await scope(context.supabase, context.userId), data.id);
+    return deleteTheme(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data.id,
+      context.userId,
+    );
   });
 
 export const themeFlagsFn = createServerFn({ method: "POST" })

@@ -400,7 +400,12 @@ export async function uninstallBuiltinTheme(db: Client, merchantId: string, inst
  * install maps to one) and retires the ledger row to `removed`. Unlike
  * pause/resume this is terminal — reinstalling creates a fresh row.
  */
-export async function uninstallWidgetInstall(db: Client, merchantId: string, installId: string) {
+export async function uninstallWidgetInstall(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  actorId?: string | null,
+) {
   const { data: row } = await db
     .from("marketplace_installs")
     .select("id, kind, listing_slug, status")
@@ -428,5 +433,9 @@ export async function uninstallWidgetInstall(db: Client, merchantId: string, ins
     .update({ status: "removed" as never })
     .eq("merchant_id", merchantId)
     .eq("id", installId);
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(db, merchantId, actorId ?? null, "plugin.uninstalled", "plugin", {
+    plugin: row.listing_slug,
+  }, installId);
   return { ok: true, removedPlugin: matched.length > 0 };
 }

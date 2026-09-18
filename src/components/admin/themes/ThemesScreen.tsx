@@ -145,7 +145,7 @@ export function ThemesScreen() {
       author: theme.author,
       version: theme.version,
       summary: theme.summary,
-      rating: theme.rating,
+      rating: theme.rating > 0 ? theme.rating : undefined,
       installed: theme.installed,
       active: theme.active,
     });
@@ -157,7 +157,7 @@ export function ThemesScreen() {
       author: theme.author,
       version: theme.version,
       summary: theme.summary,
-      rating: theme.rating,
+      rating: theme.rating > 0 ? theme.rating : undefined,
       installed: theme.installed,
       active: theme.active,
     }));

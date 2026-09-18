@@ -28,6 +28,7 @@ export type Call =
   | { kind: "insert"; table: string; rows: Row[] }
   | { kind: "update"; table: string; patch: Row; filters: Filter[] }
   | { kind: "delete"; table: string; filters: Filter[] }
+  | { kind: "upsert"; table: string; rows: Row[]; onConflict: string }
   | {
       kind: "select";
       table: string;
@@ -136,7 +137,8 @@ export class FakeDb {
 
 class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
   private readonly filters: Filter[] = [];
-  private mode: "select" | "insert" | "update" | "delete" = "select";
+  private mode: "select" | "insert" | "update" | "delete" | "upsert" = "select";
+  private upsertConflict = "";
   private payload: Row[] = [];
   private patch: Row = {};
   private limitN: number | null = null;
@@ -218,6 +220,16 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
     this.patch = patch;
     return this;
   }
+  upsert(rows: Row | Row[], opts?: { onConflict?: string }) {
+    this.mode = "upsert";
+    this.payload = (Array.isArray(rows) ? rows : [rows]).map((r) => ({
+      id: r["id"] ?? nextId(this.table),
+      created_at: r["created_at"] ?? new Date().toISOString(),
+      ...r,
+    }));
+    this.upsertConflict = opts?.onConflict ?? "";
+    return this;
+  }
   delete() {
     this.mode = "delete";
     return this;
@@ -236,6 +248,27 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
     if (this.mode === "insert") {
       this.db.calls.push({ kind: "insert", table: this.table, rows: this.payload });
       store.push(...this.payload.map((r) => ({ ...r })));
+      return { data: this.payload, error: null };
+    }
+    if (this.mode === "upsert") {
+      this.db.calls.push({
+        kind: "upsert",
+        table: this.table,
+        rows: this.payload,
+        onConflict: this.upsertConflict,
+      });
+      const keys = this.upsertConflict
+        .split(",")
+        .map((k) => k.trim())
+        .filter(Boolean);
+      for (const row of this.payload) {
+        const hit =
+          keys.length > 0
+            ? store.find((r) => keys.every((k) => r[k] === row[k]))
+            : undefined;
+        if (hit) Object.assign(hit, { ...row });
+        else store.push({ ...row });
+      }
       return { data: this.payload, error: null };
     }
     if (this.mode === "update") {

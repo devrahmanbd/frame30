@@ -259,11 +259,15 @@ function CatalogCard({
       <div className="space-y-1 px-3 py-2">
         <p className="truncate text-sm font-medium text-foreground">{theme.name}</p>
         <p className="line-clamp-2 text-xs fq-sub">{theme.summary}</p>
-        <p className="flex items-center gap-1.5 text-xs fq-sub">
-          <Star className="size-3.5 fill-current text-primary" aria-hidden />
-          <span className="fq-num text-foreground/90">{theme.rating.toFixed(1)}</span>·
-          <span className="fq-num">{theme.installs.toLocaleString("en-US")}</span> installs
-        </p>
+          {theme.installs > 0 ? (
+            <p className="flex items-center gap-1.5 text-xs fq-sub">
+              <Star className="size-3.5 fill-current text-primary" aria-hidden />
+              <span className="fq-num text-foreground/90">{theme.rating.toFixed(1)}</span>·
+              <span className="fq-num">{theme.installs.toLocaleString("en-US")}</span> installs
+            </p>
+          ) : (
+            <p className="text-xs font-medium text-primary">New</p>
+          )}
       </div>
     </article>
   );

@@ -119,6 +119,7 @@ export const marketInstallFn = createServerFn({ method: "POST" })
         manifest: pluginDef.manifest,
         grantedScopes: pluginDef.manifest.permissions,
         installId: installRecord?.id ?? null,
+        actorId: context.userId,
       });
 
       return {
@@ -200,7 +201,7 @@ export const marketUninstallWidgetFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { uninstallWidgetInstall } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallWidgetInstall(context.supabase, merchantId, data.installId);
+    return uninstallWidgetInstall(context.supabase, merchantId, data.installId, context.userId);
   });
 
 export const marketMineFn = createServerFn({ method: "GET" })

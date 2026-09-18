@@ -75,3 +75,77 @@ begin
 end $$;
 grant execute on function public.theme_install_preset(uuid, text, jsonb, boolean)
   to authenticated, service_role;
+
+-- Phase 2d follow-up (WF-24): lifecycle audit. Replaces the routine
+-- above with the audited version (theme_audit insert on install).
+CREATE OR REPLACE FUNCTION public.theme_install_preset(_merchant_id uuid, _key text, _preset jsonb, _overwrite_draft boolean DEFAULT false)
+ RETURNS uuid
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+declare
+  v_caller uuid := auth.uid();
+  v_theme uuid;
+  v_version bigint;
+  v_id uuid;
+begin
+  if v_caller is null then
+    raise exception 'auth.required' using errcode = '42501';
+  end if;
+  if not exists (
+    select 1 from public.merchant_members
+    where merchant_id = _merchant_id and user_id = v_caller and status = 'active'
+  ) and not public.is_platform_admin(v_caller) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  if _preset is null or jsonb_typeof(_preset) <> 'object' then
+    raise exception 'builder.preset_invalid' using errcode = '22023';
+  end if;
+
+  select id into v_theme from public.store_themes
+  where merchant_id = _merchant_id
+  order by is_active desc, created_at asc limit 1;
+
+  if v_theme is null then
+    insert into public.store_themes (merchant_id, name, is_active, installed_at)
+    values (_merchant_id, _key, true, now())
+    returning id into v_theme;
+  end if;
+
+  -- Never silently replace authored work: the UI confirms overwrite.
+  if exists (select 1 from public.theme_drafts where theme_id = v_theme)
+     and not coalesce(_overwrite_draft, false) then
+    raise exception 'builder.draft_exists' using errcode = '23505';
+  end if;
+
+  select coalesce(max(version), 0) + 1 into v_version
+  from public.theme_versions where theme_id = v_theme;
+
+  insert into public.theme_versions
+    (merchant_id, theme_id, version, status, label,
+     templates, tokens, source_registry_key, created_by)
+  values
+    (_merchant_id, v_theme, v_version, 'draft', _key,
+     coalesce(_preset->'templates', '{}'::jsonb),
+     coalesce(_preset->'tokens', '{}'::jsonb),
+     _key, v_caller)
+  returning id into v_id;
+
+  delete from public.theme_drafts where theme_id = v_theme;
+  insert into public.theme_drafts
+    (merchant_id, theme_id, revision, templates, tokens, updated_by)
+  values
+    (_merchant_id, v_theme, v_version,
+     coalesce(_preset->'templates', '{}'::jsonb),
+     coalesce(_preset->'tokens', '{}'::jsonb),
+     v_caller);
+
+  insert into public.theme_audit (merchant_id, theme_id, actor, action, before, after)
+  values (_merchant_id, v_theme, v_caller, 'theme.installed', null,
+    jsonb_build_object('key', _key, 'version_id', v_id));
+
+  return v_id;
+end $function$;
+GRANT EXECUTE ON FUNCTION public.theme_install_preset(uuid, text, jsonb, boolean) TO authenticated, service_role;

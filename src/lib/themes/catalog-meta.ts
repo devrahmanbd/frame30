@@ -4,8 +4,10 @@
  * `theme_registry` carries author/tags/features columns, but a fresh
  * environment has never run the catalogue sync, and the code presets are the
  * documented floor for the theme picker. This table is that floor's metadata:
- * subjects, features and layouts drive the Feature filter drawer, rating and
- * installs drive the Popular tab. SQL rows override anything named here.
+ * subjects, features and layouts drive the Feature filter drawer. Rating and
+ * installs are honest zeros until real marketplace telemetry aggregates them
+ * (no-fabrication rule); Popular sort falls back to name order on ties. SQL
+ * rows override anything named here.
  */
 
 export type CatalogMeta = {
@@ -27,8 +29,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "sticky header", "reviews"],
     layouts: ["grid", "boxed", "sidebar left"],
     tags: ["classic", "neutral", "editorial"],
-    rating: 4.6,
-    installs: 5400,
+    rating: 0,
+    installs: 0,
   },
   modern: {
     author: "Framique",
@@ -36,8 +38,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "dark mode", "sticky header"],
     layouts: ["grid", "full width", "one column"],
     tags: ["modern", "minimal", "bold"],
-    rating: 4.8,
-    installs: 8900,
+    rating: 0,
+    installs: 0,
   },
   landing: {
     author: "Framique",
@@ -45,8 +47,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "dark mode"],
     layouts: ["one column", "full width"],
     tags: ["landing", "campaign", "conversion"],
-    rating: 4.5,
-    installs: 3100,
+    rating: 0,
+    installs: 0,
   },
   "heavy-shop": {
     author: "Framique",
@@ -54,8 +56,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "mega menu", "product filters", "quick view", "wishlist"],
     layouts: ["grid", "sidebar left", "boxed"],
     tags: ["dense", "catalogue", "high volume"],
-    rating: 4.4,
-    installs: 7200,
+    rating: 0,
+    installs: 0,
   },
   supershop: {
     author: "Framique",
@@ -70,8 +72,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     ],
     layouts: ["grid", "sidebar left", "full width"],
     tags: ["supermarket", "deals", "dense"],
-    rating: 4.7,
-    installs: 10400,
+    rating: 0,
+    installs: 0,
   },
   b2b: {
     author: "Framique",
@@ -79,8 +81,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "product filters", "sticky header"],
     layouts: ["list", "sidebar right", "boxed"],
     tags: ["wholesale", "quotes", "trade"],
-    rating: 4.3,
-    installs: 2600,
+    rating: 0,
+    installs: 0,
   },
   "clothing-modern": {
     author: "Framique",
@@ -88,8 +90,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "quick view", "wishlist", "reviews", "dark mode"],
     layouts: ["grid", "full width"],
     tags: ["fashion", "lookbook", "editorial"],
-    rating: 4.9,
-    installs: 12800,
+    rating: 0,
+    installs: 0,
   },
   "clothing-classic": {
     author: "Framique",
@@ -97,8 +99,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "wishlist", "reviews"],
     layouts: ["grid", "sidebar left", "boxed"],
     tags: ["fashion", "heritage", "warm"],
-    rating: 4.5,
-    installs: 6100,
+    rating: 0,
+    installs: 0,
   },
   sensory: {
     author: "Framique",
@@ -106,8 +108,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "reviews", "dark mode"],
     layouts: ["grid", "two column", "full width"],
     tags: ["beauty", "calm", "tactile"],
-    rating: 4.6,
-    installs: 4300,
+    rating: 0,
+    installs: 0,
   },
   festivity: {
     author: "Framique",
@@ -115,8 +117,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     features: [...BASE_FEATURES, "mega menu", "quick view"],
     layouts: ["grid", "full width", "boxed"],
     tags: ["seasonal", "festival", "vivid"],
-    rating: 4.4,
-    installs: 3900,
+    rating: 0,
+    installs: 0,
   },
 };
 
@@ -126,8 +128,8 @@ const FALLBACK: CatalogMeta = {
   features: BASE_FEATURES,
   layouts: ["grid"],
   tags: [],
-  rating: 4.2,
-  installs: 500,
+  rating: 0,
+  installs: 0,
 };
 
 export function catalogMeta(key: string): CatalogMeta {

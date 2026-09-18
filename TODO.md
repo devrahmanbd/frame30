@@ -138,6 +138,7 @@
 - [ ] **M-06 Customizer changeset parity for schedules**: auto-draft → draft/future/publish, Activate & Publish vs Publish, trash, missed-schedule recovery (`class-wp-customize-manager.php:2433-2707`, `customize.php:199-203`). Our schedule form adopts the same states.
 
 ### P2 — Polish
+- [x] **Lifecycle audit rows (WF-24)**: install/activate/delete write `theme_audit` (actor/before/after); plugin install/toggle/uninstall write `activity_log` — verified live, incl. fixing a uuid-typed `resource_id` that silently swallowed plugin audits.
 - [ ] **Theme screenshot pipeline**: real per-theme previews replacing placeholder blocks on marketplace cards.
 - [ ] **Honest catalog counts [REPORT WF-22]**: `catalog-meta.ts` hardcodes ratings 4.4–4.9 / installs 2600–12800 rendered as fact; Popular sort is fixture order. Honest zeros like `builtin-plugins.ts` + real `install_count` ordering (no-fabrication rule).
 - [ ] **Upload Theme path [REPORT WF-23]**: `AddThemeScreen` validates zip client-side only, zero server path — implement `themeUploadFn` + storage or remove the dropzone (no dead buttons).
