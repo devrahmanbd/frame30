@@ -13,7 +13,13 @@
  */
 
 import { incr, log, observe, registerMetric } from "./observability.server";
-import { redisCommand, redisConfigured, redisEval, redisKey } from "./redis.server";
+import {
+  redisCommand,
+  redisConfigured,
+  redisEval,
+  redisKey,
+} from "./redis.server";
+import { assertTenantId } from "./tenant-scope";
 
 registerMetric(
   "framique_locks_acquired_total",
@@ -33,7 +39,10 @@ registerMetric(
 );
 
 export class LockAcquisitionError extends Error {
-  constructor(readonly resource: string, message = "lock.acquisition_failed") {
+  constructor(
+    readonly resource: string,
+    message = "lock.acquisition_failed",
+  ) {
     super(message);
     this.name = "LockAcquisitionError";
   }
@@ -81,7 +90,11 @@ type MemoryLock = {
 const memoryLocks = new Map<string, MemoryLock>();
 const memoryWaiters = new Map<string, Array<() => void>>();
 
-function acquireMemoryLock(key: string, token: string, ttlMs: number): Promise<boolean> {
+function acquireMemoryLock(
+  key: string,
+  token: string,
+  ttlMs: number,
+): Promise<boolean> {
   if (!memoryLocks.has(key)) {
     const timer = setTimeout(() => releaseMemoryLock(key, token), ttlMs);
     memoryLocks.set(key, { token, timer });
@@ -105,17 +118,34 @@ function releaseMemoryLock(key: string, token: string): boolean {
   return true;
 }
 
-function extendMemoryLock(key: string, token: string, additionalTtlMs: number): boolean {
+function extendMemoryLock(
+  key: string,
+  token: string,
+  additionalTtlMs: number,
+): boolean {
   const current = memoryLocks.get(key);
   if (!current || current.token !== token) return false;
   clearTimeout(current.timer);
-  current.timer = setTimeout(() => releaseMemoryLock(key, token), additionalTtlMs);
+  current.timer = setTimeout(
+    () => releaseMemoryLock(key, token),
+    additionalTtlMs,
+  );
   return true;
 }
 
 /* ------------------------------------------------------------------ */
 /* Lock Acquisition & Release                                         */
 /* ------------------------------------------------------------------ */
+
+function assertLockResource(resource: string): string {
+  if (typeof resource !== "string" || resource.trim().length === 0) {
+    throw new Error("Lock resource must be a non-empty string");
+  }
+  if (/[\r\n]/.test(resource)) {
+    throw new Error("Lock resource contains invalid control characters");
+  }
+  return resource.trim();
+}
 
 function formatLockKey(resource: string): string {
   return redisKey("lock", resource);
@@ -130,7 +160,8 @@ export async function acquireLock(
   ttlMs: number,
   opts: LockOptions = {},
 ): Promise<LockHandle | null> {
-  const key = formatLockKey(resource);
+  const safeResource = assertLockResource(resource);
+  const key = formatLockKey(safeResource);
   const retries = Math.max(0, opts.retries ?? 0);
   const baseDelay = Math.max(10, opts.retryDelayMs ?? 50);
 
@@ -193,7 +224,11 @@ function createLockHandle(
     extend: async (additionalTtlMs: number) => {
       if (released) return false;
       if (isRedis && redisConfigured()) {
-        const res = await redisEval(EXTEND_LOCK_LUA, [key], [token, additionalTtlMs]);
+        const res = await redisEval(
+          EXTEND_LOCK_LUA,
+          [key],
+          [token, additionalTtlMs],
+        );
         return res.ok && Number(res.value) === 1;
       }
       return extendMemoryLock(key, token, additionalTtlMs);
@@ -214,14 +249,20 @@ export async function withDistributedLock<T>(
   const handle = await acquireLock(resource, ttlMs, opts);
   if (!handle) {
     log("warn", "lock.acquisition_timeout", { resource, ttlMs });
-    throw new LockAcquisitionError(resource, `Could not acquire lock for ${resource}`);
+    throw new LockAcquisitionError(
+      resource,
+      `Could not acquire lock for ${resource}`,
+    );
   }
 
   try {
     return await fn(handle);
   } finally {
     await handle.release().catch((err) => {
-      log("error", "lock.release_error", { resource, error: (err as Error).message });
+      log("error", "lock.release_error", {
+        resource,
+        error: (err as Error).message,
+      });
     });
   }
 }
@@ -229,26 +270,29 @@ export async function withDistributedLock<T>(
 /**
  * Tenant-scoped distributed lock: guarantees isolation across merchant boundaries.
  */
-export function withTenantLock<T>(
+export async function withTenantLock<T>(
   tenantId: string,
   resource: string,
   ttlMs: number,
   fn: (handle: LockHandle) => Promise<T>,
   opts: LockOptions = {},
 ): Promise<T> {
-  const scopedResource = `tenant:${tenantId}:${resource}`;
+  const safeTenantId = assertTenantId(tenantId, "withTenantLock");
+  const safeResource = assertLockResource(resource);
+  const scopedResource = `tenant:${safeTenantId}:${safeResource}`;
   return withDistributedLock(scopedResource, ttlMs, fn, opts);
 }
 
 /**
  * System/Platform distributed lock: guards platform-wide operations (e.g. crons, billing sweeps).
  */
-export function withSystemLock<T>(
+export async function withSystemLock<T>(
   resource: string,
   ttlMs: number,
   fn: (handle: LockHandle) => Promise<T>,
   opts: LockOptions = {},
 ): Promise<T> {
-  const scopedResource = `system:${resource}`;
+  const safeResource = assertLockResource(resource);
+  const scopedResource = `system:${safeResource}`;
   return withDistributedLock(scopedResource, ttlMs, fn, opts);
 }

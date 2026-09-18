@@ -8,7 +8,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { mediaUrl } from "../media";
+import { isMediaObjectPath, mediaUrl } from "../media";
 import {
   ACCEPTED_MIME,
   MEDIA_UPLOAD_MAX_BYTES,
@@ -268,9 +268,17 @@ export async function deleteAttachments(
 
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  await supabaseAdmin.storage
-    .from(BUCKET)
-    .remove(rows.map((row) => row.storage_path));
+  const safePaths = rows
+    .map((row) => row.storage_path)
+    .filter(
+      (path) =>
+        typeof path === "string" &&
+        isMediaObjectPath(path) &&
+        path.startsWith(`${merchantId}/`),
+    );
+  if (safePaths.length > 0) {
+    await supabaseAdmin.storage.from(BUCKET).remove(safePaths);
+  }
 
   const del = await db
     .from("media_assets")

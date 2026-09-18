@@ -13,6 +13,7 @@ import {
   withSystemLock,
   LockAcquisitionError,
 } from "./redis-lock.server";
+import { TenantScopeError } from "./tenant-scope";
 import { BUCKETS, enforceTenantRateLimit } from "./rate-limit.server";
 
 describe("Redis Distributed Locking Contract", () => {
@@ -91,6 +92,36 @@ describe("Redis Distributed Locking Contract", () => {
     expect(capturedKey).toContain("tenant:m_123:catalog:sync");
   });
 
+  it("strictly enforces tenant scope in withTenantLock and blocks namespace tampering", async () => {
+    // Malicious wildcards or keywords must throw TenantScopeError
+    await expect(
+      withTenantLock("*", "catalog:sync", 1000, async () => {}),
+    ).rejects.toThrow(TenantScopeError);
+
+    await expect(
+      withTenantLock("all", "catalog:sync", 1000, async () => {}),
+    ).rejects.toThrow(TenantScopeError);
+
+    // Lock key smuggling via colons or delimiters must throw TenantScopeError
+    await expect(
+      withTenantLock("m_123:smuggled", "catalog:sync", 1000, async () => {}),
+    ).rejects.toThrow(TenantScopeError);
+
+    await expect(
+      withTenantLock("", "catalog:sync", 1000, async () => {}),
+    ).rejects.toThrow(TenantScopeError);
+  });
+
+  it("rejects invalid or control-character-injected lock resources", async () => {
+    await expect(
+      withTenantLock("m_123", "", 1000, async () => {}),
+    ).rejects.toThrow("Lock resource must be a non-empty string");
+
+    await expect(
+      withTenantLock("m_123", "catalog\r\nSET attack 1", 1000, async () => {}),
+    ).rejects.toThrow("Lock resource contains invalid control characters");
+  });
+
   it("namespaces system locks to system:{resource}", async () => {
     let capturedKey = "";
     await withSystemLock("cron:sweep", 2000, async (handle) => {
@@ -103,15 +134,25 @@ describe("Redis Distributed Locking Contract", () => {
 describe("Race Condition Elimination in Critical Flows", () => {
   it("protects checkout reserveStock and consumeStock with tenant distributed locks", () => {
     const source = readFileSync("src/lib/checkout.server.ts", "utf8");
-    expect(source).toContain('import { withTenantLock } from "./redis-lock.server"');
-    expect(source).toMatch(/withTenantLock\s*\(\s*merchantId\s*,\s*`stock:reserve:\${checkoutToken}`/);
-    expect(source).toMatch(/withTenantLock\s*\(\s*checkoutToken\s*,\s*`stock:consume:\${orderId}`/);
+    expect(source).toContain(
+      'import { withTenantLock } from "./redis-lock.server"',
+    );
+    expect(source).toMatch(
+      /withTenantLock\s*\(\s*merchantId\s*,\s*`stock:reserve:\${checkoutToken}`/,
+    );
+    expect(source).toMatch(
+      /withTenantLock\s*\(\s*checkoutToken\s*,\s*`stock:consume:\${orderId}`/,
+    );
   });
 
   it("protects payout requests with tenant distributed locks", () => {
     const source = readFileSync("src/lib/payouts.server.ts", "utf8");
-    expect(source).toContain('import { withTenantLock } from "./redis-lock.server"');
-    expect(source).toMatch(/withTenantLock\s*\(\s*merchantId\s*,\s*"payout:request"/);
+    expect(source).toContain(
+      'import { withTenantLock } from "./redis-lock.server"',
+    );
+    expect(source).toMatch(
+      /withTenantLock\s*\(\s*merchantId\s*,\s*"payout:request"/,
+    );
   });
 
   it("implements fast Redis replay cache in replay-guard.server.ts", () => {
@@ -126,7 +167,9 @@ describe("Race Condition Elimination in Critical Flows", () => {
 describe("Multi-Tier Rate Limiting & Tenant Isolation", () => {
   it("declares segregated tenant and system buckets", () => {
     expect(BUCKETS["tenant.ingress.aggregate"]).toBeDefined();
-    expect(BUCKETS["tenant.ingress.aggregate"].limit).toBeGreaterThanOrEqual(1000);
+    expect(BUCKETS["tenant.ingress.aggregate"].limit).toBeGreaterThanOrEqual(
+      1000,
+    );
 
     expect(BUCKETS["tenant.ingress.shopper"]).toBeDefined();
     expect(BUCKETS["tenant.ingress.shopper"].limit).toBeLessThanOrEqual(300);
@@ -152,7 +195,10 @@ describe("Multi-Tier Rate Limiting & Tenant Isolation", () => {
 });
 
 describe("OpenResty Edge Caching & Optimization", () => {
-  const nginxConfPath = resolve(process.cwd(), "ops/routing/nginx-blue-green.conf");
+  const nginxConfPath = resolve(
+    process.cwd(),
+    "ops/routing/nginx-blue-green.conf",
+  );
 
   it("declares edge cache path and stampede lock in OpenResty", () => {
     const conf = readFileSync(nginxConfPath, "utf8");
@@ -165,8 +211,12 @@ describe("OpenResty Edge Caching & Optimization", () => {
 
   it("declares edge rate limiting and connection limits in OpenResty", () => {
     const conf = readFileSync(nginxConfPath, "utf8");
-    expect(conf).toContain("limit_req_zone $binary_remote_addr zone=edge_ip_limit:32m");
-    expect(conf).toContain("limit_conn_zone $binary_remote_addr zone=edge_ip_conn:32m");
+    expect(conf).toContain(
+      "limit_req_zone $binary_remote_addr zone=edge_ip_limit:32m",
+    );
+    expect(conf).toContain(
+      "limit_conn_zone $binary_remote_addr zone=edge_ip_conn:32m",
+    );
     expect(conf).toContain("limit_req zone=edge_ip_limit burst=50 nodelay;");
     expect(conf).toContain("limit_conn edge_ip_conn 25;");
     expect(conf).toContain("limit_req_status 429;");
@@ -183,8 +233,8 @@ describe("OpenResty Edge Caching & Optimization", () => {
 
   it("caches custom domain hostname lookups in tenant-canary.server.ts", () => {
     const source = readFileSync("src/lib/tenant-canary.server.ts", "utf8");
-    expect(source).toContain('cached<string | null>');
-    expect(source).toContain('`domain_tenant:${host}`');
+    expect(source).toContain("cached<string | null>");
+    expect(source).toContain("`domain_tenant:${host}`");
     expect(source).toContain("shared: true");
   });
 });
