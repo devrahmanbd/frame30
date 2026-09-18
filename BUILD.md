@@ -29,11 +29,11 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 
 ### Tier definitions
 
-- **0. WordPress CMS Parity & Cloud SaaS Foundation** — absolute user journey parity with WordPress 6.8+ admin (`/wp-admin/` reference) + tenant-isolated SaaS cloud architecture. Top launch priority.
-- **1. Core** — the platform is not a platform without it. Blocks every other slice.
-- **2. Must have** — required for a merchant to run a real BD store and for us to bill them. Launch-blocking.
-- **3. Good to have** — competitive parity and depth. Post-launch, ordered by pull.
-- **4. Optional / out of the box** — differentiators, long-tail, and provider-gated work.
+- **0. WordPress CMS Parity & Cloud SaaS Foundation** — absolute user journey parity with WordPress 6.8+ admin (`/wp-admin/` reference) + tenant-isolated SaaS cloud architecture. Top launch priority. **MVP.**
+- **1. Core** — the platform is not a platform without it. Blocks every other slice. **MVP.**
+- **2. Must have** — required for a merchant to run a real BD store and for us to bill them. Launch-blocking. **MVP** (open boxes here are the launch punch-list).
+- **3. Good to have** — competitive parity and depth. **POST-MVP by owner decision (Sept 18, 2026)** — unchecked boxes below are intentionally deferred, not missing.
+- **4. Optional / out of the box** — differentiators, long-tail, and provider-gated work. **POST-MVP by owner decision (Sept 18, 2026)** — unchecked boxes below are intentionally deferred, not missing.
 
 ---
 
@@ -75,7 +75,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Onboarding Custom Domain Connection Step (`src/routes/_authenticated/onboarding.tsx`): real-time CNAME/A DNS instructions with "Skip for now" fallback to `<slug>.framique.store`
 - [x] `[A]` Edge request rewriting & custom domain edge cache parity: `isStorefrontPath` in `src/lib/storefront-cache.ts` caches custom-domain root paths (`/`, `/p/*`, `/c/*`, `/pages/*`, `/blog`) — personal paths guarded by `isPersonalizedStorefrontPath`
 - [x] Streaming presigned media uploads: `createPresignedUploadUrl` in `media.server.ts` + `mediaPresignedUploadFn` in `media.functions.ts` — direct-to-storage presigned URLs replacing base64 JSON RPC
-- [~] `[A]` Tenant-aware CSRF validator handling custom domains, reverse proxies, and external payment gateway return redirects — CSRF in progress
+- [x] `[A]` Tenant-aware CSRF validator handling custom domains, reverse proxies, and external payment gateway return redirects — `src/lib/csrf.server.ts` `isTrustedCsrfOrigin()` + `lookupActiveMerchantDomain()` wired in `server.ts`; payment gateway whitelist scoped to `/api/public/payments/*` only; fail-closed on unknown origins
 - [x] `[A]` Plan-based custom domain quotas (`PLAN_DOMAIN_QUOTA` in `domains.server.ts`) and SNI rate-limiting (`verify-sni.ts` state-machine guard + domain status check)
 
 ---
@@ -306,17 +306,17 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 
 ### 2.9 Operations
 - [x] `[A]` Automated backup + verified restore drill — nightly via `/api/public/cron/ops`, ledgered, deny+replay+audit tests
-- [x] `[A]` Dead-letter queue console with replay across all providers — unified triage desk merging `webhook_events` + `courier_webhook_events` (`ops.server.ts` `loadDeadLetters` → `root/ops.tsx`)
+- [x] `[A]` Dead-letter queue console with replay across all providers — `src/routes/root/ops.tsx` unifies `webhook_events` (payments) and `courier_webhook_events` (courier) with `source` filter (`all | payments | courier`), severity triage, and per-item replay action (`opsReplayFn`)
 - [~] Prometheus metrics + Grafana dashboards — 7 dashboards (platform, infrastructure, ad-fraud, commerce, marketing, developer platform, ecosystem/AI) + 54 alert rules; `observability-coverage.test.ts` pins the money/security metrics, long-tail counters still uncharted
 - [~] Sentry / GlitchTip error tracking with PII scrubbing — dual backends supported (GlitchTip + Sentry), PII sanitization and deterministic sampling verified via `scripts/error-tracking-verify.mjs`
 - [x] Status page + incident comms
-- [x] `[A]` Secret rotation runbook (gateway secrets, API keys) — `docs/14-operations/secret-rotation-runbook.md` (routine + leak fast-path, dual-sign grace, audit rows)
+- [x] `[A]` Secret rotation runbook (gateway secrets, API keys) — `docs/ops/secret-rotation.md`: gateway webhook dual-sign rotation, Supabase service role + JWT rotation, merchant API key self-service + force-rotation, Redis, courier credentials, ACME key, emergency lockdown procedure
 - [x] Log retention policy (raw analytics 90d, PII-minimal)
 
 
 ---
 
-## 3. Good to have
+## 3. Good to have — POST-MVP (deferred by owner decision, not missing)
 
 ### 3.1 Storefront & conversion
 - [x] Product reviews + moderation — `/dashboard/reviews` moderation desk + storefront PDP review intake and score rollups (`reviews.tsx`, `phase2-pdp.test.ts`, `ConversionSurfaces.tsx`)
@@ -395,7 +395,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 
 ---
 
-## 4. Optional / out of the box
+## 4. Optional / out of the box — POST-MVP (deferred by owner decision, not missing)
 
 ### 4.1 Provider-gated
 - [x] `[A]` Live MFS credentials (bKash / Nagad / Rocket / Upay / Tap / mCash / SureCash) behind explicit sign-off gate — `provider-gate.ts`, `payments-gate.test.ts`
