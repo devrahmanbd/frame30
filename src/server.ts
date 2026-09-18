@@ -2,12 +2,28 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { isPersonalizedStorefrontPath, isStorefrontPath, personalizedNoStoreHeaders, storefrontCacheHeaders } from "./lib/storefront-cache";
+import {
+  isPersonalizedStorefrontPath,
+  isStorefrontPath,
+  personalizedNoStoreHeaders,
+  storefrontCacheHeaders,
+} from "./lib/storefront-cache";
 import { isLocalHostname } from "./lib/edge-hosts";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
+import {
+  resolveTierFromSignals,
+  resolvePolicy,
+  type RiskTier,
+} from "./lib/risk-tier";
+import { getMerchantRiskContext } from "./lib/risk-tier.server";
+import { buildCsp, newNonce } from "./lib/custom-code";
 
 type ServerEntry = {
-  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+  fetch: (
+    request: Request,
+    env: unknown,
+    ctx: unknown,
+  ) => Promise<Response> | Response;
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
@@ -23,7 +39,9 @@ async function getServerEntry(): Promise<ServerEntry> {
 
 // h3 swallows in-handler throws into a normal 500 Response with body
 // {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
-async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+async function normalizeCatastrophicSsrResponse(
+  response: Response,
+): Promise<Response> {
   if (response.status < 500) return response;
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) return response;
@@ -31,7 +49,9 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   const body = await response.clone().text();
   if (!isH3SwallowedErrorBody(body)) return response;
 
-  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
+  console.error(
+    consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`),
+  );
   return new Response(renderErrorPage(), {
     status: 500,
     headers: { "content-type": "text/html; charset=utf-8" },
@@ -40,7 +60,10 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 function isH3SwallowedErrorBody(body: string): boolean {
   try {
-    const payload = JSON.parse(body) as { unhandled?: unknown; message?: unknown };
+    const payload = JSON.parse(body) as {
+      unhandled?: unknown;
+      message?: unknown;
+    };
     return payload.unhandled === true && payload.message === "HTTPError";
   } catch {
     return false;
@@ -75,18 +98,62 @@ function isEditorPreviewHost(request: Request): boolean {
   }
 }
 
-function withSecurityHeaders(request: Request, response: Response): Response {
+/**
+ * Resolve the risk tier for a request by looking up the merchant's stored
+ * tier, theme/plugin provenance, and abuse signals. Returns 'low' when
+ * no merchant is identified or on any failure (fail-open).
+ */
+async function resolveRequestTier(
+  merchantId?: string,
+): Promise<{ tier: RiskTier; reasons: string[] }> {
+  if (!merchantId) return { tier: "low", reasons: [] };
+
+  try {
+    const ctx = await getMerchantRiskContext(merchantId);
+    const { tier, reasons } = resolveTierFromSignals({
+      storedTier: ctx.storedTier,
+      themeSource: ctx.themeSource,
+      pluginSources: ctx.pluginSources,
+      fraudScore: ctx.abuseScore,
+    });
+    return { tier, reasons };
+  } catch {
+    return { tier: "low", reasons: [] };
+  }
+}
+
+function withSecurityHeaders(
+  request: Request,
+  response: Response,
+  riskTier: RiskTier = "low",
+): Response {
   const type = response.headers.get("content-type") ?? "";
   if (!type.includes("text/html")) return response;
   const headers = new Headers(response.headers);
   headers.set("x-content-type-options", "nosniff");
   headers.set("referrer-policy", "strict-origin-when-cross-origin");
+
+  // Emit tier-aware CSP header based on resolved risk tier
+  const policy = resolvePolicy(riskTier);
+  if (policy.csp.nonce) {
+    const nonce = newNonce();
+    headers.set("content-security-policy", buildCsp(nonce, {}, riskTier));
+  } else {
+    // medium / high: no nonce, strict script-src 'self'
+    headers.set("content-security-policy", buildCsp("", {}, riskTier));
+  }
+
   if (isEditorPreviewHost(request)) {
     headers.delete("x-frame-options");
   } else {
     headers.set("x-frame-options", "SAMEORIGIN");
   }
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 /**
@@ -99,15 +166,19 @@ function withConsoleHeaders(request: Request, response: Response): Response {
   const { pathname } = new URL(request.url);
   if (!isConsolePath(pathname)) return response;
   const headers = new Headers(response.headers);
-  for (const [key, value] of Object.entries(consoleSecurityHeaders())) headers.set(key, value);
+  for (const [key, value] of Object.entries(consoleSecurityHeaders()))
+    headers.set(key, value);
   if (isEditorPreviewHost(request)) {
     // Keep noindex + private caching, drop the framing denial for the editor.
     headers.delete("x-frame-options");
     headers.delete("content-security-policy");
   }
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
-
 
 /**
  * Phase 8.2 — shared-cache policy for storefront documents.
@@ -130,8 +201,13 @@ function withStorefrontCache(request: Request, response: Response): Response {
   // cacheable. Force origin-only delivery.
   if (isPersonalizedStorefrontPath(pathname)) {
     const headers = new Headers(response.headers);
-    for (const [key, value] of Object.entries(personalizedNoStoreHeaders())) headers.set(key, value);
-    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+    for (const [key, value] of Object.entries(personalizedNoStoreHeaders()))
+      headers.set(key, value);
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
   }
   // Draft previews must never enter the shared cache: same URL shape as the
   // live page, but per-merchant private content. The route also emits noindex.
@@ -141,20 +217,34 @@ function withStorefrontCache(request: Request, response: Response): Response {
     // Belt and suspenders with the noindex meta on preview pages: header
     // wins even if the head-tag pipeline dedupes the robots meta.
     headers.set("x-robots-tag", "noindex, nofollow");
-    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
   }
   if (!isStorefrontPath(pathname)) return response;
   const headers = new Headers(response.headers);
-  for (const [key, value] of Object.entries(storefrontCacheHeaders(null))) headers.set(key, value);
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  for (const [key, value] of Object.entries(storefrontCacheHeaders(null)))
+    headers.set(key, value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 function withTenantCanaryHeaders(
   response: Response,
-  decision?: { cohortTier?: number; tenantId?: string | null; targetSlot?: string },
+  decision?: {
+    cohortTier?: number;
+    tenantId?: string | null;
+    targetSlot?: string;
+  },
 ): Response {
   const headers = new Headers(response.headers);
-  const currentSlot = process.env["CLUSTER_SLOT"] || process.env["TOPOLOGY_SLOT"] || "blue";
+  const currentSlot =
+    process.env["CLUSTER_SLOT"] || process.env["TOPOLOGY_SLOT"] || "blue";
   headers.set("x-framique-slot", currentSlot);
   if (decision) {
     if (decision.cohortTier !== undefined) {
@@ -167,23 +257,37 @@ function withTenantCanaryHeaders(
       headers.set("x-framique-target-slot", decision.targetSlot);
     }
   }
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const url = new URL(request.url);
-      
+
       // Global Security Middleware: Enforce HTTPS
-      const proto = request.headers.get("x-forwarded-proto") || url.protocol.replace(':', '');
+      const proto =
+        request.headers.get("x-forwarded-proto") ||
+        url.protocol.replace(":", "");
       // Exact-match local check only (REPORT WF-10): a substring test would
       // treat attacker hosts like `localhost.evil.com` as local and disable
       // HTTPS + CSRF protection for them.
       const isLocalhost = isLocalHostname(url.hostname);
-      
-      if (proto === "http" && !isLocalhost && !url.hostname.startsWith("preview.") && !url.hostname.startsWith("id-preview--")) {
-        return Response.redirect(`https://${url.host}${url.pathname}${url.search}`, 301);
+
+      if (
+        proto === "http" &&
+        !isLocalhost &&
+        !url.hostname.startsWith("preview.") &&
+        !url.hostname.startsWith("id-preview--")
+      ) {
+        return Response.redirect(
+          `https://${url.host}${url.pathname}${url.search}`,
+          301,
+        );
       }
 
       // Global Security Middleware: Tenant-aware CSRF Protection on Mutations [A]
@@ -193,16 +297,24 @@ export default {
       //   - Payment gateway POST-back origins — only on /api/public/payments/* path
       if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method)) {
         // Public webhook routes use their own HMAC signature verification
-        if (!url.pathname.startsWith("/api/public") && !url.pathname.startsWith("/api/canary-alert")) {
+        if (
+          !url.pathname.startsWith("/api/public") &&
+          !url.pathname.startsWith("/api/canary-alert")
+        ) {
           const origin = request.headers.get("origin");
-          const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || url.host;
+          const host =
+            request.headers.get("x-forwarded-host") ||
+            request.headers.get("host") ||
+            url.host;
 
           if (origin) {
             let originHost: string;
             try {
               originHost = new URL(origin).host;
             } catch {
-              return new Response("CSRF check failed (invalid origin)", { status: 403 });
+              return new Response("CSRF check failed (invalid origin)", {
+                status: 403,
+              });
             }
 
             if (!isLocalhost) {
@@ -215,7 +327,9 @@ export default {
                 lookupCustomDomain: lookupActiveMerchantDomain,
               });
               if (!trusted) {
-                return new Response("CSRF check failed (untrusted origin)", { status: 403 });
+                return new Response("CSRF check failed (untrusted origin)", {
+                  status: 403,
+                });
               }
             }
           } else {
@@ -224,41 +338,62 @@ export default {
               try {
                 const refererHost = new URL(referer).host;
                 if (refererHost !== host && !isLocalhost) {
-                  return new Response("CSRF check failed (referer mismatch)", { status: 403 });
+                  return new Response("CSRF check failed (referer mismatch)", {
+                    status: 403,
+                  });
                 }
               } catch {
-                return new Response("CSRF check failed (invalid referer)", { status: 403 });
+                return new Response("CSRF check failed (invalid referer)", {
+                  status: 403,
+                });
               }
             }
             // If neither Origin nor Referer is present, fail safely on non-API paths
             else if (!isLocalhost && !url.pathname.startsWith("/api/")) {
-              return new Response("CSRF check failed (missing origin/referer)", { status: 403 });
+              return new Response(
+                "CSRF check failed (missing origin/referer)",
+                { status: 403 },
+              );
             }
           }
         }
       }
 
       // Global Security Middleware: Global Ingress Rate Limiting
-      if (!isLocalhost && !url.pathname.startsWith("/api/healthz") && url.pathname !== "/healthz") {
+      if (
+        !isLocalhost &&
+        !url.pathname.startsWith("/api/healthz") &&
+        url.pathname !== "/healthz"
+      ) {
         try {
-          const { enforceRateLimit, rateLimitHeaders } = await import("./lib/rate-limit.server");
-          const clientIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
-          
+          const { enforceRateLimit, rateLimitHeaders } =
+            await import("./lib/rate-limit.server");
+          const clientIp =
+            request.headers.get("cf-connecting-ip") ||
+            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+            "127.0.0.1";
+
           // Use the infra.read bucket as a fallback global ingress limit (120 req / 60s per IP)
           // We apply this broadly to prevent volumetric scraping
-          const verdict = await enforceRateLimit("infra.read", `ingress:${clientIp}`);
+          const verdict = await enforceRateLimit(
+            "infra.read",
+            `ingress:${clientIp}`,
+          );
           // Note: In a true global middleware we'd attach headers to every response,
           // but for simplicity we only halt on block. The internal rate limiters will append their own specific headers.
         } catch (err: unknown) {
           if ((err as Error)?.name === "RateLimitError") {
-             return new Response("Too Many Requests", { status: 429 });
+            return new Response("Too Many Requests", { status: 429 });
           }
           // Ignore rate limit backend failures, failing open
         }
       }
 
       if (url.pathname === "/api/healthz" || url.pathname === "/healthz") {
-        const mode = url.searchParams.get("type") === "liveness" ? "liveness" : "readiness";
+        const mode =
+          url.searchParams.get("type") === "liveness"
+            ? "liveness"
+            : "readiness";
         const { checkHealth } = await import("./lib/healthz.server");
         const { statusCode, result } = await checkHealth(mode);
         return new Response(JSON.stringify(result, null, 2), {
@@ -271,8 +406,12 @@ export default {
       }
 
       if (url.pathname === "/api/canary-alert" && request.method === "POST") {
-        const { processPrometheusAlertWebhook } = await import("./lib/circuit-breaker.server");
-        const payload = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const { processPrometheusAlertWebhook } =
+          await import("./lib/circuit-breaker.server");
+        const payload = (await request.json().catch(() => ({}))) as Record<
+          string,
+          unknown
+        >;
         const outcome = await processPrometheusAlertWebhook(payload);
         return new Response(JSON.stringify(outcome, null, 2), {
           status: outcome.tripped ? 200 : 202,
@@ -283,8 +422,15 @@ export default {
         });
       }
 
-      const { resolveTenantCanaryRoute } = await import("./lib/tenant-canary.server");
-      const canaryDecision = await resolveTenantCanaryRoute(request).catch(() => undefined);
+      const { resolveTenantCanaryRoute } =
+        await import("./lib/tenant-canary.server");
+      const canaryDecision = await resolveTenantCanaryRoute(request).catch(
+        () => undefined,
+      );
+
+      // Resolve risk tier per-request for CSP header emission
+      const merchantId = canaryDecision?.tenantId ?? undefined;
+      const { tier: riskTier } = await resolveRequestTier(merchantId);
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
@@ -292,7 +438,10 @@ export default {
       return withTenantCanaryHeaders(
         withConsoleHeaders(
           request,
-          withStorefrontCache(request, withSecurityHeaders(request, normalized)),
+          withStorefrontCache(
+            request,
+            withSecurityHeaders(request, normalized, riskTier),
+          ),
         ),
         canaryDecision,
       );

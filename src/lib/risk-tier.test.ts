@@ -214,26 +214,26 @@ describe("rate limit tier integration", () => {
 });
 
 describe("buildCsp with risk tiers", () => {
-    it("includes strict-dynamic for low tier", () => {
-      const csp = buildCsp("test-nonce", {}, "low");
-      expect(csp).toContain("'nonce-test-nonce'");
-      expect(csp).toContain("'strict-dynamic'");
-      expect(csp).toContain(
-        "frame-src 'self' https://www.youtube.com https://player.vimeo.com",
-      );
-    });
-
-    it("removes nonce and strict-dynamic for medium tier", () => {
-      const csp = buildCsp("test-nonce", {}, "medium");
-      expect(csp).not.toContain("test-nonce");
-      expect(csp).not.toContain("'strict-dynamic'");
-      expect(csp).toContain("script-src 'self'");
-    });
-
-    it("removes all frame-src for high tier", () => {
-      const csp = buildCsp("test-nonce", {}, "high");
-      expect(csp).toContain("frame-src");
-      expect(csp).not.toContain("youtube");
-      expect(csp).not.toContain("vimeo");
-    });
+  it("includes strict-dynamic for low tier", () => {
+    const csp = buildCsp("test-nonce", {}, "low");
+    expect(csp).toContain("'nonce-test-nonce'");
+    expect(csp).toContain("'strict-dynamic'");
+    expect(csp).toContain(
+      "frame-src 'self' https://www.youtube.com https://player.vimeo.com",
+    );
   });
+
+  it("removes nonce and strict-dynamic for medium tier", () => {
+    const csp = buildCsp("test-nonce", {}, "medium");
+    expect(csp).not.toContain("test-nonce");
+    expect(csp).not.toContain("'strict-dynamic'");
+    expect(csp).toContain("script-src 'self'");
+  });
+
+  it("removes all frame-src for high tier", () => {
+    const csp = buildCsp("test-nonce", {}, "high");
+    expect(csp).toContain("frame-src");
+    expect(csp).not.toContain("youtube");
+    expect(csp).not.toContain("vimeo");
+  });
+});
