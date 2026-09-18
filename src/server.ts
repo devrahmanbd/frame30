@@ -123,7 +123,7 @@ async function resolveRequestTier(
   }
 }
 
-function withSecurityHeaders(
+export function withSecurityHeaders(
   request: Request,
   response: Response,
   riskTier: RiskTier = "low",
@@ -134,9 +134,15 @@ function withSecurityHeaders(
   headers.set("x-content-type-options", "nosniff");
   headers.set("referrer-policy", "strict-origin-when-cross-origin");
   if (!isLocalHostname(new URL(request.url).hostname)) {
-    headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");
+    headers.set(
+      "strict-transport-security",
+      "max-age=31536000; includeSubDomains",
+    );
   }
-  headers.set("permissions-policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  headers.set(
+    "permissions-policy",
+    "camera=(), microphone=(), geolocation=(), payment=()",
+  );
 
   // Emit tier-aware CSP header using pre-generated nonce from request phase
   const policy = resolvePolicy(riskTier);
@@ -185,12 +191,14 @@ function withSecurityHeaders(
           if (idx === -1) return; // hold until the marker arrives; pumping continues
           const end = idx + "</head>".length;
           controller.enqueue(encoder.encode(buffer.slice(0, end) + metaTag));
-          buffer = buffer.slice(end);
+          const remainder = buffer.slice(end);
+          buffer = "";
           injected = true;
-          if (buffer) controller.enqueue(encoder.encode(buffer));
+          if (remainder) controller.enqueue(encoder.encode(remainder));
         },
         flush(controller) {
           if (!injected) {
+            buffer += decoder.decode();
             controller.enqueue(encoder.encode(buffer + metaTag));
           } else if (buffer) {
             controller.enqueue(encoder.encode(buffer));
@@ -468,7 +476,8 @@ export default {
         () => undefined,
       );
       const merchantId =
-        canaryDecision?.tenantId && canaryDecision.tenantId !== "manual-override"
+        canaryDecision?.tenantId &&
+        canaryDecision.tenantId !== "manual-override"
           ? canaryDecision.tenantId
           : undefined;
 
@@ -489,15 +498,18 @@ export default {
 
           if (merchantId) {
             // Tenant Storefront: enforce tenant aggregate capacity + shopper limit
-            const { enforceTenantRateLimit } = await import("./lib/rate-limit.server");
+            const { enforceTenantRateLimit } =
+              await import("./lib/rate-limit.server");
             await enforceTenantRateLimit(merchantId, clientIp);
           } else if (url.pathname.startsWith("/auth")) {
             // Sensitive Auth Endpoints
-            const { enforceRateLimit } = await import("./lib/rate-limit.server");
+            const { enforceRateLimit } =
+              await import("./lib/rate-limit.server");
             await enforceRateLimit("system.auth", clientIp);
           } else {
             // Platform System Ingress
-            const { enforceRateLimit } = await import("./lib/rate-limit.server");
+            const { enforceRateLimit } =
+              await import("./lib/rate-limit.server");
             await enforceRateLimit("system.ingress", clientIp);
           }
         } catch (err: unknown) {

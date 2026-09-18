@@ -342,10 +342,7 @@ function AuthPageInner() {
       return t("Last name is required.", "শেষ নাম আবশ্যক।");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      return t(
-        "Enter a valid email address.",
-        "সঠিক ইমেইল অ্যাড্রেস দিন।",
-      );
+      return t("Enter a valid email address.", "সঠিক ইমেইল অ্যাড্রেস দিন।");
     }
     if (password.length < 8) {
       return t(
@@ -659,7 +656,10 @@ function AuthPageInner() {
                 </span>
                 <span className="text-foreground">
                   <strong className="font-semibold text-foreground">
-                    {t("One-click courier booking:", "এক ক্লিকে কুরিয়ার বুকিং:")}
+                    {t(
+                      "One-click courier booking:",
+                      "এক ক্লিকে কুরিয়ার বুকিং:",
+                    )}
                   </strong>{" "}
                   <span className="text-muted-foreground">
                     {t(
@@ -673,7 +673,7 @@ function AuthPageInner() {
           </div>
 
           {/* Bottom Trial Guarantee Card (truthful terms, no invented proof) */}
-          <div className="fq-glass relative z-10 mt-6 rounded-fq-lg p-5">
+          <div className="fq-glass relative z-10 mt-6 rounded-fq-lg p-5 lg:mt-auto">
             <div className="flex items-center gap-2">
               <ShieldCheck className="size-4 text-primary" />
               <p className="text-sm font-semibold text-foreground">
@@ -748,9 +748,9 @@ function AuthPageInner() {
           <div className="mx-auto my-auto w-full max-w-lg py-4">
             {/* Mobile Marketing Value Pill */}
             {mode === "signup" && stage === "credentials" && (
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 lg:hidden">
-                <Sparkles className="size-3.5" />
-                <span>
+              <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-[11px] sm:text-xs font-medium text-emerald-600 dark:text-emerald-400 lg:hidden">
+                <Sparkles className="size-3.5 shrink-0" />
+                <span className="truncate sm:whitespace-normal">
                   {t(
                     "14-Day Free Trial • No Card Required",
                     "১৪ দিনের ফ্রি ট্রায়াল • কার্ড লাগবে না",
@@ -1081,135 +1081,74 @@ function AuthPageInner() {
 
                 {/* Email Address (wizard step 1) */}
                 {(mode !== "signup" || signupStep === 1) && (
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    {mode === "signup"
-                      ? t("Work or store email *", "বিজনেস বা স্টোর ইমেইল *")
-                      : t("Email address *", "ইমেইল অ্যাড্রেস *")}
-                  </label>
-                  <div className="relative">
-                    <input
-                      required
-                      type="email"
-                      maxLength={254}
-                      autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="merchant@yourbrand.com"
-                      className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                    />
-                    <Mail
-                      className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                      aria-hidden="true"
-                    />
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      {mode === "signup"
+                        ? t("Work or store email *", "বিজনেস বা স্টোর ইমেইল *")
+                        : t("Email address *", "ইমেইল অ্যাড্রেস *")}
+                    </label>
+                    <div className="relative">
+                      <input
+                        required
+                        type="email"
+                        maxLength={254}
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="merchant@yourbrand.com"
+                        className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                      />
+                      <Mail
+                        className="absolute left-3 top-3.5 size-4 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                    </div>
                   </div>
-                </div>
                 )}
 
                 {/* Password & Confirm Password (wizard step 1) */}
-                {(mode !== "reset" &&
-                  (mode !== "signup" || signupStep === 1)) && (
-                  <div
-                    className={
-                      mode === "signup"
-                        ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
-                        : "space-y-4"
-                    }
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-xs font-semibold text-foreground">
-                          {t("Password *", "পাসওয়ার্ড *")}
-                        </label>
-                        {mode === "signin" && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setMode("reset");
-                              setErrorMsg(null);
-                              setNotice(null);
-                            }}
-                            className="text-xs text-primary hover:underline"
-                          >
-                            {t("Forgot?", "ভুলে গেছেন?")}
-                          </button>
-                        )}
-                      </div>
-                      <div className="relative">
-                        <input
-                          required
-                          type={showPassword ? "text" : "password"}
-                          minLength={8}
-                          autoComplete={
-                            mode === "signin"
-                              ? "current-password"
-                              : "new-password"
-                          }
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                        />
-                        <Lock
-                          className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded"
-                          aria-label={
-                            showPassword ? "Hide password" : "Show password"
-                          }
-                        >
-                          {showPassword ? (
-                            <EyeOff className="size-4" />
-                          ) : (
-                            <Eye className="size-4" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    {mode === "signup" && (
+                {mode !== "reset" &&
+                  (mode !== "signup" || signupStep === 1) && (
+                    <div
+                      className={
+                        mode === "signup"
+                          ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
+                          : "space-y-4"
+                      }
+                    >
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
                           <label className="text-xs font-semibold text-foreground">
-                            {t(
-                              "Confirm password *",
-                              "পাসওয়ার্ড নিশ্চিত করুন *",
-                            )}
+                            {t("Password *", "পাসওয়ার্ড *")}
                           </label>
-                          {confirmPassword && (
-                            <span className="inline-flex items-center gap-1 text-[11px]">
-                              {isPasswordMatch ? (
-                                <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                                  <CheckCircle2 className="size-3" aria-hidden="true" />
-                                  {t("Match", "মিলেছে")}
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1 text-destructive font-medium">
-                                  <XCircle className="size-3" aria-hidden="true" />
-                                  {t("Mismatch", "মিলছে না")}
-                                </span>
-                              )}
-                            </span>
+                          {mode === "signin" && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setMode("reset");
+                                setErrorMsg(null);
+                                setNotice(null);
+                              }}
+                              className="text-xs text-primary hover:underline"
+                            >
+                              {t("Forgot?", "ভুলে গেছেন?")}
+                            </button>
                           )}
                         </div>
                         <div className="relative">
                           <input
                             required
-                            type={showConfirmPassword ? "text" : "password"}
+                            type={showPassword ? "text" : "password"}
                             minLength={8}
-                            autoComplete="new-password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            autoComplete={
+                              mode === "signin"
+                                ? "current-password"
+                                : "new-password"
+                            }
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className={`min-h-11 w-full rounded-fq-md border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 ${
-                              !isPasswordMatch
-                                ? "border-destructive focus-visible:ring-destructive"
-                                : "border-border focus-visible:ring-primary"
-                            }`}
+                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                           />
                           <Lock
                             className="absolute left-3 top-3.5 size-4 text-muted-foreground"
@@ -1217,17 +1156,13 @@ function AuthPageInner() {
                           />
                           <button
                             type="button"
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
+                            onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded"
                             aria-label={
-                              showConfirmPassword
-                                ? "Hide password"
-                                : "Show password"
+                              showPassword ? "Hide password" : "Show password"
                             }
                           >
-                            {showConfirmPassword ? (
+                            {showPassword ? (
                               <EyeOff className="size-4" />
                             ) : (
                               <Eye className="size-4" />
@@ -1235,9 +1170,82 @@ function AuthPageInner() {
                           </button>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
+
+                      {mode === "signup" && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <label className="text-xs font-semibold text-foreground">
+                              {t(
+                                "Confirm password *",
+                                "পাসওয়ার্ড নিশ্চিত করুন *",
+                              )}
+                            </label>
+                            {confirmPassword && (
+                              <span className="inline-flex items-center gap-1 text-[11px]">
+                                {isPasswordMatch ? (
+                                  <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                                    <CheckCircle2
+                                      className="size-3"
+                                      aria-hidden="true"
+                                    />
+                                    {t("Match", "মিলেছে")}
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 text-destructive font-medium">
+                                    <XCircle
+                                      className="size-3"
+                                      aria-hidden="true"
+                                    />
+                                    {t("Mismatch", "মিলছে না")}
+                                  </span>
+                                )}
+                              </span>
+                            )}
+                          </div>
+                          <div className="relative">
+                            <input
+                              required
+                              type={showConfirmPassword ? "text" : "password"}
+                              minLength={8}
+                              autoComplete="new-password"
+                              value={confirmPassword}
+                              onChange={(e) =>
+                                setConfirmPassword(e.target.value)
+                              }
+                              placeholder="••••••••"
+                              className={`min-h-11 w-full rounded-fq-md border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 ${
+                                !isPasswordMatch
+                                  ? "border-destructive focus-visible:ring-destructive"
+                                  : "border-border focus-visible:ring-primary"
+                              }`}
+                            />
+                            <Lock
+                              className="absolute left-3 top-3.5 size-4 text-muted-foreground"
+                              aria-hidden="true"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
+                              className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded"
+                              aria-label={
+                                showConfirmPassword
+                                  ? "Hide password"
+                                  : "Show password"
+                              }
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOff className="size-4" />
+                              ) : (
+                                <Eye className="size-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 {/* Additional Business Onboarding Metadata (wizard step 2) */}
                 {mode === "signup" && signupStep === 2 && (
@@ -1267,7 +1275,10 @@ function AuthPageInner() {
                             aria-hidden="true"
                           />
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            <ChevronDown className="size-4" aria-hidden="true" />
+                            <ChevronDown
+                              className="size-4"
+                              aria-hidden="true"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1297,7 +1308,10 @@ function AuthPageInner() {
                             aria-hidden="true"
                           />
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            <ChevronDown className="size-4" aria-hidden="true" />
+                            <ChevronDown
+                              className="size-4"
+                              aria-hidden="true"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1327,11 +1341,11 @@ function AuthPageInner() {
                           className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
                           aria-hidden="true"
                         />
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            <ChevronDown className="size-4" aria-hidden="true" />
-                          </div>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
+                          <ChevronDown className="size-4" aria-hidden="true" />
                         </div>
                       </div>
+                    </div>
 
                     {/* Terms Agreement Check */}
                     <p className="pt-2 text-[11px] text-muted-foreground leading-relaxed">
