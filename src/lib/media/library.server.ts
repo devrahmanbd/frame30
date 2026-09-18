@@ -16,6 +16,7 @@ import {
   sanitiseSvg,
   titleFromFileName,
   uniqueFileName,
+  validateMagicBytes,
 } from "./library";
 
 type Db = SupabaseClient<Database>;
@@ -70,7 +71,11 @@ function toAttachment(row: Row): Attachment {
   };
 }
 
-export async function listAttachments(db: Db, merchantId: string, limit = 400): Promise<Attachment[]> {
+export async function listAttachments(
+  db: Db,
+  merchantId: string,
+  limit = 400,
+): Promise<Attachment[]> {
   const { data, error } = await db
     .from("media_assets")
     .select(SELECT)
@@ -83,12 +88,17 @@ export async function listAttachments(db: Db, merchantId: string, limit = 400): 
 }
 
 async function takenNames(db: Db, merchantId: string): Promise<string[]> {
-  const { data } = await db.from("media_assets").select("file_name").eq("merchant_id", merchantId);
+  const { data } = await db
+    .from("media_assets")
+    .select("file_name")
+    .eq("merchant_id", merchantId);
   return ((data ?? []) as { file_name: string }[]).map((row) => row.file_name);
 }
 
 function decodeBase64(input: string): Uint8Array {
-  const clean = input.includes(",") ? input.slice(input.indexOf(",") + 1) : input;
+  const clean = input.includes(",")
+    ? input.slice(input.indexOf(",") + 1)
+    : input;
   const binary = atob(clean);
   const out = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) out[i] = binary.charCodeAt(i);
@@ -109,12 +119,21 @@ export async function uploadAttachment(
   input: UploadInput,
 ): Promise<Attachment> {
   const mime = input.contentType.toLowerCase();
-  if (!ACCEPTED_MIME.includes(mime)) throw new MediaLibraryError("bad_type", "Unsupported file type");
+  if (!ACCEPTED_MIME.includes(mime))
+    throw new MediaLibraryError("bad_type", "Unsupported file type");
 
   let bytes = decodeBase64(input.base64);
   if (bytes.length === 0) throw new MediaLibraryError("empty", "File is empty");
   if (bytes.length > MEDIA_UPLOAD_MAX_BYTES) {
     throw new MediaLibraryError("too_large", "File is larger than 25 MB");
+  }
+
+  // Magic-bytes validation: verify file content matches declared MIME type.
+  // Catches MIME-type spoofing where a malicious file is uploaded with a
+  // harmless-looking content-type (e.g. an executable disguised as a JPEG).
+  const magicCheck = validateMagicBytes(bytes, mime);
+  if (!magicCheck.ok) {
+    throw new MediaLibraryError(magicCheck.reason, magicCheck.message);
   }
 
   /* An SVG can carry script. It is stored only after the active parts are
@@ -127,14 +146,16 @@ export async function uploadAttachment(
     bytes = new TextEncoder().encode(result.svg);
   }
 
-  const { assertEntitlement, invalidateEntitlements } = await import("../entitlements.server");
+  const { assertEntitlement, invalidateEntitlements } =
+    await import("../entitlements.server");
   await assertEntitlement(db as never, merchantId, "media_bytes", bytes.length);
   invalidateEntitlements(merchantId);
 
   const fileName = uniqueFileName(input.name, await takenNames(db, merchantId));
   const path = `${merchantId}/${fileName}`;
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const up = await supabaseAdmin.storage.from(BUCKET).upload(path, bytes, {
     contentType: mime,
     upsert: false,
@@ -182,10 +203,14 @@ export async function updateAttachment(
 ): Promise<Attachment> {
   const update: Record<string, unknown> = {};
   if (patch.title !== undefined) update.title = patch.title.trim() || null;
-  if (patch.altText !== undefined) update.alt_text = patch.altText.trim() || null;
-  if (patch.caption !== undefined) update.caption = patch.caption.trim() || null;
-  if (patch.description !== undefined) update.description = patch.description.trim() || null;
-  if (patch.fileName !== undefined && patch.fileName.trim()) update.file_name = patch.fileName.trim();
+  if (patch.altText !== undefined)
+    update.alt_text = patch.altText.trim() || null;
+  if (patch.caption !== undefined)
+    update.caption = patch.caption.trim() || null;
+  if (patch.description !== undefined)
+    update.description = patch.description.trim() || null;
+  if (patch.fileName !== undefined && patch.fileName.trim())
+    update.file_name = patch.fileName.trim();
 
   const { data, error } = await db
     .from("media_assets")
@@ -195,11 +220,16 @@ export async function updateAttachment(
     .select(SELECT)
     .maybeSingle();
   if (error) throw new MediaLibraryError("update_failed", error.message);
-  if (!data) throw new MediaLibraryError("not_found", "That file no longer exists");
+  if (!data)
+    throw new MediaLibraryError("not_found", "That file no longer exists");
   return toAttachment(data as unknown as Row);
 }
 
-export async function deleteAttachments(db: Db, merchantId: string, ids: string[]): Promise<number> {
+export async function deleteAttachments(
+  db: Db,
+  merchantId: string,
+  ids: string[],
+): Promise<number> {
   if (ids.length === 0) return 0;
   const { data, error } = await db
     .from("media_assets")
@@ -210,8 +240,11 @@ export async function deleteAttachments(db: Db, merchantId: string, ids: string[
   const rows = (data ?? []) as { id: string; storage_path: string }[];
   if (rows.length === 0) return 0;
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  await supabaseAdmin.storage.from(BUCKET).remove(rows.map((row) => row.storage_path));
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  await supabaseAdmin.storage
+    .from(BUCKET)
+    .remove(rows.map((row) => row.storage_path));
 
   const del = await db
     .from("media_assets")
@@ -221,7 +254,8 @@ export async function deleteAttachments(db: Db, merchantId: string, ids: string[
       "id",
       rows.map((row) => row.id),
     );
-  if (del.error) throw new MediaLibraryError("delete_failed", del.error.message);
+  if (del.error)
+    throw new MediaLibraryError("delete_failed", del.error.message);
 
   const { invalidateEntitlements } = await import("../entitlements.server");
   invalidateEntitlements(merchantId);

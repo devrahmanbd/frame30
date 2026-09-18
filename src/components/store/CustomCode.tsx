@@ -16,7 +16,11 @@ type Props = {
   consented?: boolean;
 };
 
-export function CustomCodeStyles({ code }: { code: CompiledCustomCode | null }) {
+export function CustomCodeStyles({
+  code,
+}: {
+  code: CompiledCustomCode | null;
+}) {
   if (!code?.css) return null;
   return <style data-fq-custom-css="">{code.css}</style>;
 }
@@ -32,7 +36,9 @@ export function CustomCodeBody({
   if (!html) return null;
   // The markup was allowlisted server-side: tags, attributes and URL schemes
   // are all filtered, and scripts can never survive the filter.
-  return <div data-fq-snippet={slot} dangerouslySetInnerHTML={{ __html: html }} />;
+  return (
+    <div data-fq-snippet={slot} dangerouslySetInnerHTML={{ __html: html }} />
+  );
 }
 
 /** Deferred custom JS island. Runs once, after paint, never during SSR. */
@@ -47,13 +53,19 @@ export function CustomCodeScript({ code, consented = false }: Props) {
       el.type = "text/javascript";
       el.defer = true;
       el.dataset["fqCustomJs"] = "";
+      // TODO(security): When storefront CSP is enforced with per-request nonces,
+      // read the nonce from a <meta name="csp-nonce"> or cookie and set
+      // el.nonce = nonce here. Currently no document-level CSP is set on
+      // storefront pages — only the console (admin) gets a CSP header.
       el.textContent = code.js;
       document.body.appendChild(el);
       setRan(true);
     };
     // Idle time only: custom code never competes with the storefront's own
     // hydration or with LCP.
-    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+    const idle = (
+      window as unknown as { requestIdleCallback?: (cb: () => void) => number }
+    ).requestIdleCallback;
     if (idle) idle(attach);
     else window.setTimeout(attach, 1200);
   }, [code, consented, ran]);

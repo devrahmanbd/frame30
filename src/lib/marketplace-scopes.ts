@@ -95,8 +95,13 @@ export function scopeDef(id: string): ScopeDef | null {
 }
 
 /** Unknown scopes are rejected, duplicates collapsed, order made stable. */
-export function normalizeScopes(input: unknown): { scopes: string[]; unknown: string[] } {
-  const raw = Array.isArray(input) ? input.map((s) => String(s).trim().toLowerCase()) : [];
+export function normalizeScopes(input: unknown): {
+  scopes: string[];
+  unknown: string[];
+} {
+  const raw = Array.isArray(input)
+    ? input.map((s) => String(s).trim().toLowerCase())
+    : [];
   const known: string[] = [];
   const bad: string[] = [];
   for (const s of raw) {
@@ -120,7 +125,10 @@ export function highestRisk(scopes: readonly string[]): ScopeRisk {
 }
 
 /** Scopes the listing asks for that the merchant has not granted yet. */
-export function missingScopes(required: readonly string[], granted: readonly string[]) {
+export function missingScopes(
+  required: readonly string[],
+  granted: readonly string[],
+) {
   return required.filter((s) => !granted.includes(s));
 }
 
@@ -160,7 +168,8 @@ export function isBreakingChange(next: string, latest: string | null): boolean {
 
 /** Stable key ordering so the same bundle always hashes to the same digest. */
 export function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== "object") return JSON.stringify(value ?? null);
+  if (value === null || typeof value !== "object")
+    return JSON.stringify(value ?? null);
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
   const obj = value as Record<string, unknown>;
   const body = Object.keys(obj)
@@ -180,7 +189,10 @@ export type BundleVerdict = {
 };
 
 /** Structural gate applied before anything is written to the vault. */
-export function validateBundle(source: unknown, scopes: readonly string[]): BundleVerdict {
+export function validateBundle(
+  source: unknown,
+  scopes: readonly string[],
+): BundleVerdict {
   const errors: string[] = [];
   const canonical = canonicalJson(source ?? {});
   const bytes = new TextEncoder().encode(canonical).length;
@@ -192,9 +204,16 @@ export function validateBundle(source: unknown, scopes: readonly string[]): Bund
   if (bytes <= 2) errors.push("bundle.empty");
 
   const entry = (source as { entry?: unknown } | null)?.entry;
-  if (entry !== undefined && typeof entry !== "string") errors.push("bundle.entry_not_string");
-  if (typeof entry === "string" && entry.length > 200_000) errors.push("bundle.entry_too_large");
-  if (typeof entry === "string" && /\bimport\s*\(|eval\s*\(|new\s+Function/.test(entry)) {
+  if (entry !== undefined && typeof entry !== "string")
+    errors.push("bundle.entry_not_string");
+  if (typeof entry === "string" && entry.length > 200_000)
+    errors.push("bundle.entry_too_large");
+  if (
+    typeof entry === "string" &&
+    /\bimport\s*\(|eval\s*\(|new\s+Function|Function\s*\(|setTimeout\s*\(\s*["'`]|setInterval\s*\(\s*["'`]|\.innerHTML\s*=|document\.write\s*\(/.test(
+      entry,
+    )
+  ) {
     errors.push("bundle.dynamic_code");
   }
   if (scopes.length === 0) errors.push("bundle.no_scopes");
@@ -206,7 +225,13 @@ export function isBlockKey(key: string) {
   return /^[a-z][a-z0-9-]{1,39}$/.test(key);
 }
 
-export const BLOCK_TARGETS = ["header", "body", "product", "cart", "footer"] as const;
+export const BLOCK_TARGETS = [
+  "header",
+  "body",
+  "product",
+  "cart",
+  "footer",
+] as const;
 export type BlockTarget = (typeof BLOCK_TARGETS)[number];
 
 export function isBlockTarget(v: string): v is BlockTarget {
@@ -231,16 +256,30 @@ export type WidgetCall = { v: 1; id: string; method: string; params?: unknown };
 
 export type WidgetVerdict =
   | { allowed: true; method: string; write: boolean }
-  | { allowed: false; reason: "malformed" | "unknown_method" | "scope_denied"; method?: string };
+  | {
+      allowed: false;
+      reason: "malformed" | "unknown_method" | "scope_denied";
+      method?: string;
+    };
 
 /** The single decision point the sandbox host consults for every message. */
-export function authorizeWidgetCall(msg: unknown, granted: readonly string[]): WidgetVerdict {
+export function authorizeWidgetCall(
+  msg: unknown,
+  granted: readonly string[],
+): WidgetVerdict {
   const m = msg as Partial<WidgetCall> | null;
-  if (!m || m.v !== 1 || typeof m.id !== "string" || typeof m.method !== "string") {
+  if (
+    !m ||
+    m.v !== 1 ||
+    typeof m.id !== "string" ||
+    typeof m.method !== "string"
+  ) {
     return { allowed: false, reason: "malformed" };
   }
   const def = WIDGET_API[m.method];
-  if (!def) return { allowed: false, reason: "unknown_method", method: m.method };
-  if (!granted.includes(def.scope)) return { allowed: false, reason: "scope_denied", method: m.method };
+  if (!def)
+    return { allowed: false, reason: "unknown_method", method: m.method };
+  if (!granted.includes(def.scope))
+    return { allowed: false, reason: "scope_denied", method: m.method };
   return { allowed: true, method: m.method, write: def.write };
 }

@@ -13,6 +13,7 @@ import {
   safeFileName,
   type MediaItem,
 } from "./media";
+import { validateMagicBytes } from "./media/library";
 
 const BUCKET = "media";
 
@@ -116,6 +117,12 @@ export async function uploadMedia(
   if (bytes.length === 0) throw new MediaError("empty", "File is empty");
   if (bytes.length > MEDIA_MAX_BYTES)
     throw new MediaError("too_large", "File is larger than 5 MB");
+
+  // Magic-bytes validation: verify file content matches declared MIME type.
+  const magicCheck = validateMagicBytes(bytes, contentType);
+  if (!magicCheck.ok) {
+    throw new MediaError(magicCheck.reason, magicCheck.message);
+  }
 
   /* Storage quota is charged in bytes, so the cap is checked with the *actual*
    * decoded size — not the client-declared length, which is trivially lied

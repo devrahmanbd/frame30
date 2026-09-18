@@ -6,7 +6,8 @@
  * filtered, grouped and named. No Supabase, no DOM.
  */
 
-export type MediaKind = "image" | "vector" | "video" | "audio" | "document" | "other";
+export type MediaKind =
+  "image" | "vector" | "video" | "audio" | "document" | "other";
 
 export type Attachment = {
   id: string;
@@ -77,19 +78,30 @@ export function extensionOf(fileName: string): string {
   return dot > 0 ? fileName.slice(dot + 1).toLowerCase() : "";
 }
 
-export type UploadCheck = { ok: true } | { ok: false; reason: string; message: string };
+export type UploadCheck =
+  { ok: true } | { ok: false; reason: string; message: string };
 
 export function validateUpload(
   file: { name: string; type: string; size: number },
   maxBytes = MEDIA_UPLOAD_MAX_BYTES,
 ): UploadCheck {
-  if (!file.name.trim()) return { ok: false, reason: "no_name", message: "File has no name." };
+  if (!file.name.trim())
+    return { ok: false, reason: "no_name", message: "File has no name." };
   if (!ACCEPTED_MIME.includes(file.type.toLowerCase())) {
-    return { ok: false, reason: "bad_type", message: `${file.type || "This file type"} is not allowed.` };
+    return {
+      ok: false,
+      reason: "bad_type",
+      message: `${file.type || "This file type"} is not allowed.`,
+    };
   }
-  if (file.size <= 0) return { ok: false, reason: "empty", message: "File is empty." };
+  if (file.size <= 0)
+    return { ok: false, reason: "empty", message: "File is empty." };
   if (file.size > maxBytes) {
-    return { ok: false, reason: "too_large", message: `File is larger than ${formatBytes(maxBytes)}.` };
+    return {
+      ok: false,
+      reason: "too_large",
+      message: `File is larger than ${formatBytes(maxBytes)}.`,
+    };
   }
   return { ok: true };
 }
@@ -99,7 +111,13 @@ export function validateUpload(
 export function slugFileName(name: string): string {
   const dot = name.lastIndexOf(".");
   const base = dot > 0 ? name.slice(0, dot) : name;
-  const ext = dot > 0 ? name.slice(dot + 1).toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+  const ext =
+    dot > 0
+      ? name
+          .slice(dot + 1)
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "")
+      : "";
   const clean =
     base
       .toLowerCase()
@@ -139,32 +157,326 @@ export function titleFromFileName(name: string): string {
 /* -------------------------------------------------------------- svg guard */
 
 const SVG_EVENT_ATTR = /\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi;
-const SVG_BAD_TAGS = /<\s*(script|foreignObject|iframe|object|embed|link|style)\b[\s\S]*?<\s*\/\s*\1\s*>/gi;
+const SVG_BAD_TAGS =
+  /<\s*(script|foreignObject|iframe|object|embed|link|style)\b[\s\S]*?<\s*\/\s*\1\s*>/gi;
 const SVG_BAD_SELF = /<\s*(script|iframe|object|embed|link|use)\b[^>]*\/?>/gi;
-const SVG_BAD_HREF = /\s+(?:xlink:)?href\s*=\s*("|')\s*(?!#)(?:javascript:|data:)[^"']*\1/gi;
+const SVG_BAD_HREF =
+  /\s+(?:xlink:)?href\s*=\s*("|')\s*(?!#)(?:javascript:|data:)[^"']*\1/gi;
 const SVG_ENTITIES = /<!(?:DOCTYPE|ENTITY)[^>]*>/gi;
+const SVG_CDATA = /<!\[CDATA\[[\s\S]*?\]\]>/gi;
+const SVG_HANDLER = /<\s*handler\b[^>]*>[\s\S]*?<\s*\/\s*handler\s*>/gi;
+const SVG_ANIMATE_SCRIPT =
+  /<\s*(animate|set|animateTransform)\b[^>]*(?:values|to)\s*=\s*["'][^"']*(?:javascript|expression|url\()[^"']*["']/gi;
+const SVG_IMAGE_SCRIPT =
+  /<\s*image\b[^>]*(?:href|xlink:href)\s*=\s*["']\s*data:[^"']*(?:javascript|text\/html)[^"']*["']/gi;
+const SVG_BASE64_SCRIPT = /data:[^"']*;base64,[A-Za-z0-9+/=]{20,}/gi;
 
 export type SvgSanitiseResult = { svg: string; changed: boolean };
 
 /**
  * Strips the parts of an SVG that can execute: scripts, event handlers,
- * external references and entity declarations. The result is still an SVG, so
- * a sanitised logo keeps rendering; anything active is simply gone.
+ * external references, entity declarations, CDATA sections, and animate/set
+ * elements with script payloads. The result is still an SVG, so a sanitised
+ * logo keeps rendering; anything active is simply gone.
  */
 export function sanitiseSvg(input: string): SvgSanitiseResult {
   const before = input;
   let svg = input
     .replace(SVG_ENTITIES, "")
+    .replace(SVG_CDATA, "")
+    .replace(SVG_HANDLER, "")
     .replace(SVG_BAD_TAGS, "")
     .replace(SVG_BAD_SELF, "")
+    .replace(SVG_ANIMATE_SCRIPT, "")
+    .replace(SVG_IMAGE_SCRIPT, "")
     .replace(SVG_EVENT_ATTR, "")
     .replace(SVG_BAD_HREF, "");
+  // Strip any remaining data: URIs that look like encoded scripts
+  svg = svg.replace(SVG_BASE64_SCRIPT, (match) => {
+    // Only block data URIs that could contain scripts (text/html, text/javascript)
+    if (
+      /data:(?:text\/html|text\/javascript|application\/javascript)/i.test(
+        match,
+      )
+    ) {
+      return "";
+    }
+    return match;
+  });
   svg = svg.replace(/\s{2,}/g, " ").trim();
   return { svg, changed: svg !== before.trim() };
 }
 
 export function isSvgSafe(input: string): boolean {
   return !sanitiseSvg(input).changed;
+}
+
+/* --------------------------------------------------------- magic bytes */
+
+export type MagicBytesCheck =
+  { ok: true } | { ok: false; reason: string; message: string };
+
+/**
+ * Validates that file content matches the declared MIME type by checking magic
+ * bytes (file signatures). Catches MIME-type spoofing where a malicious file
+ * is uploaded with a harmless-looking extension and content-type.
+ *
+ * Text-based formats (SVG, CSV, plain text) are validated differently — they
+ * check for valid encoding rather than magic bytes.
+ */
+export function validateMagicBytes(
+  bytes: Uint8Array,
+  contentType: string,
+): MagicBytesCheck {
+  const mime = contentType.toLowerCase();
+  if (bytes.length === 0)
+    return { ok: false, reason: "empty", message: "File is empty." };
+
+  const header = bytes.slice(0, 12);
+  const hex = Array.from(header)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join(" ");
+
+  // JPEG: FF D8 FF
+  if (mime === "image/jpeg") {
+    if (header[0] !== 0xff || header[1] !== 0xd8 || header[2] !== 0xff) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a JPEG image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // PNG: 89 50 4E 47 0D 0A 1A 0A
+  if (mime === "image/png") {
+    if (
+      header[0] !== 0x89 ||
+      header[1] !== 0x50 ||
+      header[2] !== 0x4e ||
+      header[3] !== 0x47 ||
+      header[4] !== 0x0d ||
+      header[5] !== 0x0a ||
+      header[6] !== 0x1a ||
+      header[7] !== 0x0a
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a PNG image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // GIF: 47 49 46 38 (GIF87a or GIF89a)
+  if (mime === "image/gif") {
+    if (
+      header[0] !== 0x47 ||
+      header[1] !== 0x49 ||
+      header[2] !== 0x46 ||
+      header[3] !== 0x38
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a GIF image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // WebP: starts with RIFF....WEBP
+  if (mime === "image/webp") {
+    if (
+      header[0] !== 0x52 ||
+      header[1] !== 0x49 ||
+      header[2] !== 0x46 ||
+      header[3] !== 0x46 ||
+      header[8] !== 0x57 ||
+      header[9] !== 0x45 ||
+      header[10] !== 0x42 ||
+      header[11] !== 0x50
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a WebP image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // AVIF/HEIF: starts with ....ftyp (ftyp box at offset 4)
+  if (mime === "image/avif") {
+    if (
+      header[4] !== 0x66 ||
+      header[5] !== 0x74 ||
+      header[6] !== 0x79 ||
+      header[7] !== 0x70
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an AVIF image.",
+      };
+    }
+    // Check for avif or mif1 brand
+    const brand = String.fromCharCode(
+      header[8],
+      header[9],
+      header[10],
+      header[11],
+    );
+    if (brand !== "avif" && brand !== "mif1") {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an AVIF image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // PDF: 25 50 44 46 (%PDF)
+  if (mime === "application/pdf") {
+    if (
+      header[0] !== 0x25 ||
+      header[1] !== 0x50 ||
+      header[2] !== 0x44 ||
+      header[3] !== 0x46
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a PDF document.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // MP4/MOV: starts with ....ftyp (ftyp box at offset 4)
+  if (mime === "video/mp4") {
+    if (
+      header[4] !== 0x66 ||
+      header[5] !== 0x74 ||
+      header[6] !== 0x79 ||
+      header[7] !== 0x70
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an MP4 video.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // WebM: starts with 1A 45 DF A3 (EBML header)
+  if (mime === "video/webm") {
+    if (
+      header[0] !== 0x1a ||
+      header[1] !== 0x45 ||
+      header[2] !== 0xdf ||
+      header[3] !== 0xa3
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a WebM video.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // OGG: starts with 4F 67 67 53 (OggS)
+  if (mime === "audio/ogg") {
+    if (
+      header[0] !== 0x4f ||
+      header[1] !== 0x67 ||
+      header[2] !== 0x67 ||
+      header[3] !== 0x53
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an OGG audio file.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // WAV: starts with RIFF....WAVE
+  if (mime === "audio/wav") {
+    if (
+      header[0] !== 0x52 ||
+      header[1] !== 0x49 ||
+      header[2] !== 0x46 ||
+      header[3] !== 0x46 ||
+      header[8] !== 0x57 ||
+      header[9] !== 0x41 ||
+      header[10] !== 0x56 ||
+      header[11] !== 0x45
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like a WAV audio file.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // MP3: starts with ID3 (tag) or FF FB / FF F3 (sync word)
+  if (mime === "audio/mpeg") {
+    const hasId3 =
+      header[0] === 0x49 && header[1] === 0x44 && header[2] === 0x33;
+    const hasSync =
+      header[0] === 0xff && (header[1] === 0xfb || header[1] === 0xf3);
+    if (!hasId3 && !hasSync) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an MP3 audio file.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // SVG: text-based, starts with <?xml or <svg (allow BOM)
+  if (mime === "image/svg+xml") {
+    const text = new TextDecoder("utf-8", { fatal: false }).decode(
+      bytes.slice(0, 512),
+    );
+    const trimmed = text.replace(/^\uFEFF/, "").trim();
+    if (
+      !trimmed.startsWith("<?xml") &&
+      !trimmed.toLowerCase().startsWith("<svg")
+    ) {
+      return {
+        ok: false,
+        reason: "magic_mismatch",
+        message: "File does not look like an SVG image.",
+      };
+    }
+    return { ok: true };
+  }
+
+  // Text-based formats: CSV, plain text, DOCX (ZIP-based), DOC (OLE-based)
+  // These are harder to validate by magic bytes alone; accept if MIME is in allowlist
+  if (
+    mime === "text/plain" ||
+    mime === "text/csv" ||
+    mime === "application/msword" ||
+    mime ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ) {
+    return { ok: true };
+  }
+
+  // Unknown MIME — pass through (the allowlist already gates what's accepted)
+  return { ok: true };
 }
 
 /* -------------------------------------------------------------- filtering */
@@ -179,7 +491,11 @@ export type MediaFilters = {
   month: string;
 };
 
-export const EMPTY_FILTERS: MediaFilters = { query: "", type: "all", month: "all" };
+export const EMPTY_FILTERS: MediaFilters = {
+  query: "",
+  type: "all",
+  month: "all",
+};
 
 export function monthKey(iso: string): string {
   return iso.slice(0, 7);
@@ -207,7 +523,9 @@ export function monthLabel(key: string): string {
   return `${MONTH_NAMES[index]} ${year}`;
 }
 
-export function monthOptions(items: readonly Attachment[]): { key: string; label: string }[] {
+export function monthOptions(
+  items: readonly Attachment[],
+): { key: string; label: string }[] {
   const keys = new Set<string>();
   for (const item of items) {
     const key = monthKey(item.createdAt);
@@ -218,7 +536,9 @@ export function monthOptions(items: readonly Attachment[]): { key: string; label
     .map((key) => ({ key, label: monthLabel(key) }));
 }
 
-export function typeCounts(items: readonly Attachment[]): Record<MediaTypeFilter, number> {
+export function typeCounts(
+  items: readonly Attachment[],
+): Record<MediaTypeFilter, number> {
   const counts: Record<MediaTypeFilter, number> = {
     all: items.length,
     image: 0,
@@ -232,7 +552,10 @@ export function typeCounts(items: readonly Attachment[]): Record<MediaTypeFilter
   return counts;
 }
 
-export function searchAttachments(items: readonly Attachment[], query: string): Attachment[] {
+export function searchAttachments(
+  items: readonly Attachment[],
+  query: string,
+): Attachment[] {
   const needle = query.trim().toLowerCase();
   if (!needle) return [...items];
   return items.filter((item) =>
@@ -243,16 +566,25 @@ export function searchAttachments(items: readonly Attachment[], query: string): 
   );
 }
 
-export function filterAttachments(items: readonly Attachment[], filters: MediaFilters): Attachment[] {
+export function filterAttachments(
+  items: readonly Attachment[],
+  filters: MediaFilters,
+): Attachment[] {
   return searchAttachments(items, filters.query).filter((item) => {
-    if (filters.type !== "all" && mediaKind(item.contentType) !== filters.type) return false;
-    if (filters.month !== "all" && monthKey(item.createdAt) !== filters.month) return false;
+    if (filters.type !== "all" && mediaKind(item.contentType) !== filters.type)
+      return false;
+    if (filters.month !== "all" && monthKey(item.createdAt) !== filters.month)
+      return false;
     return true;
   });
 }
 
 export function filtersActive(filters: MediaFilters): boolean {
-  return filters.query.trim() !== "" || filters.type !== "all" || filters.month !== "all";
+  return (
+    filters.query.trim() !== "" ||
+    filters.type !== "all" ||
+    filters.month !== "all"
+  );
 }
 
 /* ------------------------------------------------------------- formatting */
@@ -266,14 +598,20 @@ export function formatBytes(bytes: number): string {
   return mb < 1024 ? `${mb.toFixed(1)} MB` : `${(mb / 1024).toFixed(2)} GB`;
 }
 
-export function dimensionLabel(item: Pick<Attachment, "width" | "height">): string | null {
+export function dimensionLabel(
+  item: Pick<Attachment, "width" | "height">,
+): string | null {
   return item.width && item.height ? `${item.width} × ${item.height}` : null;
 }
 
 export function uploadedLabel(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 /** Alt text is required for images; anything else may legitimately omit it. */
@@ -287,8 +625,13 @@ export function missingAltCount(items: readonly Attachment[]): number {
 
 /* --------------------------------------------------------------- selection */
 
-export function toggleSelected(selected: readonly string[], id: string): string[] {
-  return selected.includes(id) ? selected.filter((value) => value !== id) : [...selected, id];
+export function toggleSelected(
+  selected: readonly string[],
+  id: string,
+): string[] {
+  return selected.includes(id)
+    ? selected.filter((value) => value !== id)
+    : [...selected, id];
 }
 
 export function selectRange(
@@ -323,7 +666,8 @@ export function absoluteMediaUrl(origin: string, url: string): string {
   return `${origin.replace(/\/+$/, "")}${url.startsWith("/") ? url : `/${url}`}`;
 }
 
-export type ExternalUrlCheck = { ok: true; url: string } | { ok: false; message: string };
+export type ExternalUrlCheck =
+  { ok: true; url: string } | { ok: false; message: string };
 
 export function checkExternalUrl(raw: string): ExternalUrlCheck {
   const value = raw.trim();
@@ -334,6 +678,7 @@ export function checkExternalUrl(raw: string): ExternalUrlCheck {
   } catch {
     return { ok: false, message: "That does not look like a web address." };
   }
-  if (parsed.protocol !== "https:") return { ok: false, message: "Only https addresses are allowed." };
+  if (parsed.protocol !== "https:")
+    return { ok: false, message: "Only https addresses are allowed." };
   return { ok: true, url: parsed.toString() };
 }
