@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
+import { GradientMesh } from "@/components/public/motion/GradientMesh";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   consumeRecoveryCodeFn,
@@ -17,6 +18,8 @@ import {
   Eye,
   EyeOff,
   CheckCircle2,
+  XCircle,
+  ChevronDown,
   AlertCircle,
   ShieldCheck,
   Zap,
@@ -533,23 +536,11 @@ function AuthPage() {
     password === confirmPassword;
 
   return (
-    <main className="fq-site fq-marketing min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
+    <main className="fq-site fq-marketing min-h-screen overflow-x-clip bg-background selection:bg-primary/20 selection:text-primary">
       <div className="grid min-h-screen lg:grid-cols-12">
         {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
-        <aside className="relative hidden flex-col justify-between overflow-hidden border-r border-border/70 bg-muted/40 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex xl:p-14">
-          {/* Ambient Background Radial Gradient */}
-          <div
-            className="pointer-events-none absolute -left-20 -top-20 size-[32rem] rounded-full bg-primary/10 blur-[100px] opacity-80 dark:bg-primary/20 dark:opacity-70"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute -bottom-20 -right-20 size-[28rem] rounded-full bg-emerald-500/10 blur-[100px] opacity-70 dark:bg-emerald-500/15 dark:opacity-60"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute top-1/2 left-1/3 size-[24rem] rounded-full bg-amber-500/5 blur-[120px] opacity-50 dark:bg-amber-500/10"
-            aria-hidden="true"
-          />
+        <aside className="relative hidden min-w-0 flex-col justify-between overflow-hidden border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex xl:p-14">
+          <GradientMesh intensity={0.55} />
 
           {/* Top Brand & Home Link */}
           <div className="relative z-10">
@@ -582,7 +573,7 @@ function AuthPage() {
                 </span>
               </div>
 
-              <h1 className="fq-display text-3xl font-extrabold tracking-tight text-foreground xl:text-4xl leading-[1.15]">
+              <h1 className="fq-display text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)] font-extrabold tracking-tight text-foreground leading-[1.12] text-balance">
                 {t(
                   "Empower your e-commerce with sovereign infrastructure.",
                   "আপনার অনলাইন ব্যবসার জন্য নির্ভরযোগ্য ক্লাউড কমার্স প্ল্যাটফর্ম।",
@@ -651,33 +642,51 @@ function AuthPage() {
             </div>
           </div>
 
-          {/* Bottom Merchant Testimonial Card */}
-          <div className="relative z-10 mt-10 rounded-fq-lg border border-border/70 bg-card/90 p-5 shadow-sm backdrop-blur-md dark:bg-card/50 dark:border-border/60">
-            <p className="text-xs italic leading-relaxed text-muted-foreground">
-              "
-              {t(
-                "Moving our store to Framique cut out 2% third-party app fees and allowed us to book courier shipments with a single click. Our conversion rate jumped within 48 hours.",
-                "ফ্রেমিক-এ স্টোর আনার পর আমাদের ট্রানজ্যাকশন ফি বেঁচে গেছে এবং এক ক্লিকেই কুরিয়ার বুকিং হচ্ছে। সেলস কনভার্সন অনেক বেড়েছে।",
-              )}
-              "
-            </p>
-            <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3 text-[11px]">
-              <div>
-                <div className="font-semibold text-foreground">Adnan Karim</div>
-                <div className="text-muted-foreground">
-                  Founder @ Velvet Dhaka
-                </div>
-              </div>
-              <div className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                <ShieldCheck className="size-3" />
-                <span>Verified Merchant</span>
-              </div>
+          {/* Bottom Trial Guarantee Card (truthful terms, no invented proof) */}
+          <div className="fq-glass relative z-10 mt-10 rounded-fq-lg p-5">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="size-4 text-primary" />
+              <p className="text-sm font-semibold text-foreground">
+                {t(
+                  "14-day free trial, no card required",
+                  "১৪ দিনের ফ্রি ট্রায়াল, কার্ড লাগবে না",
+                )}
+              </p>
             </div>
+            <ul className="mt-3 space-y-2 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
+                <span>
+                  {t(
+                    "0% transaction fees on every plan",
+                    "প্রতিটি প্ল্যানে ০% ট্রানজ্যাকশন ফি",
+                  )}
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
+                <span>
+                  {t(
+                    "bKash, Nagad, cards & COD at checkout",
+                    "বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারি",
+                  )}
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
+                <span>
+                  {t(
+                    "SteadFast, Pathao & RedX in 64 districts",
+                    "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স",
+                  )}
+                </span>
+              </li>
+            </ul>
           </div>
         </aside>
 
         {/* ── Right Column: Interactive Form ──────────────────────────────── */}
-        <section className="flex flex-col justify-between p-6 sm:p-10 lg:col-span-7 lg:p-12 xl:p-16">
+        <section className="flex min-w-0 flex-col justify-between p-6 sm:p-10 lg:col-span-7 lg:p-12 xl:p-16">
           {/* Top Bar Navigation */}
           <header className="flex items-center justify-between pb-6">
             <div className="flex items-center gap-2 lg:hidden">
@@ -720,15 +729,21 @@ function AuthPage() {
 
             {/* Mode Switcher Tabs */}
             {stage === "credentials" && mode !== "reset" && (
-              <div className="mb-6 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold">
+              <div
+                role="tablist"
+                aria-label={t("Authentication mode", "অথেনটিকেশন মোড")}
+                className="mb-6 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold"
+              >
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={mode === "signup"}
                   onClick={() => {
                     setMode("signup");
                     setErrorMsg(null);
                     setNotice(null);
                   }}
-                  className={`rounded-fq-sm py-2 transition-all ${
+                  className={`min-h-11 rounded-fq-sm py-2 transition-all ${
                     mode === "signup"
                       ? "bg-card text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
@@ -738,12 +753,14 @@ function AuthPage() {
                 </button>
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={mode === "signin"}
                   onClick={() => {
                     setMode("signin");
                     setErrorMsg(null);
                     setNotice(null);
                   }}
-                  className={`rounded-fq-sm py-2 transition-all ${
+                  className={`min-h-11 rounded-fq-sm py-2 transition-all ${
                     mode === "signin"
                       ? "bg-card text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
@@ -932,11 +949,12 @@ function AuthPage() {
                       setErrorMsg(null);
                       setNotice(null);
                     }}
-                    className="text-xs text-muted-foreground hover:text-foreground pt-1"
+                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground pt-1"
                   >
+                    <ArrowLeft className="size-3.5" aria-hidden="true" />
                     {t(
-                      "← Sign in with a different account",
-                      "← অন্য অ্যাকাউন্ট দিয়ে সাইন ইন করুন",
+                      "Sign in with a different account",
+                      "অন্য অ্যাকাউন্ট দিয়ে সাইন ইন করুন",
                     )}
                   </button>
                 </div>
@@ -1095,14 +1113,16 @@ function AuthPage() {
                             )}
                           </label>
                           {confirmPassword && (
-                            <span className="text-[11px]">
+                            <span className="inline-flex items-center gap-1 text-[11px]">
                               {isPasswordMatch ? (
-                                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                                  ✓ Match
+                                <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                                  <CheckCircle2 className="size-3" aria-hidden="true" />
+                                  {t("Match", "মিলেছে")}
                                 </span>
                               ) : (
-                                <span className="text-destructive font-medium">
-                                  ✗ Mismatch
+                                <span className="inline-flex items-center gap-1 text-destructive font-medium">
+                                  <XCircle className="size-3" aria-hidden="true" />
+                                  {t("Mismatch", "মিলছে না")}
                                 </span>
                               )}
                             </span>
@@ -1179,7 +1199,7 @@ function AuthPage() {
                             aria-hidden="true"
                           />
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            ▼
+                            <ChevronDown className="size-4" aria-hidden="true" />
                           </div>
                         </div>
                       </div>
@@ -1209,7 +1229,7 @@ function AuthPage() {
                             aria-hidden="true"
                           />
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            ▼
+                            <ChevronDown className="size-4" aria-hidden="true" />
                           </div>
                         </div>
                       </div>
@@ -1239,11 +1259,11 @@ function AuthPage() {
                           className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
                           aria-hidden="true"
                         />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                          ▼
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
+                            <ChevronDown className="size-4" aria-hidden="true" />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
                     {/* Terms Agreement Check */}
                     <p className="pt-2 text-[11px] text-muted-foreground leading-relaxed">
