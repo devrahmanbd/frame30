@@ -28,15 +28,20 @@ export type MerchantMembership = {
 };
 
 export async function loadMemberships(): Promise<MerchantMembership[]> {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError || !userData.user) return [];
+  const { data: sessionData } = await supabase.auth.getSession();
+  let user = sessionData.session?.user;
+  if (!user) {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData.user) return [];
+    user = userData.user;
+  }
 
   const { data, error } = await supabase
     .from("merchant_members")
     .select(
       "merchant_id, role, merchants(id, name, slug, currency_code, status)",
     )
-    .eq("user_id", userData.user.id);
+    .eq("user_id", user.id);
   if (error) throw error;
 
   const rows: MerchantMembership[] = [];

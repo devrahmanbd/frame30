@@ -33,7 +33,8 @@ export function NotificationBell() {
     queryKey: ["admin", "notifications"],
     queryFn: () => fetchFeed(),
     refetchInterval: 60_000,
-    refetchOnWindowFocus: true,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
     retry: 1,
   });
 

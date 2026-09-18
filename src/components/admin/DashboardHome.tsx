@@ -252,9 +252,9 @@ export function DashboardHome() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "home"],
     queryFn: () => load(),
-    refetchOnWindowFocus: true,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
   });
-  useHomeRealtime();
 
   if (error) {
     return (
@@ -279,5 +279,10 @@ export function DashboardHome() {
 
 export function useDashboardOnboarding() {
   const load = useServerFn(dashboardHomeFn);
-  return useQuery({ queryKey: ["admin", "home"], queryFn: () => load() });
+  return useQuery({
+    queryKey: ["admin", "home"],
+    queryFn: () => load(),
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 }

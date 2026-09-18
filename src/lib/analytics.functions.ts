@@ -17,8 +17,14 @@ export const analyticsFn = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { loadAnalytics } = await import("./analytics.server");
+    const { cached } = await import("./cache.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return loadAnalytics(context.supabase, merchantId, data.range);
+    return cached(
+      `analytics:${merchantId}:${data.range}`,
+      60,
+      () => loadAnalytics(context.supabase, merchantId, data.range),
+      { staleSeconds: 120, shared: true },
+    );
   });
 
 const rangeDays = z.number().int().min(1).max(365).default(30);

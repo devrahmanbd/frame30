@@ -6,9 +6,15 @@ export const dashboardHomeFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadDashboardHome } = await import("./dashboard.server");
+    const { cached } = await import("./cache.server");
     const merchantId = await currentMerchantId(
       context.supabase,
       context.userId,
     );
-    return loadDashboardHome(context.supabase, merchantId);
+    return cached(
+      `dashboard:home:${merchantId}`,
+      15,
+      () => loadDashboardHome(context.supabase, merchantId),
+      { staleSeconds: 30, shared: true },
+    );
   });

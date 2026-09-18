@@ -35,6 +35,50 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
+type CachedClaims = {
+  claims: Record<string, unknown> & { sub: string; exp?: number };
+  expiresAt: number;
+};
+
+const claimsCache = new Map<string, CachedClaims>();
+const CLAIMS_CACHE_MAX = 500;
+const CLAIMS_CACHE_TTL_MS = 60_000; // 60 seconds
+
+function getCachedClaims(token: string): (Record<string, unknown> & { sub: string }) | null {
+  const entry = claimsCache.get(token);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    claimsCache.delete(token);
+    return null;
+  }
+  return entry.claims;
+}
+
+function setCachedClaims(
+  token: string,
+  claims: Record<string, unknown> & { sub: string; exp?: number },
+) {
+  if (claimsCache.size >= CLAIMS_CACHE_MAX) {
+    const firstKeys = claimsCache.keys();
+    for (let i = 0; i < 50; i++) {
+      const k = firstKeys.next().value;
+      if (!k) break;
+      claimsCache.delete(k);
+    }
+  }
+  let ttlMs = CLAIMS_CACHE_TTL_MS;
+  if (claims.exp && typeof claims.exp === "number") {
+    const msUntilExp = claims.exp * 1000 - Date.now();
+    if (msUntilExp < ttlMs) {
+      ttlMs = Math.max(0, msUntilExp);
+    }
+  }
+  claimsCache.set(token, {
+    claims,
+    expiresAt: Date.now() + ttlMs,
+  });
+}
+
 export const requireSupabaseAuth = createMiddleware({
   type: "function",
 }).server(async ({ next }) => {
@@ -94,20 +138,27 @@ export const requireSupabaseAuth = createMiddleware({
     },
   );
 
-  const { data, error } = await supabase.auth.getClaims(token);
-  if (error || !data?.claims) {
-    throw new Error("Unauthorized: Invalid token");
-  }
+  let claims = getCachedClaims(token);
+  if (!claims) {
+    const { data, error } = await supabase.auth.getClaims(token);
+    if (error || !data?.claims) {
+      throw new Error("Unauthorized: Invalid token");
+    }
 
-  if (!data.claims.sub) {
-    throw new Error("Unauthorized: No user ID found in token");
+    if (!data.claims.sub) {
+      throw new Error("Unauthorized: No user ID found in token");
+    }
+
+    claims = data.claims as Record<string, unknown> & { sub: string };
+    setCachedClaims(token, claims);
   }
 
   return next({
     context: {
       supabase,
-      userId: data.claims.sub,
-      claims: data.claims,
+      userId: claims.sub,
+      claims,
     },
   });
 });
+

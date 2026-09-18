@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -28,8 +29,12 @@ function grantRows(value: unknown): { group: string; action: string }[] {
 }
 
 async function loadMembership(): Promise<Membership | null> {
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
+  const { data: sessionData } = await supabase.auth.getSession();
+  let user = sessionData.session?.user;
+  if (!user) {
+    const { data: userData } = await supabase.auth.getUser();
+    user = userData.user ?? undefined;
+  }
   if (!user) return null;
 
   const { data } = await supabase
@@ -75,12 +80,18 @@ export function useMembership() {
  */
 export function useCan() {
   const { data } = useMembership();
-  const ctx: AuthzContext = {
-    permissions: data?.permissions ?? [],
-    status: data?.status ?? null,
-  };
-  return (permission: Permission | null | undefined) =>
-    permission
-      ? can(permission, ctx)
-      : Boolean(data && data.status === "active");
+  const ctx: AuthzContext = useMemo(
+    () => ({
+      permissions: data?.permissions ?? [],
+      status: data?.status ?? null,
+    }),
+    [data?.permissions, data?.status],
+  );
+  return useCallback(
+    (permission: Permission | null | undefined) =>
+      permission
+        ? can(permission, ctx)
+        : Boolean(data && data.status === "active"),
+    [ctx, data],
+  );
 }

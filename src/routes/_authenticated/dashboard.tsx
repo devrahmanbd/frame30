@@ -18,23 +18,26 @@ import { SupportWidget } from "@/components/store/SupportWidget";
  * Platform owners attempting to access /dashboard are redirected to /root.
  */
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  beforeLoad: async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  beforeLoad: async ({ context }) => {
+    // Parent _authenticated route already validated the user and verified MFA
+    const parentUser = (
+      context as {
+        user?: { id: string; user_metadata?: Record<string, unknown> };
+      }
+    )?.user;
+    let user = parentUser;
+    if (!user) {
+      const {
+        data: { user: freshUser },
+      } = await supabase.auth.getUser();
+      user = freshUser ?? undefined;
+    }
     if (!user) {
       throw redirect({ to: "/auth" });
     }
     // Customers cannot access the merchant console
     if (user.user_metadata?.account_type === "customer") {
       await supabase.auth.signOut();
-      throw redirect({ to: "/auth" });
-    }
-
-    // Require TOTP AAL2 verification if user has enrolled factors
-    const { data: aal } =
-      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
       throw redirect({ to: "/auth" });
     }
   },

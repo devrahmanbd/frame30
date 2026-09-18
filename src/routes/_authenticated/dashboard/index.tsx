@@ -58,7 +58,9 @@ function Dashboard() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["analytics", "7d"],
     queryFn: () => fetchAnalytics({ data: { range: "7d" as const } }),
-    enabled: !homeLoading && !onboarding,
+    enabled: home?.onboarding !== true,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
   });
 
   const currency = data?.currency ?? home?.currency ?? "BDT";

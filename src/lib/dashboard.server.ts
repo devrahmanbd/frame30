@@ -80,7 +80,14 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
   const elapsedMs = now.getTime() - todayStart.getTime();
   const baseCutoff = new Date(baseStart.getTime() + elapsedMs);
 
-  const [{ data: merchant }, { data: orders, error }] = await Promise.all([
+  const [
+    { data: merchant },
+    { data: orders, error },
+    { data: failedPayments },
+    { data: lowStock },
+    { data: newSubscribers },
+    { count: lifetimeOrders },
+  ] = await Promise.all([
     supabase
       .from("merchants")
       .select("currency_code")
@@ -95,6 +102,31 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       .gte("created_at", baseStart.toISOString())
       .order("created_at", { ascending: false })
       .limit(DASHBOARD_ORDER_SCAN_LIMIT),
+    supabase
+      .from("payments")
+      .select(
+        "id, order_id, amount_minor_int, payment_provider, payment_status, created_at",
+      )
+      .eq("merchant_id", merchantId)
+      .eq("payment_status", "failed")
+      .order("created_at", { ascending: false })
+      .limit(DASHBOARD_PAYMENT_SCAN_LIMIT),
+    supabase
+      .from("inventory_levels")
+      .select("id, on_hand, reserved, low_stock_threshold, variant_id")
+      .eq("merchant_id", merchantId)
+      .order("on_hand", { ascending: true })
+      .limit(DASHBOARD_STOCK_SCAN_LIMIT),
+    supabase
+      .from("subscribers")
+      .select("id, email, phone, created_at")
+      .eq("merchant_id", merchantId)
+      .order("created_at", { ascending: false })
+      .limit(DASHBOARD_SUBSCRIBER_SCAN_LIMIT),
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("merchant_id", merchantId),
   ]);
   if (error) throw error;
 
@@ -181,15 +213,6 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
     });
   }
 
-  const { data: failedPayments } = await supabase
-    .from("payments")
-    .select(
-      "id, order_id, amount_minor_int, payment_provider, payment_status, created_at",
-    )
-    .eq("merchant_id", merchantId)
-    .eq("payment_status", "failed")
-    .order("created_at", { ascending: false })
-    .limit(DASHBOARD_PAYMENT_SCAN_LIMIT);
   for (const p of failedPayments ?? []) {
     needs.push({
       id: `pay-${p.id}`,
@@ -208,12 +231,6 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
     });
   }
 
-  const { data: lowStock } = await supabase
-    .from("inventory_levels")
-    .select("id, on_hand, reserved, low_stock_threshold, variant_id")
-    .eq("merchant_id", merchantId)
-    .order("on_hand", { ascending: true })
-    .limit(DASHBOARD_STOCK_SCAN_LIMIT);
   const lowRows = (lowStock ?? []).filter(
     (l) => l.on_hand - (l.reserved ?? 0) <= (l.low_stock_threshold ?? 0),
   );
@@ -255,13 +272,6 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
   );
 
   // ---- Live feed seed --------------------------------------------------
-  const { data: newSubscribers } = await supabase
-    .from("subscribers")
-    .select("id, email, phone, created_at")
-    .eq("merchant_id", merchantId)
-    .order("created_at", { ascending: false })
-    .limit(DASHBOARD_SUBSCRIBER_SCAN_LIMIT);
-
   const feed: FeedItem[] = [
     ...rows.slice(0, 10).map<FeedItem>((o) => ({
       id: `order-${o.id}`,
@@ -294,11 +304,6 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
   ]
     .sort((a, b) => (a.at < b.at ? 1 : -1))
     .slice(0, 12);
-
-  const { count: lifetimeOrders } = await supabase
-    .from("orders")
-    .select("id", { count: "exact", head: true })
-    .eq("merchant_id", merchantId);
 
   return {
     currency,
